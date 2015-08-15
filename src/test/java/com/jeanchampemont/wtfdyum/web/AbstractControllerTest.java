@@ -15,21 +15,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jeanchampemont.wtfdyum;
+package com.jeanchampemont.wtfdyum.web;
 
-import org.junit.Test;
+import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
+import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
+
+/**
+ * This class should be extended by all test class testing controllers.
+ *
+ * @author Jean
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = WTFDYUMApplication.class)
 @WebAppConfiguration
-public class WTFDYUMApplicationTests {
+public abstract class AbstractControllerTest {
 
-    @Test
-    public void contextLoads() {
+    /** The context. */
+    @Autowired
+    private WebApplicationContext context;
+
+    /** The mock mvc. */
+    protected MockMvc mockMvc;
+
+    /**
+     * Setup : - Init mockMvc.
+     */
+    @Before
+    public void setup() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
-
 }

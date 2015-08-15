@@ -15,21 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jeanchampemont.wtfdyum;
+package com.jeanchampemont.wtfdyum.web;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = WTFDYUMApplication.class)
-@WebAppConfiguration
-public class WTFDYUMApplicationTests {
-
+public class MainControllerTest extends AbstractControllerTest {
     @Test
-    public void contextLoads() {
-    }
+    public void indexTest() throws Exception {
+        mockMvc.perform(get("/"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("index"));
 
+    }
 }

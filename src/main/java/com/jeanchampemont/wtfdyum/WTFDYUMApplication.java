@@ -21,16 +21,15 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Spring Application Class
+ * Spring Application Class.
  *
  * @author Jean Champémont
- *
  */
 @SpringBootApplication
 public class WTFDYUMApplication {
 
     /**
-     * Main
+     * Main.
      *
      * @param args
      */

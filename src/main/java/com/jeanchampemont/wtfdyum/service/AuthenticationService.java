@@ -15,25 +15,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jeanchampemont.wtfdyum;
+package com.jeanchampemont.wtfdyum.service;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.google.common.base.Optional;
+import com.jeanchampemont.wtfdyum.dto.User;
 
 /**
- * Spring Application Class.
- *
- * @author Jean Champémont
+ * The Interface AuthenticationService.
  */
-@SpringBootApplication
-public class WTFDYUMApplication {
+public interface AuthenticationService {
+
     /**
-     * Main.
+     * Authenticate.
      *
-     * @param args
-     *            the arguments
+     * @param user
+     *            the user
+     * @return the connected userId
      */
-    public static void main(final String[] args) {
-        SpringApplication.run(WTFDYUMApplication.class, args);
-    }
+    Long authenticate(User user);
+
+    /**
+     * Gets the current user id.
+     *
+     * @return the current user id
+     */
+    Optional<Long> getCurrentUserId();
+
+    /**
+     * Checks if is authenticated.
+     *
+     * @return the boolean
+     */
+    Boolean isAuthenticated();
+
+    /**
+     * Log out.
+     */
+    void logOut();
 }

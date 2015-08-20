@@ -25,11 +25,16 @@
         <div class="header clearfix" th:fragment="header">
             <nav>
                 <ul class="nav nav-pills pull-right">
-                    <li role="presentation" class="active"><a
-                        href="/">Home</a></li>
+                    <li role="presentation" class="active">
+                        <a th:if="${!authenticated}" href="/">Home</a>
+                        <a th:if="${authenticated}" href="/user" th:text="Home"></a>
+                    </li>
+                    <li role="presentation">
+                        <a th:if="${authenticated}" href="/user/logout">Logout</a>
+                    </li>
                 </ul>
             </nav>
-            <h3 class="text-muted">WTFDYUM???</h3>
+            <h3 class="text-muted"><a href="/">WTFDYUM???</a></h3>
         </div>
     </div>
 

@@ -19,13 +19,11 @@ package com.jeanchampemont.wtfdyum.web;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
 
@@ -39,10 +37,6 @@ import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
 @WebAppConfiguration
 public abstract class AbstractControllerTest {
 
-    /** The context. */
-    @Autowired
-    private WebApplicationContext context;
-
     /** The mock mvc. */
     protected MockMvc mockMvc;
 
@@ -51,6 +45,13 @@ public abstract class AbstractControllerTest {
      */
     @Before
     public void setup() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(getTestedController()).build();
     }
+
+    /**
+     * Gets the tested controller.
+     *
+     * @return the tested controller
+     */
+    protected abstract Object getTestedController();
 }

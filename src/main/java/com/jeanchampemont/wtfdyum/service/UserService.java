@@ -15,25 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jeanchampemont.wtfdyum;
+package com.jeanchampemont.wtfdyum.service;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.jeanchampemont.wtfdyum.dto.User;
 
 /**
- * Spring Application Class.
- *
- * @author Jean Champémont
+ * The Interface UserService.
  */
-@SpringBootApplication
-public class WTFDYUMApplication {
+public interface UserService {
+
     /**
-     * Main.
+     * Save update.
      *
-     * @param args
-     *            the arguments
+     * @param user
+     *            the user
      */
-    public static void main(final String[] args) {
-        SpringApplication.run(WTFDYUMApplication.class, args);
-    }
+    void saveUpdate(User user);
 }

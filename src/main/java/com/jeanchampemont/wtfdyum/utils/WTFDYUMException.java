@@ -15,25 +15,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jeanchampemont.wtfdyum;
+package com.jeanchampemont.wtfdyum.utils;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Spring Application Class.
- *
- * @author Jean Champémont
+ * The Class WTFDYUMException. This class simply wrap exceptions.
  */
-@SpringBootApplication
-public class WTFDYUMApplication {
+@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "WTFDYUMException")
+public class WTFDYUMException extends Exception {
+
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 4147162490508812242L;
+
     /**
-     * Main.
+     * Instantiates a new WTFDYUM exception.
      *
-     * @param args
-     *            the arguments
+     * @param e
+     *            the wrapped exception
      */
-    public static void main(final String[] args) {
-        SpringApplication.run(WTFDYUMApplication.class, args);
+    public WTFDYUMException(final Exception e) {
+        super(e);
     }
+
 }

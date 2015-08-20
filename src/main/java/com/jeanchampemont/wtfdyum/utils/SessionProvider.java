@@ -15,25 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jeanchampemont.wtfdyum;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+package com.jeanchampemont.wtfdyum.utils;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
- * Spring Application Class.
+ * The Class SessionProvider.
  *
- * @author Jean Champémont
+ * Utility class to provide session.
  */
-@SpringBootApplication
-public class WTFDYUMApplication {
+@Component
+public class SessionProvider {
+
     /**
-     * Main.
+     * Gets the session.
      *
-     * @param args
-     *            the arguments
+     * @return the session
      */
-    public static void main(final String[] args) {
-        SpringApplication.run(WTFDYUMApplication.class, args);
+    public HttpSession getSession() {
+        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getSession();
     }
 }

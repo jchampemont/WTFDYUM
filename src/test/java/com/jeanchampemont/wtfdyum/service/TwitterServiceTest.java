@@ -162,6 +162,25 @@ public class TwitterServiceTest {
     }
 
     /**
+     * Gets the user test exception.
+     *
+     * @return the user test exception
+     * @throws Exception
+     *             the exception
+     */
+    @Test(expected = WTFDYUMException.class)
+    public void getUserTestException() throws Exception {
+        SessionManager.setPrincipal(new Principal(1L, "", ""));
+
+        final User userMock = mock(User.class);
+
+        when(twitter.users()).thenReturn(usersResources);
+        when(usersResources.showUser(123L)).thenThrow(new TwitterException("msg"));
+
+        sut.getUser(123L);
+    }
+
+    /**
      * Signin test nominal.
      *
      * @throws Exception

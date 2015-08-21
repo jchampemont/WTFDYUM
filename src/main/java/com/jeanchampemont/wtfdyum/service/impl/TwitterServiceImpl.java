@@ -17,11 +17,15 @@
  */
 package com.jeanchampemont.wtfdyum.service.impl;
 
+import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.jeanchampemont.wtfdyum.dto.Principal;
+import com.jeanchampemont.wtfdyum.dto.User;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
+import com.jeanchampemont.wtfdyum.utils.SessionManager;
 import com.jeanchampemont.wtfdyum.utils.TwitterFactoryHolder;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 
@@ -41,6 +45,8 @@ public class TwitterServiceImpl implements TwitterService {
      *
      * @param twitterFactory
      *            the twitter factory
+     * @param mapper
+     *            the mapper
      * @param baseUrl
      *            the base url of WTFDYUM. Property wtfdyum.server-base-url
      * @param appId
@@ -50,10 +56,12 @@ public class TwitterServiceImpl implements TwitterService {
      */
     @Autowired
     public TwitterServiceImpl(final TwitterFactoryHolder twitterFactory,
+            final Mapper mapper,
             @Value("${wtfdyum.server-base-url}") final String baseUrl,
             @Value("${wtfdyum.twitter.appId}") final String appId,
             @Value("${wtfdyum.twitter.appSecret}") final String appSecret) {
         this.twitterFactory = twitterFactory;
+        this.mapper = mapper;
         this.baseUrl = baseUrl;
         this.appId = appId;
         this.appSecret = appSecret;
@@ -64,6 +72,9 @@ public class TwitterServiceImpl implements TwitterService {
 
     /** The twitter. */
     private final TwitterFactoryHolder twitterFactory;
+
+    /** The mapper. */
+    private final Mapper mapper;
 
     /** The app id. */
     private final String appId;
@@ -86,6 +97,24 @@ public class TwitterServiceImpl implements TwitterService {
             throw new WTFDYUMException(e);
         }
         return token;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.jeanchampemont.wtfdyum.service.TwitterService#getUser(java.lang.Long)
+     */
+    @Override
+    public User getUser(final Long id) throws WTFDYUMException {
+        User result = null;
+        try {
+            final twitter4j.User user = twitter(SessionManager.getPrincipal()).users().showUser(id);
+            result = mapper.map(user, User.class);
+        } catch (final TwitterException e) {
+            throw new WTFDYUMException(e);
+        }
+        return result;
     }
 
     /*
@@ -113,6 +142,20 @@ public class TwitterServiceImpl implements TwitterService {
     private Twitter twitter() {
         final Twitter instance = twitterFactory.getInstance();
         instance.setOAuthConsumer(appId, appSecret);
+        return instance;
+    }
+
+    /**
+     * Twitter.
+     *
+     * @param principal
+     *            the principal
+     * @return the twitter
+     */
+    private Twitter twitter(final Principal principal) {
+        final Twitter instance = twitterFactory.getInstance();
+        instance.setOAuthConsumer(appId, appSecret);
+        instance.setOAuthAccessToken(new AccessToken(principal.getToken(), principal.getTokenSecret()));
         return instance;
     }
 }

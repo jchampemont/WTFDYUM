@@ -17,6 +17,7 @@
  */
 package com.jeanchampemont.wtfdyum.service;
 
+import com.jeanchampemont.wtfdyum.dto.User;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 
 import twitter4j.auth.AccessToken;
@@ -40,6 +41,16 @@ public interface TwitterService {
      *             if something is wrong with Twitter communication
      */
     AccessToken completeSignin(RequestToken requestToken, String verifier) throws WTFDYUMException;
+
+    /**
+     * Gets the user.
+     *
+     * @param id
+     *            the id
+     * @return the user
+     * @throws WTFDYUMException
+     */
+    User getUser(Long id) throws WTFDYUMException;
 
     /**
      * Signin with Twitter.

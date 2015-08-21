@@ -35,17 +35,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
 import com.jeanchampemont.wtfdyum.dto.Principal;
-import com.jeanchampemont.wtfdyum.service.impl.UserServiceImpl;
+import com.jeanchampemont.wtfdyum.service.impl.PrincipalServiceImpl;
 
 /**
- * The Class UserServiceTest.
+ * The Class PrincipalServiceTest.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = WTFDYUMApplication.class)
-public class UserServiceTest {
+public class PrincipalServiceTest {
 
     /** The system under test. */
-    private UserService sut;
+    private PrincipalService sut;
 
     /** The redis template mock. */
     @Mock
@@ -61,7 +61,7 @@ public class UserServiceTest {
     @Before
     public void ainit() {
         initMocks(this);
-        sut = new UserServiceImpl(redisTemplate);
+        sut = new PrincipalServiceImpl(redisTemplate);
     }
 
     /**

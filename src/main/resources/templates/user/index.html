@@ -8,7 +8,7 @@
 
         <div class="jumbotron">
             <h1>Why The Fuck Did You Unfollow Me?</h1>
-            Connected as <span th:text="${userId}"></span>!
+            Connected as <span th:text="${user.name}"></span> (@<span th:text="${user.screenName}"></span>)!
         </div>
 
         <footer th:replace="common/template :: footer"></footer>

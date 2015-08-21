@@ -33,9 +33,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.google.common.base.Optional;
+import com.jeanchampemont.wtfdyum.dto.User;
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
+import com.jeanchampemont.wtfdyum.service.PrincipalService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
-import com.jeanchampemont.wtfdyum.service.UserService;
 
 /**
  * The Class UserControllerTest.
@@ -49,7 +50,7 @@ public class UserControllerTest extends AbstractControllerTest {
 
     /** The user service. */
     @Mock
-    private UserService userService;
+    private PrincipalService principalService;
 
     /** The authentication service. */
     @Mock
@@ -67,10 +68,13 @@ public class UserControllerTest extends AbstractControllerTest {
      */
     @Test
     public void indexTest() throws Exception {
+        final User u = new User();
+
         when(authenticationService.getCurrentUserId()).thenReturn(Optional.of(12340L));
+        when(twitterService.getUser(12340L)).thenReturn(u);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/user")).andExpect(status().isOk())
-        .andExpect(view().name("user/index")).andExpect(model().attribute("userId", 12340L));
+                .andExpect(view().name("user/index")).andExpect(model().attribute("user", u));
     }
 
     /**

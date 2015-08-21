@@ -41,7 +41,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
-import com.jeanchampemont.wtfdyum.service.UserService;
+import com.jeanchampemont.wtfdyum.service.PrincipalService;
 
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
@@ -58,7 +58,7 @@ public class MainControllerTest extends AbstractControllerTest {
 
     /** The user service. */
     @Mock
-    private UserService userService;
+    private PrincipalService principalService;
 
     /** The authentication service. */
     @Mock
@@ -122,7 +122,7 @@ public class MainControllerTest extends AbstractControllerTest {
 
         final Principal builtUser = new Principal(1203L, "TOken", "secret");
 
-        verify(userService, times(1)).saveUpdate(builtUser);
+        verify(principalService, times(1)).saveUpdate(builtUser);
         verify(authenticationService, times(1)).authenticate(builtUser);
     }
 

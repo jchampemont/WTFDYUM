@@ -29,7 +29,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
-import com.jeanchampemont.wtfdyum.service.UserService;
+import com.jeanchampemont.wtfdyum.service.PrincipalService;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 
 import twitter4j.auth.AccessToken;
@@ -52,7 +52,7 @@ public class MainController {
 
     /** The user service. */
     @Autowired
-    private UserService userService;
+    private PrincipalService principalService;
 
     /** The authentication service. */
     @Autowired
@@ -109,7 +109,7 @@ public class MainController {
         final AccessToken accessToken = twitterService.completeSignin(requestToken, verifier);
 
         final Principal user = new Principal(accessToken.getUserId(), accessToken.getToken(), accessToken.getTokenSecret());
-        userService.saveUpdate(user);
+        principalService.saveUpdate(user);
         authenticationService.authenticate(user);
 
         return new RedirectView("/user", true);

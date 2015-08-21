@@ -25,6 +25,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
+import com.jeanchampemont.wtfdyum.service.TwitterService;
+import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 
 /**
  * The Class UserController.
@@ -37,16 +39,21 @@ public class UserController {
     @Autowired
     private AuthenticationService authenticationService;
 
+    /** The twitter service. */
+    @Autowired
+    private TwitterService twitterService;
+
     /**
      * Index.
      *
      * @return the string
+     * @throws WTFDYUMException
      */
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView index() {
+    public ModelAndView index() throws WTFDYUMException {
         final ModelAndView result = new ModelAndView("user/index");
 
-        result.getModel().put("userId", authenticationService.getCurrentUserId().get());
+        result.getModel().put("user", twitterService.getUser(authenticationService.getCurrentUserId().get()));
 
         return result;
     }

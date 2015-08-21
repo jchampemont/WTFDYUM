@@ -25,13 +25,13 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.base.Preconditions;
 import com.jeanchampemont.wtfdyum.dto.Principal;
-import com.jeanchampemont.wtfdyum.service.UserService;
+import com.jeanchampemont.wtfdyum.service.PrincipalService;
 
 /**
- * The Class UserServiceImpl.
+ * The Class PrincipalServiceImpl.
  */
 @Service
-public class UserServiceImpl implements UserService {
+public class PrincipalServiceImpl implements PrincipalService {
 
     /**
      * Instantiates a new user service impl.
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
      * @param redisTemplate the redis template
      */
     @Autowired
-    public UserServiceImpl(final RedisTemplate<String, Serializable> redisTemplate) {
+    public PrincipalServiceImpl(final RedisTemplate<String, Serializable> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
@@ -49,7 +49,19 @@ public class UserServiceImpl implements UserService {
     /*
      * (non-Javadoc)
      *
-     * @see com.jeanchampemont.wtfdyum.service.UserService#saveUpdate(com.
+     * @see
+     * com.jeanchampemont.wtfdyum.service.PrincipalService#get(java.lang.Long)
+     */
+    @Override
+    public Principal get(final Long id) {
+        Preconditions.checkNotNull(id);
+        return (Principal) redisTemplate.opsForValue().get(id.toString());
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.jeanchampemont.wtfdyum.service.PrincipalService#saveUpdate(com.
      * jeanchampemont.wtfdyum.dto.User)
      */
     @Override

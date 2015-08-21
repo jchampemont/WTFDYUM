@@ -18,26 +18,33 @@
 package com.jeanchampemont.wtfdyum.service;
 
 import static org.assertj.core.api.StrictAssertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.assertj.core.api.Assertions;
+import org.dozer.Mapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
+import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.service.impl.TwitterServiceImpl;
+import com.jeanchampemont.wtfdyum.utils.SessionManager;
 import com.jeanchampemont.wtfdyum.utils.TwitterFactoryHolder;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import twitter4j.User;
+import twitter4j.api.UsersResources;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
@@ -54,12 +61,20 @@ public class TwitterServiceTest {
     /** The Constant DEFAULT_PATH. */
     private static final String DEFAULT_PATH = "default/path";
 
+    /** The mapper. */
+    @Autowired
+    private Mapper mapper;
+
     /** The system under test. */
     private TwitterService sut;
 
     /** The twitter mock. */
     @Mock
     private Twitter twitter;
+
+    /** The users resources. */
+    @Mock
+    private UsersResources usersResources;
 
     /** The twitter factory. */
     @Mock
@@ -72,7 +87,7 @@ public class TwitterServiceTest {
     public void ainit() {
         initMocks(this);
         when(twitterFactory.getInstance()).thenReturn(twitter);
-        sut = new TwitterServiceImpl(twitterFactory, DEFAULT_BASE_URL, "appId", "appSecret");
+        sut = new TwitterServiceImpl(twitterFactory, mapper, DEFAULT_BASE_URL, "appId", "appSecret");
     }
 
     /**
@@ -114,6 +129,36 @@ public class TwitterServiceTest {
         sut.completeSignin(paramToken, verifier);
 
         Assertions.fail("Exception not throwned");
+    }
+
+    /**
+     * Gets the user test.
+     *
+     * @return the user test
+     * @throws Exception the exception
+     */
+    @Test
+    public void getUserTest() throws Exception {
+        SessionManager.setPrincipal(new Principal(1L, "", ""));
+
+        final User userMock = mock(User.class);
+
+        when(twitter.users()).thenReturn(usersResources);
+        when(usersResources.showUser(123L)).thenReturn(userMock);
+        when(userMock.getId()).thenReturn(123L);
+        when(userMock.getName()).thenReturn("name");
+        when(userMock.getScreenName()).thenReturn("screenName");
+        when(userMock.getProfileImageURL()).thenReturn("profile img url");
+        when(userMock.getURL()).thenReturn("user url");
+
+        final com.jeanchampemont.wtfdyum.dto.User result = sut.getUser(123L);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(123L);
+        assertThat(result.getName()).isEqualTo("name");
+        assertThat(result.getScreenName()).isEqualTo("screenName");
+        assertThat(result.getProfileImageURL()).isEqualTo("profile img url");
+        assertThat(result.getURL()).isEqualTo("user url");
     }
 
     /**

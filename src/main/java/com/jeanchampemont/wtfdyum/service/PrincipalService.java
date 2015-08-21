@@ -20,9 +20,17 @@ package com.jeanchampemont.wtfdyum.service;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 
 /**
- * The Interface UserService.
+ * The Interface PrincipalService.
  */
-public interface UserService {
+public interface PrincipalService {
+
+    /**
+     * Gets the principal.
+     *
+     * @param id the id
+     * @return the principal
+     */
+    Principal get(Long id);
 
     /**
      * Save update.

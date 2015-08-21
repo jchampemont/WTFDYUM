@@ -25,6 +25,8 @@
         <twitter4j.version>4.0.4</twitter4j.version>
         
         <assertj.version>3.1.0</assertj.version>
+        
+        <jacoco.version>0.7.5.201505241946</jacoco.version>
     </properties>
 
     <dependencies>
@@ -116,13 +118,9 @@
                         <version>3.2.0</version>
                     </plugin>
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>cobertura-maven-plugin</artifactId>
-                        <version>2.6</version>
-                        <configuration>
-                            <format>xml</format>
-                            <maxmem>256m</maxmem>
-                        </configuration>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>${jacoco.version}</version>
                     </plugin>
                 </plugins>
             </build>

@@ -34,7 +34,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
-import com.jeanchampemont.wtfdyum.dto.User;
+import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.service.impl.UserServiceImpl;
 
 /**
@@ -69,7 +69,7 @@ public class UserServiceTest {
      */
     @Test(expected = NullPointerException.class)
     public void saveUpdateNullUserIdTest() {
-        sut.saveUpdate(new User(null, "lkdf", "sec"));
+        sut.saveUpdate(new Principal(null, "lkdf", "sec"));
     }
 
     /**
@@ -85,7 +85,7 @@ public class UserServiceTest {
      */
     @Test
     public void saveUpdateTest() {
-        final User u = new User(12L, "tokdf", "secrrr");
+        final Principal u = new Principal(12L, "tokdf", "secrrr");
 
         when(redisTemplate.opsForValue()).thenReturn(valueOperations);
 

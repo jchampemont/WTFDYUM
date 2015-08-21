@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.jeanchampemont.wtfdyum.dto.User;
+import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
 import com.jeanchampemont.wtfdyum.utils.SessionProvider;
 
@@ -59,7 +59,7 @@ public class SessionAuthenticationServiceImpl implements AuthenticationService {
      * .jeanchampemont.wtfdyum.dto.User)
      */
     @Override
-    public Long authenticate(final User user) {
+    public Long authenticate(final Principal user) {
         Preconditions.checkNotNull(user);
         Preconditions.checkNotNull(user.getUserId());
 

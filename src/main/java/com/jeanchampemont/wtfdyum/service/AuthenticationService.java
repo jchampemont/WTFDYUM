@@ -18,7 +18,7 @@
 package com.jeanchampemont.wtfdyum.service;
 
 import com.google.common.base.Optional;
-import com.jeanchampemont.wtfdyum.dto.User;
+import com.jeanchampemont.wtfdyum.dto.Principal;
 
 /**
  * The Interface AuthenticationService.
@@ -32,7 +32,7 @@ public interface AuthenticationService {
      *            the user
      * @return the connected userId
      */
-    Long authenticate(User user);
+    Long authenticate(Principal user);
 
     /**
      * Gets the current user id.

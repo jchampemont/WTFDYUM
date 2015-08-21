@@ -36,7 +36,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.google.common.base.Optional;
 import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
-import com.jeanchampemont.wtfdyum.dto.User;
+import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.service.impl.SessionAuthenticationServiceImpl;
 import com.jeanchampemont.wtfdyum.utils.SessionProvider;
 
@@ -73,7 +73,7 @@ public class AuthenticationServiceTest {
      */
     @Test(expected = NullPointerException.class)
     public void authenticateNullUserIdTest() {
-        sut.authenticate(new User(null, "toke", "secrt"));
+        sut.authenticate(new Principal(null, "toke", "secrt"));
     }
 
     /**
@@ -89,7 +89,7 @@ public class AuthenticationServiceTest {
      */
     @Test
     public void authenticateTest() {
-        sut.authenticate(new User(120L, "tok", "secret"));
+        sut.authenticate(new Principal(120L, "tok", "secret"));
 
         verify(session, times(1)).setAttribute(anyString(), eq(120L));
     }

@@ -24,7 +24,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.google.common.base.Preconditions;
-import com.jeanchampemont.wtfdyum.dto.User;
+import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.service.UserService;
 
 /**
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
      * jeanchampemont.wtfdyum.dto.User)
      */
     @Override
-    public void saveUpdate(final User user) {
+    public void saveUpdate(final Principal user) {
         Preconditions.checkNotNull(user);
         Preconditions.checkNotNull(user.getUserId());
 

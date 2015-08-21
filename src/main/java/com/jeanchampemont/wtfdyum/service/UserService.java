@@ -17,7 +17,7 @@
  */
 package com.jeanchampemont.wtfdyum.service;
 
-import com.jeanchampemont.wtfdyum.dto.User;
+import com.jeanchampemont.wtfdyum.dto.Principal;
 
 /**
  * The Interface UserService.
@@ -30,5 +30,5 @@ public interface UserService {
      * @param user
      *            the user
      */
-    void saveUpdate(User user);
+    void saveUpdate(Principal user);
 }

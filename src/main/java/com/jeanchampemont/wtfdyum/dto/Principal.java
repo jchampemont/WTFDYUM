@@ -20,9 +20,9 @@ package com.jeanchampemont.wtfdyum.dto;
 import java.io.Serializable;
 
 /**
- * The Class User.
+ * The Class Principal.
  */
-public class User implements Serializable {
+public class Principal implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -5823100334022627449L;
@@ -30,18 +30,21 @@ public class User implements Serializable {
     /**
      * Instantiates a new user.
      */
-    public User() {
+    public Principal() {
         //left deliberately empty
     }
 
     /**
-     * Instantiates a new user.
+     * Instantiates a new principal.
      *
-     * @param userId the user id
-     * @param token the token
-     * @param tokenSecret the token secret
+     * @param userId
+     *            the user id
+     * @param token
+     *            the token
+     * @param tokenSecret
+     *            the token secret
      */
-    public User(final Long userId, final String token, final String tokenSecret) {
+    public Principal(final Long userId, final String token, final String tokenSecret) {
         this.userId = userId;
         this.token = token;
         this.tokenSecret = tokenSecret;
@@ -70,7 +73,7 @@ public class User implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final User other = (User) obj;
+        final Principal other = (Principal) obj;
         if (token == null) {
             if (other.token != null) {
                 return false;

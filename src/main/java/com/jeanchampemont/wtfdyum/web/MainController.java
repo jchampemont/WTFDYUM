@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.jeanchampemont.wtfdyum.dto.User;
+import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
 import com.jeanchampemont.wtfdyum.service.UserService;
@@ -108,7 +108,7 @@ public class MainController {
 
         final AccessToken accessToken = twitterService.completeSignin(requestToken, verifier);
 
-        final User user = new User(accessToken.getUserId(), accessToken.getToken(), accessToken.getTokenSecret());
+        final Principal user = new Principal(accessToken.getUserId(), accessToken.getToken(), accessToken.getTokenSecret());
         userService.saveUpdate(user);
         authenticationService.authenticate(user);
 

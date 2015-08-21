@@ -38,7 +38,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.jeanchampemont.wtfdyum.dto.User;
+import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
 import com.jeanchampemont.wtfdyum.service.UserService;
@@ -120,7 +120,7 @@ public class MainControllerTest extends AbstractControllerTest {
         mockMvc.perform(get("/signin/callback?oauth_verifier=42").session((MockHttpSession) session))
                 .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/user"));
 
-        final User builtUser = new User(1203L, "TOken", "secret");
+        final Principal builtUser = new Principal(1203L, "TOken", "secret");
 
         verify(userService, times(1)).saveUpdate(builtUser);
         verify(authenticationService, times(1)).authenticate(builtUser);

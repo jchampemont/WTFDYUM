@@ -17,6 +17,7 @@
  */
 package com.jeanchampemont.wtfdyum.service;
 
+import static org.assertj.core.api.StrictAssertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -62,6 +63,34 @@ public class PrincipalServiceTest {
     public void ainit() {
         initMocks(this);
         sut = new PrincipalServiceImpl(redisTemplate);
+    }
+
+    /**
+     * Gets the test.
+     *
+     * @return the test
+     */
+    @Test
+    public void getTest() {
+        final Principal u = new Principal(12L, "tokdf", "secrrr");
+
+        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        when(valueOperations.get("190")).thenReturn(u);
+
+        final Principal principal = sut.get(190L);
+
+        assertThat(principal).isNotNull();
+        assertThat(principal).isEqualTo(u);
+    }
+
+    /**
+     * Gets the test null id.
+     *
+     * @return the test null id
+     */
+    @Test(expected = NullPointerException.class)
+    public void getTestNullId() {
+        sut.get(null);
     }
 
     /**

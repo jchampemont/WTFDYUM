@@ -129,6 +129,12 @@
                                 </goals>
                             </execution>
                         </executions>
+                        <configuration>
+                            <excludes>
+                                <exclude>com/jeanchampemont/wtfdyum/utils/*</exclude>
+                                <exclude>com/jeanchampemont/wtfdyum/WTFDYUMApplication.class</exclude>
+                            </excludes>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>

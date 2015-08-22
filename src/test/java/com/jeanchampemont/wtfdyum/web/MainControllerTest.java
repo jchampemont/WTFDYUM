@@ -38,10 +38,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.jeanchampemont.wtfdyum.dto.Event;
+import com.jeanchampemont.wtfdyum.dto.EventType;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
-import com.jeanchampemont.wtfdyum.service.TwitterService;
 import com.jeanchampemont.wtfdyum.service.PrincipalService;
+import com.jeanchampemont.wtfdyum.service.TwitterService;
+import com.jeanchampemont.wtfdyum.service.UserService;
 
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
@@ -63,6 +66,10 @@ public class MainControllerTest extends AbstractControllerTest {
     /** The authentication service. */
     @Mock
     private AuthenticationService authenticationService;
+
+    /** The user service. */
+    @Mock
+    private UserService userService;
 
     /** The main controller. */
     @InjectMocks
@@ -104,6 +111,7 @@ public class MainControllerTest extends AbstractControllerTest {
         final RequestToken returnedRequestToken = new RequestToken("my_super_token", "");
 
         when(twitterService.signin(anyString())).thenReturn(returnedRequestToken);
+        when(principalService.get(1203L)).thenReturn(null);
 
         final HttpSession session = mockMvc.perform(get("/signin")).andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("http*://**/**my_super_token")).andReturn().getRequest().getSession();
@@ -118,10 +126,11 @@ public class MainControllerTest extends AbstractControllerTest {
         when(twitterService.completeSignin(returnedRequestToken, "42")).thenReturn(returnedAccessToken);
 
         mockMvc.perform(get("/signin/callback?oauth_verifier=42").session((MockHttpSession) session))
-                .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/user"));
+        .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/user"));
 
         final Principal builtUser = new Principal(1203L, "TOken", "secret");
 
+        verify(userService, times(1)).addEvent(1203L, new Event(EventType.REGISTRATION, null));
         verify(principalService, times(1)).saveUpdate(builtUser);
         verify(authenticationService, times(1)).authenticate(builtUser);
     }

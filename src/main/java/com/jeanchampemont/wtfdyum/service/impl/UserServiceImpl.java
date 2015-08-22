@@ -17,6 +17,8 @@
  */
 package com.jeanchampemont.wtfdyum.service.impl;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -59,10 +61,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     public UserServiceImpl(final RedisTemplate<String, Event> eventRedisTemplate,
             final RedisTemplate<String, Feature> featureRedisTemplate,
-            final RedisTemplate<String, Long> longRedisTemplate) {
+            final RedisTemplate<String, Long> longRedisTemplate, final Clock clock) {
         this.eventRedisTemplate = eventRedisTemplate;
         this.featureRedisTemplate = featureRedisTemplate;
         this.longRedisTemplate = longRedisTemplate;
+        this.clock = clock;
     }
 
     /** The event redis template. */
@@ -74,6 +77,9 @@ public class UserServiceImpl implements UserService {
     /** The long redis template. */
     private final RedisTemplate<String, Long> longRedisTemplate;
 
+    /** The clock. */
+    private final Clock clock;
+
     /*
      * (non-Javadoc)
      *
@@ -83,6 +89,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void addEvent(final Long userId, final Event event) {
+        event.setCreationDateTime(LocalDateTime.now(clock));
         eventRedisTemplate.opsForList().leftPush(eventsKey(userId), event);
     }
 
@@ -154,7 +161,7 @@ public class UserServiceImpl implements UserService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.jeanchampemont.wtfdyum.service.UserService#saveFollowers(java.lang.
      * Long, java.util.Set)

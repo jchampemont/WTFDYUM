@@ -17,6 +17,9 @@
  */
 package com.jeanchampemont.wtfdyum.dto;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+
 /**
  * The Class Event.
  */
@@ -48,6 +51,46 @@ public class Event {
     /** The additional data. */
     private String additionalData;
 
+    /** The creation date time. */
+    private LocalDateTime creationDateTime;
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Event other = (Event) obj;
+        if (additionalData == null) {
+            if (other.additionalData != null) {
+                return false;
+            }
+        } else if (!additionalData.equals(other.additionalData)) {
+            return false;
+        }
+        if (creationDateTime == null) {
+            if (other.creationDateTime != null) {
+                return false;
+            }
+        } else if (!creationDateTime.equals(other.creationDateTime)) {
+            return false;
+        }
+        if (type != other.type) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Gets the additional data.
      *
@@ -55,6 +98,15 @@ public class Event {
      */
     public String getAdditionalData() {
         return additionalData;
+    }
+
+    /**
+     * Gets the creation date time.
+     *
+     * @return the creation date time
+     */
+    public LocalDateTime getCreationDateTime() {
+        return creationDateTime;
     }
 
     /**
@@ -66,6 +118,16 @@ public class Event {
         return type;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.type, this.creationDateTime, this.additionalData);
+    }
+
     /**
      * Sets the additional data.
      *
@@ -74,6 +136,16 @@ public class Event {
      */
     public void setAdditionalData(final String additionalData) {
         this.additionalData = additionalData;
+    }
+
+    /**
+     * Sets the creation date time.
+     *
+     * @param creationDateTime
+     *            the new creation date time
+     */
+    public void setCreationDateTime(final LocalDateTime creationDateTime) {
+        this.creationDateTime = creationDateTime;
     }
 
     /**

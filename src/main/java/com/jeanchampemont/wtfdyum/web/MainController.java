@@ -26,10 +26,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.jeanchampemont.wtfdyum.dto.Event;
+import com.jeanchampemont.wtfdyum.dto.EventType;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
-import com.jeanchampemont.wtfdyum.service.TwitterService;
 import com.jeanchampemont.wtfdyum.service.PrincipalService;
+import com.jeanchampemont.wtfdyum.service.TwitterService;
+import com.jeanchampemont.wtfdyum.service.UserService;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 
 import twitter4j.auth.AccessToken;
@@ -57,6 +60,10 @@ public class MainController {
     /** The authentication service. */
     @Autowired
     private AuthenticationService authenticationService;
+
+    /** The user service. */
+    @Autowired
+    private UserService userService;
 
     /**
      * Show the index page.
@@ -107,6 +114,10 @@ public class MainController {
         request.getSession().removeAttribute(SESSION_REQUEST_TOKEN);
 
         final AccessToken accessToken = twitterService.completeSignin(requestToken, verifier);
+
+        if (principalService.get(accessToken.getUserId()) == null) {
+            userService.addEvent(accessToken.getUserId(), new Event(EventType.REGISTRATION, null));
+        }
 
         final Principal user = new Principal(accessToken.getUserId(), accessToken.getToken(), accessToken.getTokenSecret());
         principalService.saveUpdate(user);

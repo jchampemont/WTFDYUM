@@ -17,6 +17,8 @@
  */
 package com.jeanchampemont.wtfdyum.dto;
 
+import java.util.Objects;
+
 /**
  * The Class Principal.
  */
@@ -26,7 +28,7 @@ public class Principal {
      * Instantiates a new user.
      */
     public Principal() {
-        //left deliberately empty
+        // left deliberately empty
     }
 
     /**
@@ -54,7 +56,9 @@ public class Principal {
     /** The token secret. */
     private String tokenSecret;
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -120,17 +124,14 @@ public class Principal {
         return userId;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((token == null) ? 0 : token.hashCode());
-        result = prime * result + ((tokenSecret == null) ? 0 : tokenSecret.hashCode());
-        result = prime * result + ((userId == null) ? 0 : userId.hashCode());
-        return result;
+        return Objects.hash(token, tokenSecret, userId);
     }
 
     /**

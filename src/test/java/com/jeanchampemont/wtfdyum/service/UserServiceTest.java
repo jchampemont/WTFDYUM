@@ -23,6 +23,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -78,13 +82,15 @@ public class UserServiceTest {
     @Mock
     private ListOperations<String, Event> eventListOperations;
 
+    private final Clock clock = Clock.fixed(Instant.parse("2007-12-03T10:15:30.00Z"), ZoneId.of("Z"));
+
     /**
      * Inits the test.
      */
     @Before
     public void _init() {
         initMocks(this);
-        sut = new UserServiceImpl(eventRedisTemplate, featureRedisTemplate, longRedisTemplate);
+        sut = new UserServiceImpl(eventRedisTemplate, featureRedisTemplate, longRedisTemplate, clock);
     }
 
     /**
@@ -99,6 +105,7 @@ public class UserServiceTest {
         sut.addEvent(31L, event);
 
         verify(eventListOperations, times(1)).leftPush("EVENTS_31", event);
+        assertThat(event.getCreationDateTime()).isEqualTo(LocalDateTime.now(clock));
     }
 
     /**

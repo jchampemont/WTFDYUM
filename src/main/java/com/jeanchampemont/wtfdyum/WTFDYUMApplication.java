@@ -17,8 +17,11 @@
  */
 package com.jeanchampemont.wtfdyum;
 
+import java.time.Clock;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 /**
  * Spring Application Class.
@@ -27,6 +30,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 public class WTFDYUMApplication {
+
+    /**
+     * Clock.
+     *
+     * @return the clock
+     */
+    @Bean
+    public Clock clock() {
+        return Clock.systemDefaultZone();
+    }
+
     /**
      * Main.
      *

@@ -17,8 +17,6 @@
  */
 package com.jeanchampemont.wtfdyum.service.impl;
 
-import java.io.Serializable;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -38,15 +36,23 @@ public class PrincipalServiceImpl implements PrincipalService {
     /**
      * Instantiates a new user service impl.
      *
-     * @param redisTemplate the redis template
+     * @param principalRedisTemplate
+     *            the principal redis template
+     * @param longRedisTemplate
+     *            the long redis template
      */
     @Autowired
-    public PrincipalServiceImpl(final RedisTemplate<String, Serializable> redisTemplate) {
-        this.redisTemplate = redisTemplate;
+    public PrincipalServiceImpl(final RedisTemplate<String, Principal> principalRedisTemplate,
+            final RedisTemplate<String, Long> longRedisTemplate) {
+        this.principalRedisTemplate = principalRedisTemplate;
+        this.longRedisTemplate = longRedisTemplate;
     }
 
-    /** The redis template. */
-    private final RedisTemplate<String, Serializable> redisTemplate;
+    /** The principal redis template. */
+    private final RedisTemplate<String, Principal> principalRedisTemplate;
+
+    /** The long redis template. */
+    private final RedisTemplate<String, Long> longRedisTemplate;
 
     /*
      * (non-Javadoc)
@@ -57,7 +63,7 @@ public class PrincipalServiceImpl implements PrincipalService {
     @Override
     public Principal get(final Long id) {
         Preconditions.checkNotNull(id);
-        return (Principal) redisTemplate.opsForValue().get(id.toString());
+        return principalRedisTemplate.opsForValue().get(id.toString());
     }
 
     /*
@@ -71,8 +77,8 @@ public class PrincipalServiceImpl implements PrincipalService {
         Preconditions.checkNotNull(user);
         Preconditions.checkNotNull(user.getUserId());
 
-        redisTemplate.opsForValue().set(user.getUserId().toString(), user);
-        redisTemplate.opsForSet().add(MEMBERS_KEY, user.getUserId());
+        principalRedisTemplate.opsForValue().set(user.getUserId().toString(), user);
+        longRedisTemplate.opsForSet().add(MEMBERS_KEY, user.getUserId());
     }
 
 }

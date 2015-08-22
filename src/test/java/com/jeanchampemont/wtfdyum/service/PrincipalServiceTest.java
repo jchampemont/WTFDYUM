@@ -23,8 +23,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.io.Serializable;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,17 +47,21 @@ public class PrincipalServiceTest {
     /** The system under test. */
     private PrincipalService sut;
 
-    /** The redis template mock. */
+    /** The long redis template mock. */
     @Mock
-    private RedisTemplate<String, Serializable> redisTemplate;
+    private RedisTemplate<String, Long> longRedisTemplate;
+
+    /** The principal redis template mock. */
+    @Mock
+    private RedisTemplate<String, Principal> principalRedisTemplate;
 
     /** The value operations. */
     @Mock
-    private ValueOperations<String, Serializable> valueOperations;
+    private ValueOperations<String, Principal> valueOperations;
 
     /** The Set operations. */
     @Mock
-    private SetOperations<String, Serializable> setOperations;
+    private SetOperations<String, Long> setOperations;
 
     /**
      * Inits the test.
@@ -67,7 +69,7 @@ public class PrincipalServiceTest {
     @Before
     public void ainit() {
         initMocks(this);
-        sut = new PrincipalServiceImpl(redisTemplate);
+        sut = new PrincipalServiceImpl(principalRedisTemplate, longRedisTemplate);
     }
 
     /**
@@ -79,7 +81,7 @@ public class PrincipalServiceTest {
     public void getTest() {
         final Principal u = new Principal(12L, "tokdf", "secrrr");
 
-        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        when(principalRedisTemplate.opsForValue()).thenReturn(valueOperations);
         when(valueOperations.get("190")).thenReturn(u);
 
         final Principal principal = sut.get(190L);
@@ -121,8 +123,8 @@ public class PrincipalServiceTest {
     public void saveUpdateTest() {
         final Principal u = new Principal(12L, "tokdf", "secrrr");
 
-        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
-        when(redisTemplate.opsForSet()).thenReturn(setOperations);
+        when(principalRedisTemplate.opsForValue()).thenReturn(valueOperations);
+        when(longRedisTemplate.opsForSet()).thenReturn(setOperations);
 
         sut.saveUpdate(u);
 

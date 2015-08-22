@@ -17,8 +17,6 @@
  */
 package com.jeanchampemont.wtfdyum.config;
 
-import java.io.Serializable;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,8 +24,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import com.jeanchampemont.wtfdyum.dto.Principal;
+import com.jeanchampemont.wtfdyum.utils.LongRedisSerializer;
 
 /**
  * The Class RedisConfiguration.
@@ -37,6 +38,36 @@ public class RedisConfiguration {
     /** The env. */
     @Autowired
     private Environment env;
+
+    /**
+     * Long redis template.
+     *
+     * @return the redis template
+     */
+    @Bean
+    public RedisTemplate<String, Long> longRedisTemplate() {
+        final RedisTemplate<String, Long> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory());
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new LongRedisSerializer());
+        template.setValueSerializer(new LongRedisSerializer());
+        return template;
+    }
+
+    /**
+     * Principal redis template.
+     *
+     * @return the redis template
+     */
+    @Bean
+    public RedisTemplate<String, Principal> principalRedisTemplate() {
+        final RedisTemplate<String, Principal> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory());
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new Jackson2JsonRedisSerializer<>(Principal.class));
+        template.setValueSerializer(new Jackson2JsonRedisSerializer<>(Principal.class));
+        return template;
+    }
 
     /**
      * Redis connection factory.
@@ -50,20 +81,5 @@ public class RedisConfiguration {
         jedisConnectionFactory.setPort(env.getProperty("wtfdyum.redis.port", Integer.class));
         jedisConnectionFactory.setDatabase(env.getProperty("wtfdyum.redis.database", Integer.class));
         return jedisConnectionFactory;
-    }
-
-    /**
-     * Serializable redis template.
-     *
-     * @return the redis template
-     */
-    @Bean
-    public RedisTemplate<String, Serializable> serializableRedisTemplate() {
-        final RedisTemplate<String, Serializable> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory());
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setHashValueSerializer(new JdkSerializationRedisSerializer());
-        template.setValueSerializer(new JdkSerializationRedisSerializer());
-        return template;
     }
 }

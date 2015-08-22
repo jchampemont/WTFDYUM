@@ -27,7 +27,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import com.jeanchampemont.wtfdyum.dto.Event;
+import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.Principal;
+import com.jeanchampemont.wtfdyum.utils.EnumRedisSerializer;
 import com.jeanchampemont.wtfdyum.utils.LongRedisSerializer;
 
 /**
@@ -38,6 +41,31 @@ public class RedisConfiguration {
     /** The env. */
     @Autowired
     private Environment env;
+
+    /**
+     * Event redis template.
+     *
+     * @return the redis template
+     */
+    @Bean
+    public RedisTemplate<String, Event> eventRedisTemplate() {
+        final RedisTemplate<String, Event> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory());
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new Jackson2JsonRedisSerializer<>(Event.class));
+        template.setValueSerializer(new Jackson2JsonRedisSerializer<>(Event.class));
+        return template;
+    }
+
+    @Bean
+    public RedisTemplate<String, Feature> featureRedisTemplate() {
+        final RedisTemplate<String, Feature> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory());
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new EnumRedisSerializer<>(Feature.class));
+        template.setValueSerializer(new EnumRedisSerializer<>(Feature.class));
+        return template;
+    }
 
     /**
      * Long redis template.

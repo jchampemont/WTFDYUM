@@ -35,8 +35,31 @@ public class WTFDYUMException extends Exception {
      * @param e
      *            the wrapped exception
      */
-    public WTFDYUMException(final Exception e) {
+    public WTFDYUMException(final Exception e, final WTFDYUMExceptionType type) {
         super(e);
+        this.type = type;
+    }
+
+    /**
+     * Instantiates a new WTFDYUM exception.
+     *
+     * @param exceptionType
+     *            the exception type
+     */
+    public WTFDYUMException(final WTFDYUMExceptionType type) {
+        this.type = type;
+    }
+
+    /** The type. */
+    private final WTFDYUMExceptionType type;
+
+    /**
+     * Gets the type.
+     *
+     * @return the type
+     */
+    public WTFDYUMExceptionType getType() {
+        return type;
     }
 
 }

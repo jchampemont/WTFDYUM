@@ -24,6 +24,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.Optional;
+import java.util.Set;
+
 import org.assertj.core.api.Assertions;
 import org.dozer.Mapper;
 import org.junit.Before;
@@ -40,7 +43,10 @@ import com.jeanchampemont.wtfdyum.service.impl.TwitterServiceImpl;
 import com.jeanchampemont.wtfdyum.utils.SessionManager;
 import com.jeanchampemont.wtfdyum.utils.TwitterFactoryHolder;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
+import com.jeanchampemont.wtfdyum.utils.WTFDYUMExceptionType;
 
+import twitter4j.IDs;
+import twitter4j.RateLimitStatus;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
@@ -132,6 +138,112 @@ public class TwitterServiceTest {
     }
 
     /**
+     * Gets the followers test.
+     *
+     * @return the followers test
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void getFollowersTest() throws Exception {
+        final Optional<Principal> principal = Optional.of(new Principal(123L, "toktok", "secsecret"));
+        final IDs idsMock = mock(IDs.class);
+        when(twitter.getFollowersIDs(444L, -1)).thenReturn(idsMock);
+
+        final RateLimitStatus rateLimitStatusMock = mock(RateLimitStatus.class);
+        when(idsMock.getRateLimitStatus()).thenReturn(rateLimitStatusMock);
+
+        when(rateLimitStatusMock.getRemaining()).thenReturn(1);
+
+        when(idsMock.getIDs()).thenReturn(new long[]{12L, 34L, 44L, 42L, 42L, 999L});
+
+        final Set<Long> followers = sut.getFollowers(444L, principal);
+
+        assertThat(followers).isNotNull();
+        assertThat(followers.contains(12L));
+        assertThat(followers.contains(34L));
+        assertThat(followers.contains(44L));
+        assertThat(followers.contains(42L));
+        assertThat(followers.contains(999L));
+
+        verify(twitter, times(1)).setOAuthAccessToken(new AccessToken("toktok", "secsecret"));
+    }
+
+    /**
+     * Gets the followers test without principal.
+     *
+     * @return the followers test without principal
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void getFollowersTestWithoutPrincipal() throws Exception {
+        final IDs idsMock = mock(IDs.class);
+        when(twitter.getFollowersIDs(444L, -1)).thenReturn(idsMock);
+
+        final RateLimitStatus rateLimitStatusMock = mock(RateLimitStatus.class);
+        when(idsMock.getRateLimitStatus()).thenReturn(rateLimitStatusMock);
+
+        when(rateLimitStatusMock.getRemaining()).thenReturn(1);
+
+        when(idsMock.getIDs()).thenReturn(new long[]{12L, 34L, 44L, 42L, 42L, 999L});
+
+        final Set<Long> followers = sut.getFollowers(444L, Optional.<Principal> empty());
+
+        assertThat(followers).isNotNull();
+        assertThat(followers.contains(12L));
+        assertThat(followers.contains(34L));
+        assertThat(followers.contains(44L));
+        assertThat(followers.contains(42L));
+        assertThat(followers.contains(999L));
+    }
+
+    /**
+     * Gets the followers test without principal rate limit.
+     *
+     * @return the followers test without principal rate limit
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void getFollowersTestWithoutPrincipalRateLimit() throws Exception {
+        final IDs idsMock = mock(IDs.class);
+        when(twitter.getFollowersIDs(444L, -1)).thenReturn(idsMock);
+
+        final RateLimitStatus rateLimitStatusMock = mock(RateLimitStatus.class);
+        when(idsMock.getRateLimitStatus()).thenReturn(rateLimitStatusMock);
+
+        when(rateLimitStatusMock.getRemaining()).thenReturn(0);
+
+        try {
+            sut.getFollowers(444L, Optional.<Principal> empty());
+            Assertions.failBecauseExceptionWasNotThrown(WTFDYUMException.class);
+        } catch (final WTFDYUMException e) {
+            assertThat(e.getType()).isEqualTo(WTFDYUMExceptionType.GET_FOLLOWERS_RATE_LIMIT_EXCEEDED);
+        }
+    }
+
+    /**
+     * Gets the followers test without principal twitter exception.
+     *
+     * @return the followers test without principal twitter exception
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void getFollowersTestWithoutPrincipalTwitterException() throws Exception {
+        when(twitter.getFollowersIDs(444L, -1)).thenThrow(new TwitterException("msg"));
+
+        try {
+            sut.getFollowers(444L, Optional.<Principal> empty());
+            Assertions.failBecauseExceptionWasNotThrown(WTFDYUMException.class);
+        } catch (final WTFDYUMException e) {
+            assertThat(e.getType()).isEqualTo(WTFDYUMExceptionType.TWITTER_ERROR);
+        }
+
+    }
+
+    /**
      * Gets the user test.
      *
      * @return the user test
@@ -171,8 +283,6 @@ public class TwitterServiceTest {
     @Test(expected = WTFDYUMException.class)
     public void getUserTestException() throws Exception {
         SessionManager.setPrincipal(new Principal(1L, "", ""));
-
-        final User userMock = mock(User.class);
 
         when(twitter.users()).thenReturn(usersResources);
         when(usersResources.showUser(123L)).thenThrow(new TwitterException("msg"));

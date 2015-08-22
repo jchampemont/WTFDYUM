@@ -17,18 +17,28 @@
  */
 package com.jeanchampemont.wtfdyum.service.impl;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.google.common.base.Preconditions;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.dto.User;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
 import com.jeanchampemont.wtfdyum.utils.SessionManager;
 import com.jeanchampemont.wtfdyum.utils.TwitterFactoryHolder;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
+import com.jeanchampemont.wtfdyum.utils.WTFDYUMExceptionType;
 
+import twitter4j.IDs;
+import twitter4j.RateLimitStatus;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
@@ -55,8 +65,7 @@ public class TwitterServiceImpl implements TwitterService {
      *            the app secret
      */
     @Autowired
-    public TwitterServiceImpl(final TwitterFactoryHolder twitterFactory,
-            final Mapper mapper,
+    public TwitterServiceImpl(final TwitterFactoryHolder twitterFactory, final Mapper mapper,
             @Value("${wtfdyum.server-base-url}") final String baseUrl,
             @Value("${wtfdyum.twitter.appId}") final String appId,
             @Value("${wtfdyum.twitter.appSecret}") final String appSecret) {
@@ -94,7 +103,7 @@ public class TwitterServiceImpl implements TwitterService {
         try {
             token = twitter().getOAuthAccessToken(requestToken, verifier);
         } catch (final TwitterException e) {
-            throw new WTFDYUMException(e);
+            throw new WTFDYUMException(e, WTFDYUMExceptionType.TWITTER_ERROR);
         }
         return token;
     }
@@ -102,6 +111,41 @@ public class TwitterServiceImpl implements TwitterService {
     /*
      * (non-Javadoc)
      * 
+     * @see
+     * com.jeanchampemont.wtfdyum.service.TwitterService#getFollowers(java.lang.
+     * Long, java.util.Optional)
+     */
+    @Override
+    public Set<Long> getFollowers(final Long userId, final Optional<Principal> principal) throws WTFDYUMException {
+        Preconditions.checkNotNull(userId);
+
+        final Twitter twitter = principal.isPresent() ? twitter(principal.get()) : twitter();
+
+        final Set<Long> result = new HashSet<>();
+        try {
+            IDs followersIDs = null;
+            final long cursor = -1;
+            do {
+                followersIDs = twitter.getFollowersIDs(userId, cursor);
+
+                checkRateLimitStatus(followersIDs.getRateLimitStatus(),
+                        WTFDYUMExceptionType.GET_FOLLOWERS_RATE_LIMIT_EXCEEDED);
+
+                final Set<Long> currentFollowers = Arrays.stream(followersIDs.getIDs()).boxed()
+                        .collect(Collectors.toCollection(() -> new HashSet<>()));
+
+                result.addAll(currentFollowers);
+            } while (followersIDs.hasNext());
+
+        } catch (final TwitterException e) {
+            throw new WTFDYUMException(e, WTFDYUMExceptionType.TWITTER_ERROR);
+        }
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
      * @see
      * com.jeanchampemont.wtfdyum.service.TwitterService#getUser(java.lang.Long)
      */
@@ -112,7 +156,7 @@ public class TwitterServiceImpl implements TwitterService {
             final twitter4j.User user = twitter(SessionManager.getPrincipal()).users().showUser(id);
             result = mapper.map(user, User.class);
         } catch (final TwitterException e) {
-            throw new WTFDYUMException(e);
+            throw new WTFDYUMException(e, WTFDYUMExceptionType.TWITTER_ERROR);
         }
         return result;
     }
@@ -129,9 +173,26 @@ public class TwitterServiceImpl implements TwitterService {
         try {
             token = twitter().getOAuthRequestToken(new StringBuilder(baseUrl).append(path).toString());
         } catch (final TwitterException e) {
-            throw new WTFDYUMException(e);
+            throw new WTFDYUMException(e, WTFDYUMExceptionType.TWITTER_ERROR);
         }
         return token;
+    }
+
+    /**
+     * Check rate limit status.
+     *
+     * @param status
+     *            the status
+     * @param exceptionType
+     *            the exception type
+     * @throws WTFDYUMException
+     *             the WTFDYUM exception
+     */
+    private void checkRateLimitStatus(final RateLimitStatus status, final WTFDYUMExceptionType exceptionType)
+            throws WTFDYUMException {
+        if (status.getRemaining() == 0) {
+            throw new WTFDYUMException(exceptionType);
+        }
     }
 
     /**
@@ -153,8 +214,7 @@ public class TwitterServiceImpl implements TwitterService {
      * @return the twitter
      */
     private Twitter twitter(final Principal principal) {
-        final Twitter instance = twitterFactory.getInstance();
-        instance.setOAuthConsumer(appId, appSecret);
+        final Twitter instance = twitter();
         instance.setOAuthAccessToken(new AccessToken(principal.getToken(), principal.getTokenSecret()));
         return instance;
     }

@@ -17,6 +17,10 @@
  */
 package com.jeanchampemont.wtfdyum.service;
 
+import java.util.Optional;
+import java.util.Set;
+
+import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.dto.User;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 
@@ -43,12 +47,29 @@ public interface TwitterService {
     AccessToken completeSignin(RequestToken requestToken, String verifier) throws WTFDYUMException;
 
     /**
+     * Gets the followers of the specified userId.
+     *
+     * If the principal is present, the request is made on the behalf of
+     * principal. Else, the request is made on the behalf of the application
+     *
+     * @param userId
+     *            the user id
+     * @param principal
+     *            the principal
+     * @return the followers
+     * @throws WTFDYUMException
+     *             the WTFDYUM exception
+     */
+    Set<Long> getFollowers(Long userId, Optional<Principal> principal) throws WTFDYUMException;
+
+    /**
      * Gets the user.
      *
      * @param id
      *            the id
      * @return the user
      * @throws WTFDYUMException
+     *             the WTFDYUM exception
      */
     User getUser(Long id) throws WTFDYUMException;
 

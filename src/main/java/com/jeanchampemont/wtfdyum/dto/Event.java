@@ -17,15 +17,10 @@
  */
 package com.jeanchampemont.wtfdyum.dto;
 
-import java.io.Serializable;
-
 /**
  * The Class Event.
  */
-public class Event implements Serializable {
-
-    /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = 3209093493359737774L;
+public class Event {
 
     /**
      * Instantiates a new event.

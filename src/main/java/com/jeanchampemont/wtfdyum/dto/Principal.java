@@ -17,15 +17,10 @@
  */
 package com.jeanchampemont.wtfdyum.dto;
 
-import java.io.Serializable;
-
 /**
  * The Class Principal.
  */
-public class Principal implements Serializable {
-
-    /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = -5823100334022627449L;
+public class Principal {
 
     /**
      * Instantiates a new user.

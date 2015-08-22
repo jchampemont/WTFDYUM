@@ -23,22 +23,29 @@ package com.jeanchampemont.wtfdyum.dto;
 public enum EventType {
 
     /** The registration. */
-    REGISTRATION("You registered!"),
+    REGISTRATION("You registered!", EventSeverity.INFO),
 
     /** The unfollow. */
-    UNFOLLOW("%s stopped following you.");
+    UNFOLLOW("%s stopped following you.", EventSeverity.WARNING);
 
     /**
      * Instantiates a new event type.
      *
-     * @param message the message
+     * @param message
+     *            the message
+     * @param severity
+     *            the severity
      */
-    private EventType(final String message) {
+    private EventType(final String message, final EventSeverity severity) {
         this.message = message;
+        this.severity = severity;
     }
 
     /** The message. */
     private String message;
+
+    /** The severity. */
+    private EventSeverity severity;
 
     /**
      * Gets the message.
@@ -47,5 +54,14 @@ public enum EventType {
      */
     public String getMessage() {
         return message;
+    }
+
+    /**
+     * Gets the severity.
+     *
+     * @return the severity
+     */
+    public EventSeverity getSeverity() {
+        return severity;
     }
 }

@@ -33,6 +33,8 @@ import com.jeanchampemont.wtfdyum.service.PrincipalService;
 @Service
 public class PrincipalServiceImpl implements PrincipalService {
 
+    private static final String MEMBERS_KEY = "MEMBERS";
+
     /**
      * Instantiates a new user service impl.
      *
@@ -70,6 +72,7 @@ public class PrincipalServiceImpl implements PrincipalService {
         Preconditions.checkNotNull(user.getUserId());
 
         redisTemplate.opsForValue().set(user.getUserId().toString(), user);
+        redisTemplate.opsForSet().add(MEMBERS_KEY, user.getUserId());
     }
 
 }

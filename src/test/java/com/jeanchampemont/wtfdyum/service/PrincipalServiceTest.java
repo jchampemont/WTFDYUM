@@ -31,6 +31,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -55,6 +56,10 @@ public class PrincipalServiceTest {
     /** The value operations. */
     @Mock
     private ValueOperations<String, Serializable> valueOperations;
+
+    /** The Set operations. */
+    @Mock
+    private SetOperations<String, Serializable> setOperations;
 
     /**
      * Inits the test.
@@ -117,9 +122,11 @@ public class PrincipalServiceTest {
         final Principal u = new Principal(12L, "tokdf", "secrrr");
 
         when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        when(redisTemplate.opsForSet()).thenReturn(setOperations);
 
         sut.saveUpdate(u);
 
         verify(valueOperations, times(1)).set("12", u);
+        verify(setOperations, times(1)).add("MEMBERS", 12L);
     }
 }

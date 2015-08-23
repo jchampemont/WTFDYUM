@@ -165,6 +165,23 @@ public class MainControllerTest extends AbstractControllerTest {
         .andExpect(redirectedUrlPattern("http*://**/**my_super_token"));
     }
 
+    /**
+     * Signin test max members.
+     *
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void signinTestMaxMembers() throws Exception {
+        ReflectionTestUtils.setField(mainController, "maxMembers", 100);
+
+        when(principalService.countMembers()).thenReturn(100);
+
+        mockMvc
+        .perform(get("/signin"))
+        .andExpect(status().is5xxServerError());
+    }
+
     /*
      * (non-Javadoc)
      *

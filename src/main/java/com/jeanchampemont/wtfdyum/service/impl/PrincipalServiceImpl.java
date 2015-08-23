@@ -56,6 +56,16 @@ public class PrincipalServiceImpl implements PrincipalService {
 
     /*
      * (non-Javadoc)
+     * 
+     * @see com.jeanchampemont.wtfdyum.service.PrincipalService#countMembers()
+     */
+    @Override
+    public int countMembers() {
+        return longRedisTemplate.opsForSet().size(MEMBERS_KEY).intValue();
+    }
+
+    /*
+     * (non-Javadoc)
      *
      * @see
      * com.jeanchampemont.wtfdyum.service.PrincipalService#get(java.lang.Long)

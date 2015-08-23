@@ -20,6 +20,7 @@ package com.jeanchampemont.wtfdyum.web;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,6 +35,7 @@ import com.jeanchampemont.wtfdyum.service.PrincipalService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
 import com.jeanchampemont.wtfdyum.service.UserService;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
+import com.jeanchampemont.wtfdyum.utils.WTFDYUMExceptionType;
 
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
@@ -65,6 +67,9 @@ public class MainController {
     @Autowired
     private UserService userService;
 
+    @Value("${wtfdyum.max-members}")
+    private int maxMembers;
+
     /**
      * Show the index page.
      *
@@ -89,6 +94,11 @@ public class MainController {
         if (authenticationService.isAuthenticated()) {
             return new RedirectView("/user", true);
         }
+
+        if (maxMembers > 0 && principalService.countMembers() >= maxMembers) {
+            throw new WTFDYUMException(WTFDYUMExceptionType.MEMBER_LIMIT_EXCEEDED);
+        }
+
         final RequestToken requestToken = twitterService.signin("/signin/callback");
 
         request.getSession().setAttribute(SESSION_REQUEST_TOKEN, requestToken);

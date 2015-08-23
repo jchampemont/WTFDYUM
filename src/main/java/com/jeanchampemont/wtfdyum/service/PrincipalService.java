@@ -25,6 +25,13 @@ import com.jeanchampemont.wtfdyum.dto.Principal;
 public interface PrincipalService {
 
     /**
+     * Count members.
+     *
+     * @return the number of members
+     */
+    int countMembers();
+
+    /**
      * Gets the principal.
      *
      * @param id the id

@@ -25,6 +25,9 @@ public enum WTFDYUMExceptionType {
     /** The twitter error. */
     TWITTER_ERROR("Something went wrong while communicating with Twitter..."),
 
+    /** The member limit exceeded. */
+    MEMBER_LIMIT_EXCEEDED("This application cannot accept more members"),
+
     /** The get followers rate limit exceeded. */
     GET_FOLLOWERS_RATE_LIMIT_EXCEEDED(
             "You have too many followers for this application to work properly. (More than 75.000...)");

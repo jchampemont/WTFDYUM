@@ -17,6 +17,8 @@
  */
 package com.jeanchampemont.wtfdyum.service.impl;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -56,7 +58,7 @@ public class PrincipalServiceImpl implements PrincipalService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.jeanchampemont.wtfdyum.service.PrincipalService#countMembers()
      */
     @Override
@@ -74,6 +76,11 @@ public class PrincipalServiceImpl implements PrincipalService {
     public Principal get(final Long id) {
         Preconditions.checkNotNull(id);
         return principalRedisTemplate.opsForValue().get(id.toString());
+    }
+
+    @Override
+    public Set<Long> getMembers() {
+        return longRedisTemplate.opsForSet().members(MEMBERS_KEY);
     }
 
     /*

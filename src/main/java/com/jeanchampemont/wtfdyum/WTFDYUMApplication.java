@@ -22,6 +22,7 @@ import java.time.Clock;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * Spring Application Class.
@@ -29,6 +30,7 @@ import org.springframework.context.annotation.Bean;
  * @author Jean Champémont
  */
 @SpringBootApplication
+@EnableScheduling
 public class WTFDYUMApplication {
 
     /**

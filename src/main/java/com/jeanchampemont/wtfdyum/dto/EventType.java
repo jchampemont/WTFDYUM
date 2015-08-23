@@ -32,7 +32,16 @@ public enum EventType {
     FEATURE_DISABLED("You disabled %s.", EventSeverity.WARNING),
 
     /** The unfollow. */
-    UNFOLLOW("%s stopped following you.", EventSeverity.WARNING);
+    UNFOLLOW("@%s stopped following you.", EventSeverity.WARNING),
+
+    /** The twitter error. */
+    TWITTER_ERROR("Error while contacting twitter.", EventSeverity.ERROR),
+
+    /** The rate limit exceeded. */
+    RATE_LIMIT_EXCEEDED("Twitter's rate limit is exceeded, you might have too many followers", EventSeverity.ERROR),
+
+    /** The unknown error. */
+    UNKNOWN_ERROR("An unknown error occured", EventSeverity.ERROR);
 
     /**
      * Instantiates a new event type.

@@ -32,7 +32,6 @@ import com.google.common.base.Preconditions;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.dto.User;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
-import com.jeanchampemont.wtfdyum.utils.SessionManager;
 import com.jeanchampemont.wtfdyum.utils.TwitterFactoryHolder;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMExceptionType;
@@ -110,7 +109,7 @@ public class TwitterServiceImpl implements TwitterService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.jeanchampemont.wtfdyum.service.TwitterService#getFollowers(java.lang.
      * Long, java.util.Optional)
@@ -150,15 +149,24 @@ public class TwitterServiceImpl implements TwitterService {
      * com.jeanchampemont.wtfdyum.service.TwitterService#getUser(java.lang.Long)
      */
     @Override
-    public User getUser(final Long id) throws WTFDYUMException {
+    public User getUser(final Principal principal, final Long id) throws WTFDYUMException {
         User result = null;
         try {
-            final twitter4j.User user = twitter(SessionManager.getPrincipal()).users().showUser(id);
+            final twitter4j.User user = twitter(principal).users().showUser(id);
             result = mapper.map(user, User.class);
         } catch (final TwitterException e) {
             throw new WTFDYUMException(e, WTFDYUMExceptionType.TWITTER_ERROR);
         }
         return result;
+    }
+
+    @Override
+    public void sendDirectMessage(final Principal principal, final Long toUserId, final String text) throws WTFDYUMException {
+        try {
+            twitter(principal).sendDirectMessage(toUserId, text);
+        } catch (final TwitterException e) {
+            throw new WTFDYUMException(e, WTFDYUMExceptionType.TWITTER_ERROR);
+        }
     }
 
     /*

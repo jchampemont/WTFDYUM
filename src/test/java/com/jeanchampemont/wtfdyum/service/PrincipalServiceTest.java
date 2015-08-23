@@ -23,6 +23,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,6 +74,38 @@ public class PrincipalServiceTest {
     public void ainit() {
         initMocks(this);
         sut = new PrincipalServiceImpl(principalRedisTemplate, longRedisTemplate);
+    }
+
+    /**
+     * Count members test.
+     */
+    @Test
+    public void countMembersTest() {
+        when(longRedisTemplate.opsForSet()).thenReturn(setOperations);
+        when(setOperations.size("MEMBERS")).thenReturn(133L);
+
+        final int result = sut.countMembers();
+
+        assertThat(result).isEqualTo(133);
+    }
+
+    /**
+     * Gets the members test.
+     *
+     * @return the members test
+     */
+    @Test
+    public void getMembersTest() {
+        when(longRedisTemplate.opsForSet()).thenReturn(setOperations);
+        when(setOperations.members("MEMBERS")).thenReturn(new HashSet<Long>(Arrays.asList(12L, 13L, 190L)));
+
+        final Set<Long> members = sut.getMembers();
+
+        assertThat(members).isNotNull();
+        assertThat(members.size()).isEqualTo(3);
+        assertThat(members.contains(12L)).isTrue();
+        assertThat(members.contains(13L)).isTrue();
+        assertThat(members.contains(190L)).isTrue();
     }
 
     /**

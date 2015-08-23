@@ -40,11 +40,13 @@ import com.google.common.base.Optional;
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.EventType;
 import com.jeanchampemont.wtfdyum.dto.Feature;
+import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.dto.User;
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
 import com.jeanchampemont.wtfdyum.service.PrincipalService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
 import com.jeanchampemont.wtfdyum.service.UserService;
+import com.jeanchampemont.wtfdyum.utils.SessionManager;
 
 /**
  * The Class UserControllerTest.
@@ -121,12 +123,14 @@ public class UserControllerTest extends AbstractControllerTest {
      */
     @Test
     public void indexTest() throws Exception {
+        final Principal principal = new Principal(1L, "tok", "toksec");
+        SessionManager.setPrincipal(principal);
         final User u = new User();
 
         final List<Event> events = Arrays.asList(new Event(), new Event(EventType.REGISTRATION, ""));
 
         when(authenticationService.getCurrentUserId()).thenReturn(Optional.of(12340L));
-        when(twitterService.getUser(12340L)).thenReturn(u);
+        when(twitterService.getUser(principal, 12340L)).thenReturn(u);
         when(userService.getRecentEvents(12340L, 10)).thenReturn(events);
         when(userService.isFeatureEnabled(12340L, Feature.NOTIFY_UNFOLLOW)).thenReturn(true);
 
@@ -135,7 +139,7 @@ public class UserControllerTest extends AbstractControllerTest {
         .andExpect(status().isOk())
         .andExpect(view().name("user/index"))
         .andExpect(model().attribute("user", u))
-                .andExpect(model().attribute("events", events))
+        .andExpect(model().attribute("events", events))
         .andExpect(model().attribute("availableFeatures", Feature.values()))
         .andExpect(
                 model().attribute("featuresStatus", hasEntry(Feature.NOTIFY_UNFOLLOW.name(), true)));

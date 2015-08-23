@@ -40,7 +40,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.service.impl.TwitterServiceImpl;
-import com.jeanchampemont.wtfdyum.utils.SessionManager;
 import com.jeanchampemont.wtfdyum.utils.TwitterFactoryHolder;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMExceptionType;
@@ -251,8 +250,6 @@ public class TwitterServiceTest {
      */
     @Test
     public void getUserTest() throws Exception {
-        SessionManager.setPrincipal(new Principal(1L, "", ""));
-
         final User userMock = mock(User.class);
 
         when(twitter.users()).thenReturn(usersResources);
@@ -263,7 +260,7 @@ public class TwitterServiceTest {
         when(userMock.getProfileImageURL()).thenReturn("profile img url");
         when(userMock.getURL()).thenReturn("user url");
 
-        final com.jeanchampemont.wtfdyum.dto.User result = sut.getUser(123L);
+        final com.jeanchampemont.wtfdyum.dto.User result = sut.getUser(new Principal(1L, "", ""), 123L);
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(123L);
@@ -282,12 +279,42 @@ public class TwitterServiceTest {
      */
     @Test(expected = WTFDYUMException.class)
     public void getUserTestException() throws Exception {
-        SessionManager.setPrincipal(new Principal(1L, "", ""));
-
         when(twitter.users()).thenReturn(usersResources);
         when(usersResources.showUser(123L)).thenThrow(new TwitterException("msg"));
 
-        sut.getUser(123L);
+        sut.getUser(new Principal(1L, "", ""), 123L);
+    }
+
+    /**
+     * Send direct message test.
+     *
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void sendDirectMessageTest() throws Exception {
+        final Principal principal = new Principal(123L, "toktok", "secsecret");
+        sut.sendDirectMessage(principal, 555L, "text");
+
+        verify(twitter, times(1)).sendDirectMessage(555L, "text");
+    }
+
+    /**
+     * Send direct message test exception.
+     *
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void sendDirectMessageTestException() throws Exception {
+        when(twitter.sendDirectMessage(444L, "text")).thenThrow(new TwitterException("msg"));
+
+        try {
+            sut.sendDirectMessage(new Principal(412L, "", ""), 444L, "text");
+            Assertions.failBecauseExceptionWasNotThrown(WTFDYUMException.class);
+        } catch (final WTFDYUMException e) {
+            assertThat(e.getType()).isEqualTo(WTFDYUMExceptionType.TWITTER_ERROR);
+        }
     }
 
     /**

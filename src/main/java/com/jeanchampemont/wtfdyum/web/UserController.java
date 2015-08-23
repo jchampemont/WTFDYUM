@@ -34,6 +34,7 @@ import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
 import com.jeanchampemont.wtfdyum.service.UserService;
+import com.jeanchampemont.wtfdyum.utils.SessionManager;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 
 /**
@@ -101,7 +102,7 @@ public class UserController {
 
         final Long userId = authenticationService.getCurrentUserId().get();
 
-        result.getModel().put("user", twitterService.getUser(userId));
+        result.getModel().put("user", twitterService.getUser(SessionManager.getPrincipal(), userId));
         result.getModel().put("events", userService.getRecentEvents(userId, 10));
         result.getModel().put("availableFeatures", Feature.values());
 

@@ -17,42 +17,13 @@
  */
 package com.jeanchampemont.wtfdyum.service;
 
-import java.util.Set;
-
-import com.jeanchampemont.wtfdyum.dto.Principal;
-
 /**
- * The Interface PrincipalService.
+ * The Interface CronService.
  */
-public interface PrincipalService {
+public interface CronService {
 
     /**
-     * Count members.
-     *
-     * @return the number of members
+     * Find unfollowers.
      */
-    int countMembers();
-
-    /**
-     * Gets the principal.
-     *
-     * @param id the id
-     * @return the principal
-     */
-    Principal get(Long id);
-
-    /**
-     * Gets the members.
-     *
-     * @return the members
-     */
-    Set<Long> getMembers();
-
-    /**
-     * Save update.
-     *
-     * @param user
-     *            the user
-     */
-    void saveUpdate(Principal user);
+    void findUnfollowers();
 }

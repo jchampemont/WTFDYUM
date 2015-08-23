@@ -65,13 +65,29 @@ public interface TwitterService {
     /**
      * Gets the user.
      *
+     * @param principal
+     *            the principal
      * @param id
      *            the id
      * @return the user
      * @throws WTFDYUMException
      *             the WTFDYUM exception
      */
-    User getUser(Long id) throws WTFDYUMException;
+    User getUser(Principal principal, Long id) throws WTFDYUMException;
+
+    /**
+     * Send direct message.
+     *
+     * @param principal
+     *            the principal
+     * @param toUserId
+     *            the to user id
+     * @param text
+     *            the text
+     * @throws WTFDYUMException
+     *             the WTFDYUM exception
+     */
+    void sendDirectMessage(Principal principal, Long toUserId, String text) throws WTFDYUMException;
 
     /**
      * Signin with Twitter.

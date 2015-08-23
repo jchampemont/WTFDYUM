@@ -2,16 +2,26 @@
 <html lang="en">
 <head
     th:replace="common/template :: head (title='Why the fuck did you unfollow me?')"></head>
-<body>
+<body th:inline="text">
     <div class="container">
         <div th:replace="common/template :: header"></div>
 
         <div class="jumbotron">
             <h1>Why The Fuck Did You Unfollow Me?</h1>
-            Connected as <span th:text="${user.name}"></span> (@<span th:text="${user.screenName}"></span>)!
-            
-            <h3>10 latests events of your account:</h3>
-            <div th:each="event : ${events}" th:switch="${event.type.severity.name()}" id="events">
+            Connected as [[${user.name}]] (@[[${user.screenName}]])!
+        </div>
+        <div id="options">
+            <h3>Settings</h3>
+            <div class="checkbox" th:each="feature : ${availableFeatures}">
+                <label>
+                    <input data-toggle="toggle" type="checkbox" class="option" th:attr="checked=${featuresStatus[__${feature.name()}__] ? 'checked' : null},data-name=${feature.name()}" data-size="normal" data-onstyle="success" data-offstyle="danger" />
+                    [[${feature.message}]]
+                </label>
+            </div>
+        </div>
+        <div id="events">
+            <h3>Your history (up to 10 entries)</h3>
+            <div th:each="event : ${events}" th:switch="${event.type.severity.name()}">
                 <div th:case="'INFO'" class="alert alert-info" role="alert">
                     <strong th:text="${#temporals.format(event.creationDateTime, 'dd/MM/yyyy HH:mm')}"></strong>: <span th:text="${event.message}"></span>
                 </div>
@@ -25,6 +35,7 @@
         </div>
 
         <footer th:replace="common/template :: footer"></footer>
+        <script type="text/javascript" src="/js/custom.js"></script>
     </div>
     <!-- /container -->
 </body>

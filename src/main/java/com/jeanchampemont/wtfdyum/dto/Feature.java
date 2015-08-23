@@ -23,5 +23,42 @@ package com.jeanchampemont.wtfdyum.dto;
 public enum Feature {
 
     /** The notify unfollow. */
-    NOTIFY_UNFOLLOW;
+    NOTIFY_UNFOLLOW("Send me a direct message when someone stops following me", "unfollow notifications");
+
+    /**
+     * Instantiates a new feature.
+     *
+     * @param message
+     *            the message
+     * @param shortName
+     *            the short name
+     */
+    private Feature(final String message, final String shortName) {
+        this.message = message;
+        this.shortName = shortName;
+    }
+
+    /** The message. */
+    private String message;
+
+    /** The String. */
+    private String shortName;
+
+    /**
+     * Gets the message.
+     *
+     * @return the message
+     */
+    public String getMessage() {
+        return message;
+    }
+
+    /**
+     * Gets the short name.
+     *
+     * @return the short name
+     */
+    public String getShortName() {
+        return shortName;
+    }
 }

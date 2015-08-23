@@ -17,14 +17,20 @@
  */
 package com.jeanchampemont.wtfdyum.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.google.common.collect.Lists;
+import com.jeanchampemont.wtfdyum.dto.Event;
+import com.jeanchampemont.wtfdyum.dto.EventType;
+import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
 import com.jeanchampemont.wtfdyum.service.UserService;
@@ -50,6 +56,40 @@ public class UserController {
     private UserService userService;
 
     /**
+     * Disable feature.
+     *
+     * @param feature
+     *            the feature
+     * @return the redirect view
+     */
+    @RequestMapping(value = "/feature/disable/{feature}", method = RequestMethod.GET)
+    public RedirectView disableFeature(@PathVariable("feature") final Feature feature) {
+        final Long userId = authenticationService.getCurrentUserId().get();
+
+        if (userService.disableFeature(userId, feature)) {
+            userService.addEvent(userId, new Event(EventType.FEATURE_DISABLED, feature.getShortName()));
+        }
+
+        return new RedirectView("/user", true);
+    }
+
+    /**
+     * Enable feature.
+     *
+     * @return the redirect view
+     */
+    @RequestMapping(value = "/feature/enable/{feature}", method = RequestMethod.GET)
+    public RedirectView enableFeature(@PathVariable("feature") final Feature feature) {
+        final Long userId = authenticationService.getCurrentUserId().get();
+
+        if (userService.enableFeature(userId, feature)) {
+            userService.addEvent(userId, new Event(EventType.FEATURE_ENABLED, feature.getShortName()));
+        }
+
+        return new RedirectView("/user", true);
+    }
+
+    /**
      * Index.
      *
      * @return the string
@@ -62,7 +102,15 @@ public class UserController {
         final Long userId = authenticationService.getCurrentUserId().get();
 
         result.getModel().put("user", twitterService.getUser(userId));
-        result.getModel().put("events", Lists.reverse(userService.getRecentEvents(userId, 10)));
+        result.getModel().put("events", userService.getRecentEvents(userId, 10));
+        result.getModel().put("availableFeatures", Feature.values());
+
+        final Map<String, Boolean> featuresStatus = new HashMap<>();
+        for (final Feature f : Feature.values()) {
+            featuresStatus.put(f.name(), userService.isFeatureEnabled(userId, f));
+        }
+
+        result.getModel().put("featuresStatus", featuresStatus);
 
         return result;
     }

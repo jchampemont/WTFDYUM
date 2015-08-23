@@ -17,9 +17,11 @@
  */
 package com.jeanchampemont.wtfdyum.web;
 
+import static org.hamcrest.Matchers.hasEntry;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,12 +35,11 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.EventType;
+import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.User;
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
 import com.jeanchampemont.wtfdyum.service.PrincipalService;
@@ -72,6 +73,47 @@ public class UserControllerTest extends AbstractControllerTest {
     private UserController userController;
 
     /**
+     * Disable feature test.
+     *
+     * @throws Exception the exception
+     */
+    @Test
+    public void disableFeatureTest() throws Exception {
+        when(authenticationService.getCurrentUserId()).thenReturn(Optional.of(12340L));
+        when(userService.disableFeature(12340L, Feature.NOTIFY_UNFOLLOW)).thenReturn(true);
+
+        mockMvc
+        .perform(get("/user/feature/disable/NOTIFY_UNFOLLOW"))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/user"));
+
+        verify(userService, times(1)).disableFeature(12340L, Feature.NOTIFY_UNFOLLOW);
+        verify(userService, times(1)).addEvent(12340L,
+                new Event(EventType.FEATURE_DISABLED, Feature.NOTIFY_UNFOLLOW.getShortName()));
+    }
+
+    /**
+     * Enable feature test.
+     *
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void enableFeatureTest() throws Exception {
+        when(authenticationService.getCurrentUserId()).thenReturn(Optional.of(12340L));
+        when(userService.enableFeature(12340L, Feature.NOTIFY_UNFOLLOW)).thenReturn(true);
+
+        mockMvc
+        .perform(get("/user/feature/enable/NOTIFY_UNFOLLOW"))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/user"));
+
+        verify(userService, times(1)).enableFeature(12340L, Feature.NOTIFY_UNFOLLOW);
+        verify(userService, times(1)).addEvent(12340L,
+                new Event(EventType.FEATURE_ENABLED, Feature.NOTIFY_UNFOLLOW.getShortName()));
+    }
+
+    /**
      * Index test.
      *
      * @throws Exception
@@ -86,13 +128,17 @@ public class UserControllerTest extends AbstractControllerTest {
         when(authenticationService.getCurrentUserId()).thenReturn(Optional.of(12340L));
         when(twitterService.getUser(12340L)).thenReturn(u);
         when(userService.getRecentEvents(12340L, 10)).thenReturn(events);
+        when(userService.isFeatureEnabled(12340L, Feature.NOTIFY_UNFOLLOW)).thenReturn(true);
 
         mockMvc
-        .perform(MockMvcRequestBuilders.get("/user"))
+        .perform(get("/user"))
         .andExpect(status().isOk())
         .andExpect(view().name("user/index"))
         .andExpect(model().attribute("user", u))
-        .andExpect(model().attribute("events", Lists.reverse(events)));
+                .andExpect(model().attribute("events", events))
+        .andExpect(model().attribute("availableFeatures", Feature.values()))
+        .andExpect(
+                model().attribute("featuresStatus", hasEntry(Feature.NOTIFY_UNFOLLOW.name(), true)));
     }
 
     /**
@@ -103,7 +149,9 @@ public class UserControllerTest extends AbstractControllerTest {
      */
     @Test
     public void logoutTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/logout")).andExpect(status().is3xxRedirection())
+        mockMvc
+        .perform(get("/user/logout"))
+        .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl("/"));
 
         verify(authenticationService, times(1)).logOut();

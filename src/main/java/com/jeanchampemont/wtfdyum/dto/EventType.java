@@ -25,6 +25,12 @@ public enum EventType {
     /** The registration. */
     REGISTRATION("You registered to WTFDYUM!", EventSeverity.INFO),
 
+    /** The feature enabled. */
+    FEATURE_ENABLED("You enabled %s.", EventSeverity.INFO),
+
+    /** The feature disabled. */
+    FEATURE_DISABLED("You disabled %s.", EventSeverity.WARNING),
+
     /** The unfollow. */
     UNFOLLOW("%s stopped following you.", EventSeverity.WARNING);
 

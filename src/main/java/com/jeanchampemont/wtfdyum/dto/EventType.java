@@ -23,7 +23,7 @@ package com.jeanchampemont.wtfdyum.dto;
 public enum EventType {
 
     /** The registration. */
-    REGISTRATION("You registered!", EventSeverity.INFO),
+    REGISTRATION("You registered to WTFDYUM!", EventSeverity.INFO),
 
     /** The unfollow. */
     UNFOLLOW("%s stopped following you.", EventSeverity.WARNING);

@@ -27,6 +27,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.Principal;
@@ -52,11 +53,16 @@ public class RedisConfiguration {
         final RedisTemplate<String, Event> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
-        template.setHashKeySerializer(new Jackson2JsonRedisSerializer<>(Event.class));
-        template.setValueSerializer(new Jackson2JsonRedisSerializer<>(Event.class));
+        template.setHashKeySerializer(jsonSerializer(Event.class, objectMapper()));
+        template.setValueSerializer(jsonSerializer(Event.class, objectMapper()));
         return template;
     }
 
+    /**
+     * Feature redis template.
+     *
+     * @return the redis template
+     */
     @Bean
     public RedisTemplate<String, Feature> featureRedisTemplate() {
         final RedisTemplate<String, Feature> template = new RedisTemplate<>();
@@ -83,6 +89,18 @@ public class RedisConfiguration {
     }
 
     /**
+     * Object mapper.
+     *
+     * @return the object mapper
+     */
+    @Bean
+    public ObjectMapper objectMapper() {
+        final ObjectMapper result = new ObjectMapper();
+        result.findAndRegisterModules();
+        return result;
+    }
+
+    /**
      * Principal redis template.
      *
      * @return the redis template
@@ -92,8 +110,8 @@ public class RedisConfiguration {
         final RedisTemplate<String, Principal> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
-        template.setHashKeySerializer(new Jackson2JsonRedisSerializer<>(Principal.class));
-        template.setValueSerializer(new Jackson2JsonRedisSerializer<>(Principal.class));
+        template.setHashKeySerializer(jsonSerializer(Principal.class, objectMapper()));
+        template.setValueSerializer(jsonSerializer(Principal.class, objectMapper()));
         return template;
     }
 
@@ -109,5 +127,22 @@ public class RedisConfiguration {
         jedisConnectionFactory.setPort(env.getProperty("wtfdyum.redis.port", Integer.class));
         jedisConnectionFactory.setDatabase(env.getProperty("wtfdyum.redis.database", Integer.class));
         return jedisConnectionFactory;
+    }
+
+    /**
+     * Json serializer.
+     *
+     * @param <T>
+     *            the generic type
+     * @param clazz
+     *            the clazz
+     * @param mapper
+     *            the mapper
+     * @return the jackson2 json redis serializer
+     */
+    private <T> Jackson2JsonRedisSerializer<T> jsonSerializer(final Class<T> clazz, final ObjectMapper mapper) {
+        final Jackson2JsonRedisSerializer<T> result = new Jackson2JsonRedisSerializer<>(clazz);
+        result.setObjectMapper(mapper);
+        return result;
     }
 }

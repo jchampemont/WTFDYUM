@@ -76,3 +76,7 @@ body {
         border-bottom: 0;
     }
 }
+/* Event list on user homepage */
+#events {
+    text-align: left;
+}

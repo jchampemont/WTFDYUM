@@ -20,6 +20,8 @@ package com.jeanchampemont.wtfdyum.dto;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * The Class Event.
  */
@@ -107,6 +109,16 @@ public class Event {
      */
     public LocalDateTime getCreationDateTime() {
         return creationDateTime;
+    }
+
+    /**
+     * Gets the message.
+     *
+     * @return the message
+     */
+    @JsonIgnore
+    public String getMessage() {
+        return String.format(type.getMessage(), additionalData);
     }
 
     /**

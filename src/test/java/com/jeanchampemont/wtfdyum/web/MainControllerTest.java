@@ -83,7 +83,10 @@ public class MainControllerTest extends AbstractControllerTest {
      */
     @Test
     public void indexTest() throws Exception {
-        mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(view().name("index"));
+        mockMvc
+        .perform(get("/"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("index"));
     }
 
     /**
@@ -96,7 +99,9 @@ public class MainControllerTest extends AbstractControllerTest {
     public void signinAlreadyAuthenticatedTest() throws Exception {
         when(authenticationService.isAuthenticated()).thenReturn(true);
 
-        mockMvc.perform(get("/signin")).andExpect(status().is3xxRedirection())
+        mockMvc
+        .perform(get("/signin"))
+        .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl("/user"));
     }
 
@@ -113,8 +118,13 @@ public class MainControllerTest extends AbstractControllerTest {
         when(twitterService.signin(anyString())).thenReturn(returnedRequestToken);
         when(principalService.get(1203L)).thenReturn(null);
 
-        final HttpSession session = mockMvc.perform(get("/signin")).andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("http*://**/**my_super_token")).andReturn().getRequest().getSession();
+        final HttpSession session = mockMvc
+                .perform(get("/signin"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("http*://**/**my_super_token"))
+                .andReturn()
+                .getRequest()
+                .getSession();
 
         assertThat(session).isNotNull();
         assertThat(session.getAttribute(MainController.SESSION_REQUEST_TOKEN)).isNotNull();
@@ -125,8 +135,10 @@ public class MainControllerTest extends AbstractControllerTest {
 
         when(twitterService.completeSignin(returnedRequestToken, "42")).thenReturn(returnedAccessToken);
 
-        mockMvc.perform(get("/signin/callback?oauth_verifier=42").session((MockHttpSession) session))
-        .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/user"));
+        mockMvc
+        .perform(get("/signin/callback?oauth_verifier=42").session((MockHttpSession) session))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/user"));
 
         final Principal builtUser = new Principal(1203L, "TOken", "secret");
 
@@ -147,7 +159,9 @@ public class MainControllerTest extends AbstractControllerTest {
 
         when(twitterService.signin(anyString())).thenReturn(returnedRequestToken);
 
-        mockMvc.perform(get("/signin")).andExpect(status().is3xxRedirection())
+        mockMvc
+        .perform(get("/signin"))
+        .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrlPattern("http*://**/**my_super_token"));
     }
 

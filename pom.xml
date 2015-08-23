@@ -24,6 +24,7 @@
         <guava.version>18.0</guava.version>
         <dozer.version>5.5.1</dozer.version>
         <twitter4j.version>4.0.4</twitter4j.version>
+        <thymeleaf.extras-java8time.version>2.1.0.RELEASE</thymeleaf.extras-java8time.version>
         
         <assertj.version>3.1.0</assertj.version>
         
@@ -64,6 +65,15 @@
             <groupId>org.twitter4j</groupId>
             <artifactId>twitter4j-core</artifactId>
             <version>${twitter4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-java8time</artifactId>
+            <version>${thymeleaf.extras-java8time.version}</version>
         </dependency>
 
         <dependency>

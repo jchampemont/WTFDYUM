@@ -24,8 +24,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.google.common.collect.Lists;
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
+import com.jeanchampemont.wtfdyum.service.UserService;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 
 /**
@@ -43,6 +45,10 @@ public class UserController {
     @Autowired
     private TwitterService twitterService;
 
+    /** The user service. */
+    @Autowired
+    private UserService userService;
+
     /**
      * Index.
      *
@@ -53,7 +59,10 @@ public class UserController {
     public ModelAndView index() throws WTFDYUMException {
         final ModelAndView result = new ModelAndView("user/index");
 
-        result.getModel().put("user", twitterService.getUser(authenticationService.getCurrentUserId().get()));
+        final Long userId = authenticationService.getCurrentUserId().get();
+
+        result.getModel().put("user", twitterService.getUser(userId));
+        result.getModel().put("events", Lists.reverse(userService.getRecentEvents(userId, 10)));
 
         return result;
     }

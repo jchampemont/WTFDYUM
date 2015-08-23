@@ -25,6 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -33,10 +36,14 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+import com.jeanchampemont.wtfdyum.dto.Event;
+import com.jeanchampemont.wtfdyum.dto.EventType;
 import com.jeanchampemont.wtfdyum.dto.User;
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
 import com.jeanchampemont.wtfdyum.service.PrincipalService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
+import com.jeanchampemont.wtfdyum.service.UserService;
 
 /**
  * The Class UserControllerTest.
@@ -56,6 +63,10 @@ public class UserControllerTest extends AbstractControllerTest {
     @Mock
     private AuthenticationService authenticationService;
 
+    /** The user service. */
+    @Mock
+    private UserService userService;
+
     /** The main controller. */
     @InjectMocks
     private UserController userController;
@@ -70,11 +81,18 @@ public class UserControllerTest extends AbstractControllerTest {
     public void indexTest() throws Exception {
         final User u = new User();
 
+        final List<Event> events = Arrays.asList(new Event(), new Event(EventType.REGISTRATION, ""));
+
         when(authenticationService.getCurrentUserId()).thenReturn(Optional.of(12340L));
         when(twitterService.getUser(12340L)).thenReturn(u);
+        when(userService.getRecentEvents(12340L, 10)).thenReturn(events);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/user")).andExpect(status().isOk())
-                .andExpect(view().name("user/index")).andExpect(model().attribute("user", u));
+        mockMvc
+        .perform(MockMvcRequestBuilders.get("/user"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("user/index"))
+        .andExpect(model().attribute("user", u))
+        .andExpect(model().attribute("events", Lists.reverse(events)));
     }
 
     /**
@@ -91,7 +109,6 @@ public class UserControllerTest extends AbstractControllerTest {
         verify(authenticationService, times(1)).logOut();
 
     }
-
 
     /*
      * (non-Javadoc)

@@ -9,6 +9,19 @@
         <div class="jumbotron">
             <h1>Why The Fuck Did You Unfollow Me?</h1>
             Connected as <span th:text="${user.name}"></span> (@<span th:text="${user.screenName}"></span>)!
+            
+            <h3>10 latests events of your account:</h3>
+            <div th:each="event : ${events}" th:switch="${event.type.severity.name()}" id="events">
+                <div th:case="'INFO'" class="alert alert-info" role="alert">
+                    <strong th:text="${#temporals.format(event.creationDateTime, 'dd/MM/yyyy HH:mm')}"></strong>: <span th:text="${event.message}"></span>
+                </div>
+                <div th:case="'WARNING'" class="alert alert-warning" role="alert">
+                    <strong th:text="${#temporals.format(event.creationDateTime, 'dd/MM/yyyy HH:mm')}"></strong>: <span th:text="${event.message}"></span>
+                </div>
+                <div th:case="'ERROR'" class="alert alert-danger" role="alert">
+                    <strong th:text="${#temporals.format(event.creationDateTime, 'dd/MM/yyyy HH:mm')}"></strong>: <span th:text="${event.message}"></span>
+                </div>
+            </div>
         </div>
 
         <footer th:replace="common/template :: footer"></footer>

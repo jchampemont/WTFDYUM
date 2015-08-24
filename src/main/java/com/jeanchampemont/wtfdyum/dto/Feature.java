@@ -23,7 +23,9 @@ package com.jeanchampemont.wtfdyum.dto;
 public enum Feature {
 
     /** The notify unfollow. */
-    NOTIFY_UNFOLLOW("Send me a direct message when someone stops following me", "unfollow notifications");
+    NOTIFY_UNFOLLOW("Send me a direct message when someone stops following me", "unfollow notifications"),
+
+    TWEET_UNFOLLOW("Send a public tweet with @mention when someone stops following me", "unfollow tweet");
 
     /**
      * Instantiates a new feature.

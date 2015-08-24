@@ -77,7 +77,9 @@ public class CronServiceImpl implements CronService {
         final Set<Long> members = principalService.getMembers();
 
         for (final Long userId : members) {
-            if (userService.isFeatureEnabled(userId, Feature.NOTIFY_UNFOLLOW)) {
+            final boolean notifyUnfollow = userService.isFeatureEnabled(userId, Feature.NOTIFY_UNFOLLOW);
+            final boolean tweetUnfollow = userService.isFeatureEnabled(userId, Feature.TWEET_UNFOLLOW);
+            if (notifyUnfollow || tweetUnfollow) {
                 try {
                     final Principal principal = principalService.get(userId);
                     final Set<Long> followers = twitterService.getFollowers(userId, Optional.ofNullable(principal));
@@ -87,8 +89,16 @@ public class CronServiceImpl implements CronService {
                     for (final Long unfollowerId : unfollowersId) {
                         final User unfollower = twitterService.getUser(principal, unfollowerId);
                         userService.addEvent(userId, new Event(EventType.UNFOLLOW, unfollower.getScreenName()));
-                        twitterService.sendDirectMessage(principal, userId, String.format(
-                                "Message from WTFDYUM: @%s just stopped following you.", unfollower.getScreenName()));
+
+                        if (notifyUnfollow) {
+                            twitterService.sendDirectMessage(principal, userId, String.format(
+                                    "Message from WTFDYUM: @%s just stopped following you.", unfollower.getScreenName()));
+                        }
+
+                        if (tweetUnfollow) {
+                            twitterService.tweet(principal, String.format("@%s, Why The Fuck Did You Unfollow Me?",
+                                    unfollower.getScreenName()));
+                        }
                     }
 
                     userService.saveFollowers(userId, followers);

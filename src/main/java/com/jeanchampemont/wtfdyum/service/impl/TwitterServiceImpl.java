@@ -186,6 +186,15 @@ public class TwitterServiceImpl implements TwitterService {
         return token;
     }
 
+    @Override
+    public void tweet(final Principal principal, final String text) throws WTFDYUMException {
+        try {
+            twitter(principal).updateStatus(text);
+        } catch (final TwitterException e) {
+            throw new WTFDYUMException(e, WTFDYUMExceptionType.TWITTER_ERROR);
+        }
+    }
+
     /**
      * Check rate limit status.
      *

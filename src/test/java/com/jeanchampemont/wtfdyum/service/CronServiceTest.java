@@ -92,19 +92,26 @@ public class CronServiceTest {
          * 4: a NPE is thrown whil computing unfollowers
          *
          * 5: feature disabled
+         *
+         * 6: send a tweet when an unfollower is found
          */
-        when(principalService.getMembers()).thenReturn(new HashSet<>(Arrays.asList(1L, 2L, 3L, 4L, 5L)));
+        when(principalService.getMembers()).thenReturn(new HashSet<>(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L)));
 
         //Feature enabled for all members
         when(userService.isFeatureEnabled(anyLong(), eq(Feature.NOTIFY_UNFOLLOW))).thenReturn(true);
         //except member 5L
         when(userService.isFeatureEnabled(5L, Feature.NOTIFY_UNFOLLOW)).thenReturn(false);
 
-        // principals for members 1, 2, 3, 4
+        // Feature disabled for all members
+        when(userService.isFeatureEnabled(anyLong(), eq(Feature.TWEET_UNFOLLOW))).thenReturn(false);
+        // except member 6L
+        when(userService.isFeatureEnabled(6L, Feature.TWEET_UNFOLLOW)).thenReturn(true);
+
+        // principals for members 1, 2, 3, 4, 6
         final List<Principal> principals = Arrays.asList(new Principal(1L, "", ""), new Principal(2L, "", ""),
-                new Principal(3L, "", ""), new Principal(4L, "", ""));
+                new Principal(3L, "", ""), new Principal(4L, "", ""), null, new Principal(6L, "", ""));
         when(principalService.get(anyLong())).thenReturn(principals.get(0), principals.get(1), principals.get(2),
-                principals.get(3));
+                principals.get(3), principals.get(5));
 
         // default followers list
         final Set<Long> followers = new HashSet<>(Arrays.asList(10L, 11L, 12L));
@@ -118,6 +125,8 @@ public class CronServiceTest {
         .thenThrow(new WTFDYUMException(WTFDYUMExceptionType.GET_FOLLOWERS_RATE_LIMIT_EXCEEDED));
         // 4L: default followers
         when(twitterService.getFollowers(4L, Optional.ofNullable(principals.get(3)))).thenReturn(followers);
+        // 6L: default followers
+        when(twitterService.getFollowers(6L, Optional.ofNullable(principals.get(5)))).thenReturn(followers);
 
         // default unfollowers list
         final Set<Long> unfollowers = new HashSet<>(Arrays.asList(10L, 11L));
@@ -125,6 +134,8 @@ public class CronServiceTest {
         when(userService.getUnfollowers(1L, followers)).thenReturn(unfollowers);
         // 4L: NPE thrown while computing unfollowers
         when(userService.getUnfollowers(4L, followers)).thenThrow(new NullPointerException());
+        // 6L : default unfollowers
+        when(userService.getUnfollowers(6L, followers)).thenReturn(unfollowers);
 
         // unfollowers 10 and 11 details :
         final User user10 = new User();
@@ -137,6 +148,8 @@ public class CronServiceTest {
 
         when(twitterService.getUser(principals.get(0), 10L)).thenReturn(user10);
         when(twitterService.getUser(principals.get(0), 11L)).thenReturn(user11);
+        when(twitterService.getUser(principals.get(5), 10L)).thenReturn(user10);
+        when(twitterService.getUser(principals.get(5), 11L)).thenReturn(user11);
 
 
 
@@ -144,6 +157,7 @@ public class CronServiceTest {
 
 
 
+        // 1L :
         // A unfollow event and a direct message should have been sent for
         // unfollower 10
         verify(userService, times(1)).addEvent(1L, new Event(EventType.UNFOLLOW, user10.getScreenName()));
@@ -156,14 +170,38 @@ public class CronServiceTest {
         verify(twitterService, times(1)).sendDirectMessage(principals.get(0), 1L, String.format(
                 "Message from WTFDYUM: @%s just stopped following you.", user11.getScreenName()));
 
-        // New followers list should be saved
-        verify(userService, times(1)).saveFollowers(1L, followers);
         // 2L should have an event TWITTER_ERROR
         verify(userService, times(1)).addEvent(2L, new Event(EventType.TWITTER_ERROR, null));
+
         // 3L should have an event RATE_LIMIT_EXCEEDED
         verify(userService, times(1)).addEvent(3L, new Event(EventType.RATE_LIMIT_EXCEEDED, null));
         // 4L should have an event UNKNOWN_ERROR
         verify(userService, times(1)).addEvent(4L, new Event(EventType.UNKNOWN_ERROR, null));
+
+        // 6L :
+        // A unfollow event, a direct message and a tweet should have been sent
+        // for
+        // unfollower 10
+        verify(userService, times(1)).addEvent(6L, new Event(EventType.UNFOLLOW, user10.getScreenName()));
+        verify(twitterService, times(1)).sendDirectMessage(principals.get(5), 6L, String.format(
+                "Message from WTFDYUM: @%s just stopped following you.", user10.getScreenName()));
+        verify(twitterService, times(1)).tweet(principals.get(5),
+                String.format("@%s, Why The Fuck Did You Unfollow Me?", user10.getScreenName()));
+
+        // A unfollow event, a direct message and a tweet should have been sent
+        // for
+        // unfollower 11
+        verify(userService, times(1)).addEvent(6L, new Event(EventType.UNFOLLOW, user11.getScreenName()));
+        verify(twitterService, times(1)).sendDirectMessage(principals.get(5), 6L, String.format(
+                "Message from WTFDYUM: @%s just stopped following you.", user11.getScreenName()));
+        verify(twitterService, times(1)).tweet(principals.get(5),
+                String.format("@%s, Why The Fuck Did You Unfollow Me?", user11.getScreenName()));
+
+        // 1L: New followers list should be saved
+        verify(userService, times(1)).saveFollowers(1L, followers);
+
+        // 6L: New followers list should be saved
+        verify(userService, times(1)).saveFollowers(6L, followers);
     }
 
 }

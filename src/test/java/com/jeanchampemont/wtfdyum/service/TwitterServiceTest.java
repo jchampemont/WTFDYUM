@@ -351,4 +351,28 @@ public class TwitterServiceTest {
 
         Assertions.fail("Exception not throwned");
     }
+
+    /**
+     * Tweet test.
+     *
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void tweetTest() throws Exception {
+        sut.tweet(new Principal(144L, "tok", "toksec"), "my brand new tweet");
+        verify(twitter, times(1)).updateStatus("my brand new tweet");
+    }
+
+    /**
+     * Tweet test exception.
+     *
+     * @throws Exception
+     *             the exception
+     */
+    @Test(expected = WTFDYUMException.class)
+    public void tweetTestException() throws Exception {
+        when(twitter.updateStatus("my brand new tweet")).thenThrow(new TwitterException(""));
+        sut.tweet(new Principal(144L, "tok", "toksec"), "my brand new tweet");
+    }
 }

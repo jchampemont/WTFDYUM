@@ -100,4 +100,13 @@ public interface TwitterService {
      *             if something is wrong with Twitter communication
      */
     RequestToken signin(String path) throws WTFDYUMException;
+
+    /**
+     * Tweet.
+     *
+     * @param principal the principal
+     * @param text the text
+     * @throws WTFDYUMException the WTFDYUM exception
+     */
+    void tweet(Principal principal, String text) throws WTFDYUMException;
 }

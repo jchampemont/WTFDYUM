@@ -97,12 +97,17 @@ public class UserController {
      * @throws WTFDYUMException
      */
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView index() throws WTFDYUMException {
+    public ModelAndView index() {
         final ModelAndView result = new ModelAndView("user/index");
 
         final Long userId = authenticationService.getCurrentUserId().get();
 
-        result.getModel().put("user", twitterService.getUser(SessionManager.getPrincipal(), userId));
+        try {
+            result.getModel().put("user", twitterService.getUser(SessionManager.getPrincipal(), userId));
+        } catch (final WTFDYUMException e) {
+            authenticationService.logOut();
+            return new ModelAndView("redirect:/");
+        }
         result.getModel().put("events", userService.getRecentEvents(userId, 10));
         result.getModel().put("availableFeatures", Feature.values());
 

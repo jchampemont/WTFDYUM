@@ -47,6 +47,8 @@ import com.jeanchampemont.wtfdyum.service.PrincipalService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
 import com.jeanchampemont.wtfdyum.service.UserService;
 import com.jeanchampemont.wtfdyum.utils.SessionManager;
+import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
+import com.jeanchampemont.wtfdyum.utils.WTFDYUMExceptionType;
 
 /**
  * The Class UserControllerTest.
@@ -143,6 +145,32 @@ public class UserControllerTest extends AbstractControllerTest {
         .andExpect(model().attribute("availableFeatures", Feature.values()))
         .andExpect(
                 model().attribute("featuresStatus", hasEntry(Feature.NOTIFY_UNFOLLOW.name(), true)));
+    }
+
+    /**
+     * Index test twitter error exception.
+     *
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void indexTestTwitterErrorException() throws Exception {
+        final Principal principal = new Principal(1L, "tok", "toksec");
+        SessionManager.setPrincipal(principal);
+        final User u = new User();
+
+        final List<Event> events = Arrays.asList(new Event(), new Event(EventType.REGISTRATION, ""));
+
+        when(authenticationService.getCurrentUserId()).thenReturn(Optional.of(12340L));
+        when(twitterService.getUser(principal, 12340L))
+        .thenThrow(new WTFDYUMException(WTFDYUMExceptionType.TWITTER_ERROR));
+
+        mockMvc
+        .perform(get("/user"))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/"));
+
+        verify(authenticationService, times(1)).logOut();
     }
 
     /**

@@ -5,7 +5,7 @@
 
     <groupId>com.jeanchampemont.wtfdyum</groupId>
     <artifactId>wtfdyum</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-RC</version>
     <packaging>jar</packaging>
 
     <name>Why the fuck did you unfollow me ?</name>
@@ -102,7 +102,7 @@
             </plugin>
         </plugins>
         <filters>
-            <filter>src/main/filters/dev.properties</filter>
+            <filter>src/main/filters/${build.profile.id}.properties</filter>
         </filters>
         <resources>
             <resource>
@@ -124,6 +124,21 @@
 
     <profiles>
         <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <build.profile.id>dev</build.profile.id>
+            </properties>
+        </profile>
+        <profile>
+            <id>package</id>
+            <properties>
+                <build.profile.id>package</build.profile.id>
+            </properties>
+        </profile>
+        <profile>
             <id>travis</id>
             <activation>
                 <property>
@@ -131,6 +146,9 @@
                     <value>true</value>
                 </property>
             </activation>
+            <properties>
+                <build.profile.id>dev</build.profile.id>
+            </properties>
             <build>
                 <plugins>
                     <plugin>

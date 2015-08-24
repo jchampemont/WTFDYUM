@@ -17,8 +17,6 @@
  */
 package com.jeanchampemont.wtfdyum.service;
 
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,11 +27,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -53,6 +53,10 @@ import com.jeanchampemont.wtfdyum.utils.WTFDYUMExceptionType;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = WTFDYUMApplication.class)
 public class CronServiceTest {
+
+    private static final String TWEET_TEXT = "@%s tweet";
+
+    private static final String DM_TEXT = "@%s DM";
 
     /** The principal service. */
     @Mock
@@ -75,7 +79,7 @@ public class CronServiceTest {
     @Before
     public void _init() {
         initMocks(this);
-        sut = new CronServiceImpl(principalService, userService, twitterService, "@%s DM", "@%s tweet");
+        sut = new CronServiceImpl(principalService, userService, twitterService, DM_TEXT, TWEET_TEXT);
     }
 
     /**
@@ -86,9 +90,7 @@ public class CronServiceTest {
      */
     @Test
     public void checkCredentialsTest() throws Exception {
-        when(principalService.getMembers()).thenReturn(new HashSet<>(Arrays.asList(1L)));
-        final Principal principal = new Principal(1L, "tok", "ttoktok");
-        when(principalService.get(1L)).thenReturn(principal);
+        final Principal principal = principal(1L);
         when(twitterService.verifyCredentials(principal)).thenReturn(true);
 
         sut.checkCredentials();
@@ -102,9 +104,7 @@ public class CronServiceTest {
      */
     @Test
     public void checkCredentialsTestInvalid() throws Exception {
-        when(principalService.getMembers()).thenReturn(new HashSet<>(Arrays.asList(1L)));
-        final Principal principal = new Principal(1L, "tok", "ttoktok");
-        when(principalService.get(1L)).thenReturn(principal);
+        final Principal principal = principal(1L);
         when(twitterService.verifyCredentials(principal)).thenReturn(false);
 
         sut.checkCredentials();
@@ -116,69 +116,189 @@ public class CronServiceTest {
     }
 
     /**
-     * Find unfollowers test.
+     * Find unfollowers test disabled.
+     *
+     * @throws Exception the exception
+     */
+    @Test
+    public void findUnfollowersTestDisabled() throws Exception {
+        principal(5L);
+        featureEnabled(5L, Feature.NOTIFY_UNFOLLOW, false);
+
+        sut.findUnfollowers();
+    }
+
+    /**
+     * Find unfollowers test nominal.
      *
      * @throws Exception
      *             the exception
      */
     @Test
-    public void findUnfollowersTest() throws Exception {
-        /*
-         * 5 members
-         *
-         * 1: nominal test case
-         *
-         * 2: an error is thrown while contacting twitter
-         *
-         * 3: account has exceeded its rate limits
-         *
-         * 4: a NPE is thrown whil computing unfollowers
-         *
-         * 5: feature disabled
-         *
-         * 6: send a tweet when an unfollower is found
-         */
-        when(principalService.getMembers()).thenReturn(new HashSet<>(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L)));
+    public void findUnfollowersTestNominal() throws Exception {
+        final Principal principal = principal(1L);
+        featureEnabled(1L, Feature.NOTIFY_UNFOLLOW, true);
 
-        //Feature enabled for all members
-        when(userService.isFeatureEnabled(anyLong(), eq(Feature.NOTIFY_UNFOLLOW))).thenReturn(true);
-        //except member 5L
-        when(userService.isFeatureEnabled(5L, Feature.NOTIFY_UNFOLLOW)).thenReturn(false);
+        final Set<Long> followers = followers(principal, (s, f) -> s.thenReturn(f));
 
-        // Feature disabled for all members
-        when(userService.isFeatureEnabled(anyLong(), eq(Feature.TWEET_UNFOLLOW))).thenReturn(false);
-        // except member 6L
-        when(userService.isFeatureEnabled(6L, Feature.TWEET_UNFOLLOW)).thenReturn(true);
+        final List<User> unfollowers = unfollowers(principal, followers, (s, u) -> s.thenReturn(u));
 
-        // principals for members 1, 2, 3, 4, 6
-        final List<Principal> principals = Arrays.asList(new Principal(1L, "", ""), new Principal(2L, "", ""),
-                new Principal(3L, "", ""), new Principal(4L, "", ""), null, new Principal(6L, "", ""));
-        when(principalService.get(anyLong())).thenReturn(principals.get(0), principals.get(1), principals.get(2),
-                principals.get(3), principals.get(5));
+        sut.findUnfollowers();
 
-        // default followers list
+        verifyUnfollowDM(principal, unfollowers.get(0));
+        verifyUnfollowDM(principal, unfollowers.get(1));
+
+        // New followers list should be saved
+        verify(userService, times(1)).saveFollowers(1L, followers);
+    }
+
+    /**
+     * Find unfollowers test npe error.
+     *
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void findUnfollowersTestNPEError() throws Exception {
+        final Principal principal = principal(4L);
+        featureEnabled(4L, Feature.NOTIFY_UNFOLLOW, true);
+
+        final Set<Long> followers = followers(principal, (s, f) -> s.thenReturn(f));
+
+        // NPE thrown while computing unfollowers
+        unfollowers(principal, followers, (s, u) -> s.thenThrow(new NullPointerException()));
+
+        sut.findUnfollowers();
+
+        // should have an event UNKNOWN_ERROR
+        verify(userService, times(1)).addEvent(4L, new Event(EventType.UNKNOWN_ERROR, null));
+    }
+
+    /**
+     * Find unfollowers test rate limit error.
+     *
+     * @throws Exception the exception
+     */
+    @Test
+    public void findUnfollowersTestRateLimitError() throws Exception {
+        final Principal principal = principal(3L);
+        featureEnabled(3L, Feature.NOTIFY_UNFOLLOW, true);
+
+        followers(principal,
+                (s, f) -> s.thenThrow(new WTFDYUMException(WTFDYUMExceptionType.GET_FOLLOWERS_RATE_LIMIT_EXCEEDED)));
+
+        sut.findUnfollowers();
+
+        // should have an event RATE_LIMIT_EXCEEDED
+        verify(userService, times(1)).addEvent(3L, new Event(EventType.RATE_LIMIT_EXCEEDED, null));
+    }
+
+    /**
+     * Find unfollowers test tweet.
+     *
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void findUnfollowersTestTweet() throws Exception {
+        final Principal principal = principal(6L);
+        featureEnabled(6L, Feature.TWEET_UNFOLLOW, true);
+
+        final Set<Long> followers = followers(principal, (s, f) -> s.thenReturn(f));
+
+        final List<User> unfollowers = unfollowers(principal, followers, (s, u) -> s.thenReturn(u));
+
+        sut.findUnfollowers();
+
+        verifyUnfollowTweet(principal, unfollowers.get(0));
+        verifyUnfollowTweet(principal, unfollowers.get(1));
+
+        // New followers list should be saved
+        verify(userService, times(1)).saveFollowers(6L, followers);
+    }
+
+    /**
+     * Find unfollowers test twitter error.
+     *
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void findUnfollowersTestTwitterError() throws Exception {
+        final Principal principal = principal(2L);
+        featureEnabled(2L, Feature.NOTIFY_UNFOLLOW, true);
+
+        followers(principal, (s, f) -> s.thenThrow(new WTFDYUMException(WTFDYUMExceptionType.TWITTER_ERROR)));
+
+        sut.findUnfollowers();
+
+        // should have an event TWITTER_ERROR
+        verify(userService, times(1)).addEvent(2L, new Event(EventType.TWITTER_ERROR, null));
+    }
+
+    /**
+     * Feature enabled.
+     *
+     * @param userId
+     *            the user id
+     * @param feature
+     *            the feature
+     * @param value
+     *            the value
+     */
+    private void featureEnabled(final long userId, final Feature feature, final boolean value) {
+        when(userService.isFeatureEnabled(userId, feature)).thenReturn(value);
+    }
+
+    /**
+     * Followers.
+     *
+     * @param principal
+     *            the principal
+     * @param l
+     *            the lambda expression
+     * @return the sets of followers ids
+     * @throws WTFDYUMException
+     *             the WTFDYUM exception
+     */
+    private Set<Long> followers(final Principal principal, final BiConsumer<OngoingStubbing<Set<Long>>, Set<Long>> l)
+            throws WTFDYUMException {
         final Set<Long> followers = new HashSet<>(Arrays.asList(10L, 11L, 12L));
-        // 1L: default followers
-        when(twitterService.getFollowers(1L, Optional.ofNullable(principals.get(0)))).thenReturn(followers);
-        // 2L: throw a twitter error
-        when(twitterService.getFollowers(2L, Optional.ofNullable(principals.get(1))))
-        .thenThrow(new WTFDYUMException(WTFDYUMExceptionType.TWITTER_ERROR));
-        // 3L: throw a rate limit error
-        when(twitterService.getFollowers(3L, Optional.ofNullable(principals.get(2))))
-        .thenThrow(new WTFDYUMException(WTFDYUMExceptionType.GET_FOLLOWERS_RATE_LIMIT_EXCEEDED));
-        // 4L: default followers
-        when(twitterService.getFollowers(4L, Optional.ofNullable(principals.get(3)))).thenReturn(followers);
-        // 6L: default followers
-        when(twitterService.getFollowers(6L, Optional.ofNullable(principals.get(5)))).thenReturn(followers);
+        l.accept(when(twitterService.getFollowers(principal.getUserId(), Optional.ofNullable(principal))), followers);
+        return followers;
+    }
 
-        // default unfollowers list
+    /**
+     * Principal.
+     *
+     * @param id
+     *            the id
+     * @return the principal
+     */
+    private Principal principal(final long id) {
+        when(principalService.getMembers()).thenReturn(new HashSet<>(Arrays.asList(id)));
+        final Principal principal = new Principal(id, "Principal 1 Token", "Principal 1 Token Secret");
+        when(principalService.get(id)).thenReturn(principal);
+        return principal;
+    }
+
+    /**
+     * Unfollowers.
+     *
+     * @param principal
+     *            the principal
+     * @param followersIds
+     *            the followers ids
+     * @param l
+     *            the l
+     * @return the sets the
+     * @throws WTFDYUMException
+     *             the WTFDYUM exception
+     */
+    private List<User> unfollowers(final Principal principal, final Set<Long> followersIds, final BiConsumer<OngoingStubbing<Set<Long>>, Set<Long>> l)
+            throws WTFDYUMException {
         final Set<Long> unfollowers = new HashSet<>(Arrays.asList(10L, 11L));
-        // 1L: default unfollowers
-        when(userService.getUnfollowers(1L, followers)).thenReturn(unfollowers);
-        // 4L: NPE thrown while computing unfollowers
-        when(userService.getUnfollowers(4L, followers)).thenThrow(new NullPointerException());
-        // 6L : default unfollowers
-        when(userService.getUnfollowers(6L, followers)).thenReturn(unfollowers);
+        l.accept(when(userService.getUnfollowers(principal.getUserId(), followersIds)), unfollowers);
 
         // unfollowers 10 and 11 details :
         final User user10 = new User();
@@ -189,62 +309,40 @@ public class CronServiceTest {
         user11.setId(11L);
         user11.setScreenName("user11");
 
-        when(twitterService.getUser(principals.get(0), 10L)).thenReturn(user10);
-        when(twitterService.getUser(principals.get(0), 11L)).thenReturn(user11);
-        when(twitterService.getUser(principals.get(5), 10L)).thenReturn(user10);
-        when(twitterService.getUser(principals.get(5), 11L)).thenReturn(user11);
-
-
-
-        sut.findUnfollowers();
-
-
-
-        // 1L :
-        // A unfollow event and a direct message should have been sent for
-        // unfollower 10
-        verify(userService, times(1)).addEvent(1L, new Event(EventType.UNFOLLOW, user10.getScreenName()));
-        verify(twitterService, times(1)).sendDirectMessage(principals.get(0), 1L, String.format(
-                "@%s DM", user10.getScreenName()));
-
-        // A unfollow event and a direct message should have been sent for
-        // unfollower 11
-        verify(userService, times(1)).addEvent(1L, new Event(EventType.UNFOLLOW, user11.getScreenName()));
-        verify(twitterService, times(1)).sendDirectMessage(principals.get(0), 1L, String.format(
-                "@%s DM", user11.getScreenName()));
-
-        // 2L should have an event TWITTER_ERROR
-        verify(userService, times(1)).addEvent(2L, new Event(EventType.TWITTER_ERROR, null));
-
-        // 3L should have an event RATE_LIMIT_EXCEEDED
-        verify(userService, times(1)).addEvent(3L, new Event(EventType.RATE_LIMIT_EXCEEDED, null));
-        // 4L should have an event UNKNOWN_ERROR
-        verify(userService, times(1)).addEvent(4L, new Event(EventType.UNKNOWN_ERROR, null));
-
-        // 6L :
-        // A unfollow event, a direct message and a tweet should have been sent
-        // for
-        // unfollower 10
-        verify(userService, times(1)).addEvent(6L, new Event(EventType.UNFOLLOW, user10.getScreenName()));
-        verify(twitterService, times(1)).sendDirectMessage(principals.get(5), 6L, String.format(
-                "@%s DM", user10.getScreenName()));
-        verify(twitterService, times(1)).tweet(principals.get(5),
-                String.format("@%s tweet", user10.getScreenName()));
-
-        // A unfollow event, a direct message and a tweet should have been sent
-        // for
-        // unfollower 11
-        verify(userService, times(1)).addEvent(6L, new Event(EventType.UNFOLLOW, user11.getScreenName()));
-        verify(twitterService, times(1)).sendDirectMessage(principals.get(5), 6L, String.format(
-                "@%s DM", user11.getScreenName()));
-        verify(twitterService, times(1)).tweet(principals.get(5),
-                String.format("@%s tweet", user11.getScreenName()));
-
-        // 1L: New followers list should be saved
-        verify(userService, times(1)).saveFollowers(1L, followers);
-
-        // 6L: New followers list should be saved
-        verify(userService, times(1)).saveFollowers(6L, followers);
+        when(twitterService.getUser(principal, 10L)).thenReturn(user10);
+        when(twitterService.getUser(principal, 11L)).thenReturn(user11);
+        return Arrays.asList(user10, user11);
     }
 
+    /**
+     * Verify unfollow dm.
+     *
+     * @param principal
+     *            the principal
+     * @param unfollower
+     *            the unfollower
+     * @throws WTFDYUMException
+     *             the WTFDYUM exception
+     */
+    private void verifyUnfollowDM(final Principal principal, final User unfollower) throws WTFDYUMException {
+        verify(userService, times(1)).addEvent(principal.getUserId(), new Event(EventType.UNFOLLOW, unfollower.getScreenName()));
+        verify(twitterService, times(1)).sendDirectMessage(principal, principal.getUserId(), String.format(
+                DM_TEXT, unfollower.getScreenName()));
+    }
+
+    /**
+     * Verify unfollow tweet.
+     *
+     * @param principal
+     *            the principal
+     * @param unfollower
+     *            the unfollower
+     * @throws WTFDYUMException
+     *             the WTFDYUM exception
+     */
+    private void verifyUnfollowTweet(final Principal principal, final User unfollower) throws WTFDYUMException {
+        verify(userService, times(1)).addEvent(principal.getUserId(),
+                new Event(EventType.UNFOLLOW, unfollower.getScreenName()));
+        verify(twitterService, times(1)).tweet(principal, String.format(TWEET_TEXT, unfollower.getScreenName()));
+    }
 }

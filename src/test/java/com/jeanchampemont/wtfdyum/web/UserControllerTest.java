@@ -157,9 +157,6 @@ public class UserControllerTest extends AbstractControllerTest {
     public void indexTestTwitterErrorException() throws Exception {
         final Principal principal = new Principal(1L, "tok", "toksec");
         SessionManager.setPrincipal(principal);
-        final User u = new User();
-
-        final List<Event> events = Arrays.asList(new Event(), new Event(EventType.REGISTRATION, ""));
 
         when(authenticationService.getCurrentUserId()).thenReturn(Optional.of(12340L));
         when(twitterService.getUser(principal, 12340L))

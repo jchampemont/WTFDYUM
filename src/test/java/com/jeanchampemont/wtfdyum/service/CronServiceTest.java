@@ -75,7 +75,7 @@ public class CronServiceTest {
     @Before
     public void _init() {
         initMocks(this);
-        sut = new CronServiceImpl(principalService, userService, twitterService);
+        sut = new CronServiceImpl(principalService, userService, twitterService, "@%s DM", "@%s tweet");
     }
 
     /**
@@ -205,13 +205,13 @@ public class CronServiceTest {
         // unfollower 10
         verify(userService, times(1)).addEvent(1L, new Event(EventType.UNFOLLOW, user10.getScreenName()));
         verify(twitterService, times(1)).sendDirectMessage(principals.get(0), 1L, String.format(
-                "Message from WTFDYUM: @%s just stopped following you.", user10.getScreenName()));
+                "@%s DM", user10.getScreenName()));
 
         // A unfollow event and a direct message should have been sent for
         // unfollower 11
         verify(userService, times(1)).addEvent(1L, new Event(EventType.UNFOLLOW, user11.getScreenName()));
         verify(twitterService, times(1)).sendDirectMessage(principals.get(0), 1L, String.format(
-                "Message from WTFDYUM: @%s just stopped following you.", user11.getScreenName()));
+                "@%s DM", user11.getScreenName()));
 
         // 2L should have an event TWITTER_ERROR
         verify(userService, times(1)).addEvent(2L, new Event(EventType.TWITTER_ERROR, null));
@@ -227,18 +227,18 @@ public class CronServiceTest {
         // unfollower 10
         verify(userService, times(1)).addEvent(6L, new Event(EventType.UNFOLLOW, user10.getScreenName()));
         verify(twitterService, times(1)).sendDirectMessage(principals.get(5), 6L, String.format(
-                "Message from WTFDYUM: @%s just stopped following you.", user10.getScreenName()));
+                "@%s DM", user10.getScreenName()));
         verify(twitterService, times(1)).tweet(principals.get(5),
-                String.format("@%s, Why The Fuck Did You Unfollow Me?", user10.getScreenName()));
+                String.format("@%s tweet", user10.getScreenName()));
 
         // A unfollow event, a direct message and a tweet should have been sent
         // for
         // unfollower 11
         verify(userService, times(1)).addEvent(6L, new Event(EventType.UNFOLLOW, user11.getScreenName()));
         verify(twitterService, times(1)).sendDirectMessage(principals.get(5), 6L, String.format(
-                "Message from WTFDYUM: @%s just stopped following you.", user11.getScreenName()));
+                "@%s DM", user11.getScreenName()));
         verify(twitterService, times(1)).tweet(principals.get(5),
-                String.format("@%s, Why The Fuck Did You Unfollow Me?", user11.getScreenName()));
+                String.format("@%s tweet", user11.getScreenName()));
 
         // 1L: New followers list should be saved
         verify(userService, times(1)).saveFollowers(1L, followers);

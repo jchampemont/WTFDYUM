@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -47,14 +48,26 @@ public class CronServiceImpl implements CronService {
      *
      * @param principalService
      *            the principal service
+     * @param userService
+     *            the user service
+     * @param twitterService
+     *            the twitter service
+     * @param unfollowDMText
+     *            the unfollow dm text
+     * @param unfollowTweetText
+     *            the unfollow tweet text
      */
     @Autowired
     public CronServiceImpl(final PrincipalService principalService,
             final UserService userService,
-            final TwitterService twitterService) {
+            final TwitterService twitterService,
+            @Value("${wtfdyum.unfollow.dm-text}") final String unfollowDMText,
+            @Value("${wtfdyum.unfollow.tweet-text}") final String unfollowTweetText) {
         this.principalService = principalService;
         this.userService = userService;
         this.twitterService = twitterService;
+        this.unfollowDMText = unfollowDMText;
+        this.unfollowTweetText = unfollowTweetText;
     }
 
     /** The principal service. */
@@ -65,6 +78,12 @@ public class CronServiceImpl implements CronService {
 
     /** The twitter service. */
     private final TwitterService twitterService;
+
+    /** The unfollow dm text. */
+    private final String unfollowDMText;
+
+    /** The unfollow tweet text. */
+    private final String unfollowTweetText;
 
     /*
      * (non-Javadoc)
@@ -113,14 +132,13 @@ public class CronServiceImpl implements CronService {
                         userService.addEvent(userId, new Event(EventType.UNFOLLOW, unfollower.getScreenName()));
 
                         if (notifyUnfollow) {
-                            twitterService.sendDirectMessage(principal, userId, String.format(
-                                    "Message from WTFDYUM: @%s just stopped following you.",
-                                    unfollower.getScreenName()));
+                            twitterService.sendDirectMessage(principal, userId,
+                                    String.format(unfollowDMText, unfollower.getScreenName()));
                         }
 
                         if (tweetUnfollow) {
-                            twitterService.tweet(principal, String.format("@%s, Why The Fuck Did You Unfollow Me?",
-                                    unfollower.getScreenName()));
+                            twitterService.tweet(principal,
+                                    String.format(unfollowTweetText, unfollower.getScreenName()));
                         }
                     }
 

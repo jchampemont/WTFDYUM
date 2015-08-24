@@ -109,4 +109,13 @@ public interface TwitterService {
      * @throws WTFDYUMException the WTFDYUM exception
      */
     void tweet(Principal principal, String text) throws WTFDYUMException;
+
+    /**
+     * Verify credentials.
+     *
+     * @param principal
+     *            the principal
+     * @return true, if successful
+     */
+    boolean verifyCredentials(Principal principal);
 }

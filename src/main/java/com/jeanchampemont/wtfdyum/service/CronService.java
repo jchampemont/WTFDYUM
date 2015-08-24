@@ -23,6 +23,11 @@ package com.jeanchampemont.wtfdyum.service;
 public interface CronService {
 
     /**
+     * Check credentials.
+     */
+    void checkCredentials();
+
+    /**
      * Find unfollowers.
      */
     void findUnfollowers();

@@ -196,6 +196,23 @@ public class TwitterServiceImpl implements TwitterService {
     }
 
     /**
+     * Verify credentials.
+     *
+     * @param principal the principal
+     * @return true, if successful
+     */
+    @Override
+    public boolean verifyCredentials(final Principal principal) {
+        boolean result = true;
+        try {
+            twitter(principal).verifyCredentials();
+        } catch (final TwitterException e) {
+            result = false;
+        }
+        return result;
+    }
+
+    /**
      * Check rate limit status.
      *
      * @param status

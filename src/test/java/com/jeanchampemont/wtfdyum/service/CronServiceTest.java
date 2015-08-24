@@ -78,6 +78,49 @@ public class CronServiceTest {
         sut = new CronServiceImpl(principalService, userService, twitterService);
     }
 
+    /**
+     * Check credentials test.
+     *
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void checkCredentialsTest() throws Exception {
+        when(principalService.getMembers()).thenReturn(new HashSet<>(Arrays.asList(1L)));
+        final Principal principal = new Principal(1L, "tok", "ttoktok");
+        when(principalService.get(1L)).thenReturn(principal);
+        when(twitterService.verifyCredentials(principal)).thenReturn(true);
+
+        sut.checkCredentials();
+    }
+
+    /**
+     * Check credentials test invalid.
+     *
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void checkCredentialsTestInvalid() throws Exception {
+        when(principalService.getMembers()).thenReturn(new HashSet<>(Arrays.asList(1L)));
+        final Principal principal = new Principal(1L, "tok", "ttoktok");
+        when(principalService.get(1L)).thenReturn(principal);
+        when(twitterService.verifyCredentials(principal)).thenReturn(false);
+
+        sut.checkCredentials();
+
+        for (final Feature feature : Feature.values()) {
+            verify(userService, times(1)).disableFeature(1L, feature);
+        }
+        verify(userService, times(1)).addEvent(1L, new Event(EventType.INVALID_TWITTER_CREDENTIALS, ""));
+    }
+
+    /**
+     * Find unfollowers test.
+     *
+     * @throws Exception
+     *             the exception
+     */
     @Test
     public void findUnfollowersTest() throws Exception {
         /*

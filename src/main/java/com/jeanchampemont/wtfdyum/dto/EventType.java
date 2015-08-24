@@ -38,7 +38,11 @@ public enum EventType {
     TWITTER_ERROR("Error while contacting twitter.", EventSeverity.ERROR),
 
     /** The rate limit exceeded. */
-    RATE_LIMIT_EXCEEDED("Twitter's rate limit is exceeded, you might have too many followers", EventSeverity.ERROR),
+    RATE_LIMIT_EXCEEDED("Twitter's rate limit is exceeded, you might have too many followers.", EventSeverity.ERROR),
+
+    /** The invalid twitter credentials. */
+    INVALID_TWITTER_CREDENTIALS("Could not access your twitter account. Please verify you allowed this application.",
+            EventSeverity.ERROR),
 
     /** The unknown error. */
     UNKNOWN_ERROR("An unknown error occured", EventSeverity.ERROR);

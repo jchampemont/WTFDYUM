@@ -69,6 +69,28 @@ public class CronServiceImpl implements CronService {
     /*
      * (non-Javadoc)
      *
+     * @see com.jeanchampemont.wtfdyum.service.CronService#checkCredentials()
+     */
+    @Override
+    @Scheduled(fixedDelayString = "${wtfdyum.credentials-check-delay}")
+    public void checkCredentials() {
+        final Set<Long> members = principalService.getMembers();
+
+        for (final Long userId : members) {
+            final Principal principal = principalService.get(userId);
+
+            if (!twitterService.verifyCredentials(principal)) {
+                for (final Feature feature : Feature.values()) {
+                    userService.disableFeature(userId, feature);
+                }
+                userService.addEvent(userId, new Event(EventType.INVALID_TWITTER_CREDENTIALS, ""));
+            }
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
      * @see com.jeanchampemont.wtfdyum.service.CronService#findUnfollowers()
      */
     @Override
@@ -92,7 +114,8 @@ public class CronServiceImpl implements CronService {
 
                         if (notifyUnfollow) {
                             twitterService.sendDirectMessage(principal, userId, String.format(
-                                    "Message from WTFDYUM: @%s just stopped following you.", unfollower.getScreenName()));
+                                    "Message from WTFDYUM: @%s just stopped following you.",
+                                    unfollower.getScreenName()));
                         }
 
                         if (tweetUnfollow) {

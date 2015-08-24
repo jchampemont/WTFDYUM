@@ -375,4 +375,30 @@ public class TwitterServiceTest {
         when(twitter.updateStatus("my brand new tweet")).thenThrow(new TwitterException(""));
         sut.tweet(new Principal(144L, "tok", "toksec"), "my brand new tweet");
     }
+
+    /**
+     * Verify credentials test false.
+     *
+     * @throws TwitterException
+     *             the twitter exception
+     */
+    @Test
+    public void verifyCredentialsTestFalse() throws TwitterException {
+        when(twitter.verifyCredentials()).thenThrow(new TwitterException(""));
+        final boolean result = sut.verifyCredentials(new Principal(12L, "tre", "tr"));
+        assertThat(result).isFalse();
+    }
+
+    /**
+     * Verify credentials test true.
+     *
+     * @throws TwitterException
+     *             the twitter exception
+     */
+    @Test
+    public void verifyCredentialsTestTrue() throws TwitterException {
+        when(twitter.verifyCredentials()).thenReturn(null);
+        final boolean result = sut.verifyCredentials(new Principal(12L, "tre", "tr"));
+        assertThat(result).isTrue();
+    }
 }

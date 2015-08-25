@@ -20,10 +20,13 @@ package com.jeanchampemont.wtfdyum.service.impl;
 import java.util.Optional;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.EventType;
@@ -70,6 +73,9 @@ public class CronServiceImpl implements CronService {
         this.unfollowTweetText = unfollowTweetText;
     }
 
+    /** The log. */
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
     /** The principal service. */
     private final PrincipalService principalService;
 
@@ -93,6 +99,9 @@ public class CronServiceImpl implements CronService {
     @Override
     @Scheduled(fixedDelayString = "${wtfdyum.credentials-check-delay}")
     public void checkCredentials() {
+        log.debug("Checking credentials...");
+        final StopWatch watch = new StopWatch();
+        watch.start();
         final Set<Long> members = principalService.getMembers();
 
         for (final Long userId : members) {
@@ -105,6 +114,8 @@ public class CronServiceImpl implements CronService {
                 userService.addEvent(userId, new Event(EventType.INVALID_TWITTER_CREDENTIALS, ""));
             }
         }
+        watch.stop();
+        log.debug("Finished checking credentials in {} ms", watch.getTotalTimeMillis());
     }
 
     /*
@@ -115,6 +126,9 @@ public class CronServiceImpl implements CronService {
     @Override
     @Scheduled(fixedDelayString = "${wtfdyum.unfollow-check-delay}")
     public void findUnfollowers() {
+        log.debug("Finding unnfollowers...");
+        final StopWatch watch = new StopWatch();
+        watch.start();
         final Set<Long> members = principalService.getMembers();
 
         for (final Long userId : members) {
@@ -154,6 +168,8 @@ public class CronServiceImpl implements CronService {
                 }
             }
         }
+        watch.stop();
+        log.debug("Finished finding unfollowers in {} ms", watch.getTotalTimeMillis());
     }
 
 }

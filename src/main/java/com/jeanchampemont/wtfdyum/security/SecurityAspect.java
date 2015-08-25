@@ -20,6 +20,8 @@ package com.jeanchampemont.wtfdyum.security;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +33,9 @@ import com.jeanchampemont.wtfdyum.service.AuthenticationService;
 @Aspect
 @Component
 public class SecurityAspect {
+
+    /** The log. */
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     /** The authentication service. */
     @Autowired
@@ -49,9 +54,12 @@ public class SecurityAspect {
      */
     @Around("execution(public * *(..)) && @annotation(secured)")
     public Object aroundSecuredMethod(final ProceedingJoinPoint pjp, final Secured secured) throws Throwable {
+        log.trace("Secured method called: {}", pjp.getSignature());
         if (!authenticationService.isAuthenticated()) {
+            log.trace("Secured call not authorized, throwing SecurityException");
             throw new SecurityException();
         }
+        log.trace("Secured call authorized");
         return pjp.proceed();
     }
 }

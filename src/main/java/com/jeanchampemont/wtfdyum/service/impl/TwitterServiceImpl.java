@@ -24,6 +24,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.dozer.Mapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -75,6 +77,9 @@ public class TwitterServiceImpl implements TwitterService {
         this.appSecret = appSecret;
     }
 
+    /** The log. */
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
     /** The base url of WTFDYUM. */
     private final String baseUrl;
 
@@ -102,6 +107,7 @@ public class TwitterServiceImpl implements TwitterService {
         try {
             token = twitter().getOAuthAccessToken(requestToken, verifier);
         } catch (final TwitterException e) {
+            log.debug("Error while completeSignin", e);
             throw new WTFDYUMException(e, WTFDYUMExceptionType.TWITTER_ERROR);
         }
         return token;
@@ -137,6 +143,7 @@ public class TwitterServiceImpl implements TwitterService {
             } while (followersIDs.hasNext());
 
         } catch (final TwitterException e) {
+            log.debug("Error while getFollowers", e);
             throw new WTFDYUMException(e, WTFDYUMExceptionType.TWITTER_ERROR);
         }
         return result;
@@ -155,6 +162,7 @@ public class TwitterServiceImpl implements TwitterService {
             final twitter4j.User user = twitter(principal).users().showUser(id);
             result = mapper.map(user, User.class);
         } catch (final TwitterException e) {
+            log.debug("Error while getUser", e);
             throw new WTFDYUMException(e, WTFDYUMExceptionType.TWITTER_ERROR);
         }
         return result;
@@ -165,6 +173,7 @@ public class TwitterServiceImpl implements TwitterService {
         try {
             twitter(principal).sendDirectMessage(toUserId, text);
         } catch (final TwitterException e) {
+            log.debug("Error while sendDirectMessage", e);
             throw new WTFDYUMException(e, WTFDYUMExceptionType.TWITTER_ERROR);
         }
     }
@@ -181,6 +190,7 @@ public class TwitterServiceImpl implements TwitterService {
         try {
             token = twitter().getOAuthRequestToken(new StringBuilder(baseUrl).append(path).toString());
         } catch (final TwitterException e) {
+            log.debug("Error while signin", e);
             throw new WTFDYUMException(e, WTFDYUMExceptionType.TWITTER_ERROR);
         }
         return token;
@@ -191,6 +201,7 @@ public class TwitterServiceImpl implements TwitterService {
         try {
             twitter(principal).updateStatus(text);
         } catch (final TwitterException e) {
+            log.debug("Error while tweet", e);
             throw new WTFDYUMException(e, WTFDYUMExceptionType.TWITTER_ERROR);
         }
     }

@@ -8,28 +8,28 @@ A small tool to find out who stopped following you on Twitter.
 ### For developers
 #### 3 minutes installation :
 
-    - Clone, fork or download the source code from this Github page
-    - Create a twitter application here : https://apps.twitter.com/
-    - Install Maven 3
-    - Edit file [src/main/filters/dev.properties](https://github.com/jchampemont/WTFDYUM/blob/master/src/main/filters/dev.properties) with your twitter app credentials
-    - Start a redis development instance with `mvn redis:run`
-    - Start the application with `mvn spring-boot:run`
-    - Connect to the application at http://127.0.0.1:8080
+- Clone, fork or download the source code from this Github page
+- Create a twitter application here : https://apps.twitter.com/
+- Install Maven 3
+- Edit file [src/main/filters/dev.properties](https://github.com/jchampemont/WTFDYUM/blob/master/src/main/filters/dev.properties) with your twitter app credentials
+- Start a redis development instance with `mvn redis:run`
+- Start the application with `mvn spring-boot:run`
+- Connect to the application at `http://127.0.0.1:8080`
     
 ### Installation for production use
 
 Download latest release from here : https://github.com/jchampemont/WTFDYUM/releases
 
-See bundled INSTALL.md file for installation details.
+See bundled `INSTALL.md` file for installation details.
 
 ### Contributing
 I am happy to accept any pull request as long as it respects the following guidelines :
 
-    - Meets some basic code quality requirements
-    - Please do some basic unit testing on your code
-    - Use current technology stack before introducing any new dependency
-    - You accept your code to be licensed under the Apache License, Version 2.0
-    - NoteDown should stay *KISS* : Keep It Simple, Stupid.
+- Meets some basic code quality requirements
+- Please do some basic unit testing on your code
+- Use current technology stack before introducing any new dependency
+- You accept your code to be licensed under the Apache License, Version 2.0
+- WTFDYUM should stay *KISS* : Keep It Simple, Stupid.
 
 Feel free to add your name on the list of contributors below.
 

@@ -15,40 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jeanchampemont.wtfdyum.service;
+package com.jeanchampemont.wtfdyum.security;
 
-import com.jeanchampemont.wtfdyum.dto.Principal;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-/**
- * The Interface AuthenticationService.
- */
-public interface AuthenticationService {
+@ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "Authentication required")
+public class SecurityException extends RuntimeException {
 
-    /**
-     * Authenticate.
-     *
-     * @param user
-     *            the user
-     * @return the connected userId
-     */
-    Long authenticate(Principal user);
-
-    /**
-     * Gets the current user id.
-     *
-     * @return the current user id
-     */
-    Long getCurrentUserId();
-
-    /**
-     * Checks if is authenticated.
-     *
-     * @return the boolean
-     */
-    Boolean isAuthenticated();
-
-    /**
-     * Log out.
-     */
-    void logOut();
 }

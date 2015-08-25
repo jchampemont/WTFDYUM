@@ -31,6 +31,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.EventType;
 import com.jeanchampemont.wtfdyum.dto.Feature;
+import com.jeanchampemont.wtfdyum.security.Secured;
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
 import com.jeanchampemont.wtfdyum.service.UserService;
@@ -64,8 +65,9 @@ public class UserController {
      * @return the redirect view
      */
     @RequestMapping(value = "/feature/disable/{feature}", method = RequestMethod.GET)
+    @Secured
     public RedirectView disableFeature(@PathVariable("feature") final Feature feature) {
-        final Long userId = authenticationService.getCurrentUserId().get();
+        final Long userId = authenticationService.getCurrentUserId();
 
         if (userService.disableFeature(userId, feature)) {
             userService.addEvent(userId, new Event(EventType.FEATURE_DISABLED, feature.getShortName()));
@@ -80,8 +82,9 @@ public class UserController {
      * @return the redirect view
      */
     @RequestMapping(value = "/feature/enable/{feature}", method = RequestMethod.GET)
+    @Secured
     public RedirectView enableFeature(@PathVariable("feature") final Feature feature) {
-        final Long userId = authenticationService.getCurrentUserId().get();
+        final Long userId = authenticationService.getCurrentUserId();
 
         if (userService.enableFeature(userId, feature)) {
             userService.addEvent(userId, new Event(EventType.FEATURE_ENABLED, feature.getShortName()));
@@ -97,10 +100,11 @@ public class UserController {
      * @throws WTFDYUMException
      */
     @RequestMapping(method = RequestMethod.GET)
+    @Secured
     public ModelAndView index() {
         final ModelAndView result = new ModelAndView("user/index");
 
-        final Long userId = authenticationService.getCurrentUserId().get();
+        final Long userId = authenticationService.getCurrentUserId();
 
         try {
             result.getModel().put("user", twitterService.getUser(SessionManager.getPrincipal(), userId));

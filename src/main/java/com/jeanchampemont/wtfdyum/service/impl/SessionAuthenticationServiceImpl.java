@@ -22,7 +22,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
@@ -75,8 +74,8 @@ public class SessionAuthenticationServiceImpl implements AuthenticationService {
      * ()
      */
     @Override
-    public Optional<Long> getCurrentUserId() {
-        return Optional.fromNullable((Long) session().getAttribute(CURRENT_USER_ID));
+    public Long getCurrentUserId() {
+        return (Long) session().getAttribute(CURRENT_USER_ID);
     }
 
     /*
@@ -88,7 +87,7 @@ public class SessionAuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     public Boolean isAuthenticated() {
-        return getCurrentUserId().isPresent();
+        return getCurrentUserId() != null;
     }
 
     /*

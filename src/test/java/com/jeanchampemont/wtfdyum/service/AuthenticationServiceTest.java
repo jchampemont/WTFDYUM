@@ -34,7 +34,6 @@ import org.mockito.Mock;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.google.common.base.Optional;
 import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.service.impl.SessionAuthenticationServiceImpl;
@@ -102,11 +101,10 @@ public class AuthenticationServiceTest {
     @Test
     public void getCurrentUserIdAuthenticatedTest() {
         when(session.getAttribute(anyString())).thenReturn(144L);
-        final Optional<Long> currentUserId = sut.getCurrentUserId();
+        final Long currentUserId = sut.getCurrentUserId();
 
         assertThat(currentUserId).isNotNull();
-        assertThat(currentUserId.isPresent()).isTrue();
-        assertThat(currentUserId.get()).isEqualTo(144L);
+        assertThat(currentUserId).isEqualTo(144L);
     }
 
     /**
@@ -117,10 +115,9 @@ public class AuthenticationServiceTest {
     @Test
     public void getCurrentUserIdNotAuthenticatedTest() {
         when(session.getAttribute(anyString())).thenReturn(null);
-        final Optional<Long> currentUserId = sut.getCurrentUserId();
+        final Long currentUserId = sut.getCurrentUserId();
 
-        assertThat(currentUserId).isNotNull();
-        assertThat(currentUserId.isPresent()).isFalse();
+        assertThat(currentUserId).isNull();
     }
 
     /**

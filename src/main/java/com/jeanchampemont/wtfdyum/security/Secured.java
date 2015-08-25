@@ -15,40 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jeanchampemont.wtfdyum.service;
+package com.jeanchampemont.wtfdyum.security;
 
-import com.jeanchampemont.wtfdyum.dto.Principal;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-/**
- * The Interface AuthenticationService.
- */
-public interface AuthenticationService {
+@Target({ ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Secured {
 
-    /**
-     * Authenticate.
-     *
-     * @param user
-     *            the user
-     * @return the connected userId
-     */
-    Long authenticate(Principal user);
-
-    /**
-     * Gets the current user id.
-     *
-     * @return the current user id
-     */
-    Long getCurrentUserId();
-
-    /**
-     * Checks if is authenticated.
-     *
-     * @return the boolean
-     */
-    Boolean isAuthenticated();
-
-    /**
-     * Log out.
-     */
-    void logOut();
 }

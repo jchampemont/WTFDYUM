@@ -36,7 +36,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.google.common.base.Optional;
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.EventType;
 import com.jeanchampemont.wtfdyum.dto.Feature;
@@ -83,7 +82,7 @@ public class UserControllerTest extends AbstractControllerTest {
      */
     @Test
     public void disableFeatureTest() throws Exception {
-        when(authenticationService.getCurrentUserId()).thenReturn(Optional.of(12340L));
+        when(authenticationService.getCurrentUserId()).thenReturn(12340L);
         when(userService.disableFeature(12340L, Feature.NOTIFY_UNFOLLOW)).thenReturn(true);
 
         mockMvc
@@ -104,7 +103,7 @@ public class UserControllerTest extends AbstractControllerTest {
      */
     @Test
     public void enableFeatureTest() throws Exception {
-        when(authenticationService.getCurrentUserId()).thenReturn(Optional.of(12340L));
+        when(authenticationService.getCurrentUserId()).thenReturn(12340L);
         when(userService.enableFeature(12340L, Feature.NOTIFY_UNFOLLOW)).thenReturn(true);
 
         mockMvc
@@ -131,7 +130,7 @@ public class UserControllerTest extends AbstractControllerTest {
 
         final List<Event> events = Arrays.asList(new Event(), new Event(EventType.REGISTRATION, ""));
 
-        when(authenticationService.getCurrentUserId()).thenReturn(Optional.of(12340L));
+        when(authenticationService.getCurrentUserId()).thenReturn(12340L);
         when(twitterService.getUser(principal, 12340L)).thenReturn(u);
         when(userService.getRecentEvents(12340L, 10)).thenReturn(events);
         when(userService.isFeatureEnabled(12340L, Feature.NOTIFY_UNFOLLOW)).thenReturn(true);
@@ -158,7 +157,7 @@ public class UserControllerTest extends AbstractControllerTest {
         final Principal principal = new Principal(1L, "tok", "toksec");
         SessionManager.setPrincipal(principal);
 
-        when(authenticationService.getCurrentUserId()).thenReturn(Optional.of(12340L));
+        when(authenticationService.getCurrentUserId()).thenReturn(12340L);
         when(twitterService.getUser(principal, 12340L))
         .thenThrow(new WTFDYUMException(WTFDYUMExceptionType.TWITTER_ERROR));
 

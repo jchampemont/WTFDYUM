@@ -5,7 +5,7 @@
 
     <groupId>com.jeanchampemont.wtfdyum</groupId>
     <artifactId>wtfdyum</artifactId>
-    <version>1.0.0-RC</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>Why the fuck did you unfollow me ?</name>

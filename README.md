@@ -22,7 +22,7 @@ Download latest release from here : https://github.com/jchampemont/WTFDYUM/relea
 
 See bundled `INSTALL.md` file for installation details.
 
-### Bug reportig
+### Bug reporting
 
 If you encounter any bug or issue while using this software, feel free to report it using GitHub issues tracker. We will definitely have a look at it.
 

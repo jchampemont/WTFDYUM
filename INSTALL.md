@@ -7,6 +7,12 @@
 
 You just need to configure WTFDYUM to use your redis instance and twitter application.
 
+Your twitter application should have the following settings:
+
+- `Enable Callback Locking` should be disabled.
+- `Allow this application to be used to Sign in with Twitter` should be enabled.
+- Permissions should be `Read, Write and Access direct messages`.
+
 
 Edit application.properties and change the following values accordingly:
 

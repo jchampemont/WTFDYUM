@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/jchampemont/WTFDYUM.svg?branch=master)](https://travis-ci.org/jchampemont/WTFDYUM)
 [![Coverage Status](https://coveralls.io/repos/jchampemont/WTFDYUM/badge.svg?branch=master&service=github)](https://coveralls.io/github/jchampemont/WTFDYUM?branch=master)
 
-A small tool to find out who stopped following you on Twitter.
+WTFDYUM is a small tool for twitter. Originally, it was to find out who stopped following you on Twitter, but we plan to add more features.
 
 ### For developers
 #### 3 minutes installation :

@@ -1,9 +1,12 @@
 # WTFDYUM 
-## a.k.a. Why The Fuck Did you Unfollow me ?
+### a.k.a. Why The Fuck Did you Unfollow me ?
 [![Build Status](https://travis-ci.org/jchampemont/WTFDYUM.svg?branch=master)](https://travis-ci.org/jchampemont/WTFDYUM)
 [![Coverage Status](https://coveralls.io/repos/jchampemont/WTFDYUM/badge.svg?branch=master&service=github)](https://coveralls.io/github/jchampemont/WTFDYUM?branch=master)
 
 WTFDYUM is a small tool for twitter. Originally, it was to find out who stopped following you on Twitter, but we plan to add more features.
+
+### Demo
+A demo instance is available at http://www.wtfdyu.me/. There is however a max users limitation set to 100.
 
 ### For developers
 #### 3 minutes installation :

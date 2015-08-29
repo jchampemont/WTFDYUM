@@ -109,9 +109,6 @@ public class CronServiceTest {
 
         sut.checkCredentials();
 
-        for (final Feature feature : Feature.values()) {
-            verify(userService, times(1)).disableFeature(1L, feature);
-        }
         verify(userService, times(1)).addEvent(1L, new Event(EventType.INVALID_TWITTER_CREDENTIALS, ""));
     }
 

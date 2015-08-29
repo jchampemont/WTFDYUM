@@ -45,6 +45,11 @@ public enum EventType {
             "Could not access your twitter account. If this error persists, please verify you allowed this application.",
             EventSeverity.ERROR),
 
+    /** The credentials invalid limit reached. */
+    CREDENTIALS_INVALID_LIMIT_REACHED(
+            "All settings where disabled due to several errors while accessing your twitter account",
+            EventSeverity.ERROR),
+
     /** The unknown error. */
     UNKNOWN_ERROR("An unknown error occured", EventSeverity.ERROR);
 

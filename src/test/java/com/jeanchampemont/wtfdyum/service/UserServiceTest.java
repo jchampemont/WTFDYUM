@@ -18,6 +18,7 @@
 package com.jeanchampemont.wtfdyum.service;
 
 import static org.assertj.core.api.StrictAssertions.assertThat;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,17 +36,20 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.EventType;
 import com.jeanchampemont.wtfdyum.dto.Feature;
+import com.jeanchampemont.wtfdyum.dto.UserLimitType;
 import com.jeanchampemont.wtfdyum.service.impl.UserServiceImpl;
 
 /**
@@ -74,6 +78,10 @@ public class UserServiceTest {
     @Mock
     private SetOperations<String, Long> longSetOperations;
 
+    /** The long value operations. */
+    @Mock
+    private ValueOperations<String, Long> longValueOperations;
+
     /** The Feature Set operations. */
     @Mock
     private SetOperations<String, Feature> featureSetOperations;
@@ -82,6 +90,7 @@ public class UserServiceTest {
     @Mock
     private ListOperations<String, Event> eventListOperations;
 
+    /** The clock. */
     private final Clock clock = Clock.fixed(Instant.parse("2007-12-03T10:15:30.00Z"), ZoneId.of("Z"));
 
     /**
@@ -106,6 +115,42 @@ public class UserServiceTest {
 
         verify(eventListOperations, times(1)).leftPush("EVENTS_31", event);
         assertThat(event.getCreationDateTime()).isEqualTo(LocalDateTime.now(clock));
+    }
+
+    /**
+     * Apply limit test not reached.
+     */
+    @Test
+    public void applyLimitTestNotReached() {
+        when(longRedisTemplate.opsForValue()).thenReturn(longValueOperations);
+        when(longValueOperations.increment(UserLimitType.CREDENTIALS_INVALID.name() + "_442", 1)).thenReturn(4L);
+
+        final boolean result = sut.applyLimit(442L, UserLimitType.CREDENTIALS_INVALID);
+
+        assertThat(result).isFalse();
+    }
+
+    /**
+     * Apply limit test reached.
+     */
+    @Test
+    public void applyLimitTestReached() {
+        when(longRedisTemplate.opsForValue()).thenReturn(longValueOperations);
+        when(featureRedisTemplate.opsForSet()).thenReturn(featureSetOperations);
+        when(eventRedisTemplate.opsForList()).thenReturn(eventListOperations);
+        when(longValueOperations.increment(UserLimitType.CREDENTIALS_INVALID.name() + "_442", 1)).thenReturn(5L);
+
+        final boolean result = sut.applyLimit(442L, UserLimitType.CREDENTIALS_INVALID);
+
+        assertThat(result).isTrue();
+        for (final Feature f : Feature.values()) {
+            verify(featureSetOperations, times(1)).remove("FEATURES_442", f);
+        }
+        final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
+        verify(eventListOperations, times(1)).leftPush(eq("EVENTS_442"), eventCaptor.capture());
+        assertThat(eventCaptor.getValue().getType()).isEqualTo(EventType.CREDENTIALS_INVALID_LIMIT_REACHED);
+        assertThat(eventCaptor.getValue().getAdditionalData()).isEmpty();
+        assertThat(eventCaptor.getValue().getCreationDateTime()).isEqualTo(LocalDateTime.now(clock));
     }
 
     /**
@@ -222,6 +267,17 @@ public class UserServiceTest {
         final boolean featureEnabled = sut.isFeatureEnabled(1899L, Feature.NOTIFY_UNFOLLOW);
 
         assertThat(featureEnabled).isTrue();
+    }
+
+    /**
+     * Reset limit test.
+     */
+    @Test
+    public void resetLimitTest() {
+
+        sut.resetLimit(199L, UserLimitType.CREDENTIALS_INVALID);
+
+        verify(longRedisTemplate, times(1)).delete(UserLimitType.CREDENTIALS_INVALID.name() + "_199");
     }
 
     /**

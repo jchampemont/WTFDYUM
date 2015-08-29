@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jeanchampemont.wtfdyum.dto.type.EventType;
 
 /**
  * The Class Event.

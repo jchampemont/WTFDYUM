@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jeanchampemont.wtfdyum.dto;
+package com.jeanchampemont.wtfdyum.dto.type;
 
 /**
  * The Enum EventType.
@@ -23,29 +23,35 @@ package com.jeanchampemont.wtfdyum.dto;
 public enum EventType {
 
     /** The registration. */
-    REGISTRATION("You registered to WTFDYUM!", EventSeverity.INFO),
+    REGISTRATION("You registered to WTFDYUM!", EventSeverityType.INFO),
 
     /** The feature enabled. */
-    FEATURE_ENABLED("You enabled %s.", EventSeverity.INFO),
+    FEATURE_ENABLED("You enabled %s.", EventSeverityType.INFO),
 
     /** The feature disabled. */
-    FEATURE_DISABLED("You disabled %s.", EventSeverity.WARNING),
+    FEATURE_DISABLED("You disabled %s.", EventSeverityType.WARNING),
 
     /** The unfollow. */
-    UNFOLLOW("@%s stopped following you.", EventSeverity.WARNING),
+    UNFOLLOW("@%s stopped following you.", EventSeverityType.WARNING),
 
     /** The twitter error. */
-    TWITTER_ERROR("Error while contacting twitter.", EventSeverity.ERROR),
+    TWITTER_ERROR("Error while contacting twitter.", EventSeverityType.ERROR),
 
     /** The rate limit exceeded. */
-    RATE_LIMIT_EXCEEDED("Twitter's rate limit is exceeded, you might have too many followers.", EventSeverity.ERROR),
+    RATE_LIMIT_EXCEEDED("Twitter's rate limit is exceeded, you might have too many followers.", EventSeverityType.ERROR),
 
     /** The invalid twitter credentials. */
-    INVALID_TWITTER_CREDENTIALS("Could not access your twitter account. Please verify you allowed this application.",
-            EventSeverity.ERROR),
+    INVALID_TWITTER_CREDENTIALS(
+            "Could not access your twitter account. If this error persists, please verify you allowed this application.",
+            EventSeverityType.ERROR),
+
+    /** The credentials invalid limit reached. */
+    CREDENTIALS_INVALID_LIMIT_REACHED(
+            "All settings where disabled due to several errors while accessing your twitter account",
+            EventSeverityType.ERROR),
 
     /** The unknown error. */
-    UNKNOWN_ERROR("An unknown error occured", EventSeverity.ERROR);
+    UNKNOWN_ERROR("An unknown error occured", EventSeverityType.ERROR);
 
     /**
      * Instantiates a new event type.
@@ -55,7 +61,7 @@ public enum EventType {
      * @param severity
      *            the severity
      */
-    private EventType(final String message, final EventSeverity severity) {
+    private EventType(final String message, final EventSeverityType severity) {
         this.message = message;
         this.severity = severity;
     }
@@ -64,7 +70,7 @@ public enum EventType {
     private String message;
 
     /** The severity. */
-    private EventSeverity severity;
+    private EventSeverityType severity;
 
     /**
      * Gets the message.
@@ -80,7 +86,7 @@ public enum EventType {
      *
      * @return the severity
      */
-    public EventSeverity getSeverity() {
+    public EventSeverityType getSeverity() {
         return severity;
     }
 }

@@ -22,6 +22,7 @@ import java.util.Set;
 
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
+import com.jeanchampemont.wtfdyum.dto.type.UserLimitType;
 
 /**
  * The Interface UserService.
@@ -37,6 +38,17 @@ public interface UserService {
      *            the event
      */
     void addEvent(Long userId, Event event);
+
+    /**
+     * Apply limit.
+     *
+     * @param userId
+     *            the user id
+     * @param type
+     *            the type
+     * @return true, if limit is exceeded
+     */
+    boolean applyLimit(Long userId, UserLimitType type);
 
     /**
      * Disable feature.
@@ -63,8 +75,10 @@ public interface UserService {
     /**
      * Gets the recent events.
      *
-     * @param userId the user id
-     * @param count the count
+     * @param userId
+     *            the user id
+     * @param count
+     *            the count
      * @return the recent events
      */
     List<Event> getRecentEvents(Long userId, int count);
@@ -90,6 +104,16 @@ public interface UserService {
      * @return true, if is feature enabled
      */
     boolean isFeatureEnabled(Long userId, Feature feature);
+
+    /**
+     * Reset limit.
+     *
+     * @param userId
+     *            the user id
+     * @param type
+     *            the type
+     */
+    void resetLimit(Long userId, UserLimitType type);
 
     /**
      * Save followers.

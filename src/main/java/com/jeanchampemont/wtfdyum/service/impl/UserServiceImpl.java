@@ -28,6 +28,8 @@ import org.springframework.stereotype.Service;
 
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
+import com.jeanchampemont.wtfdyum.dto.type.EventType;
+import com.jeanchampemont.wtfdyum.dto.type.UserLimitType;
 import com.jeanchampemont.wtfdyum.service.UserService;
 
 /**
@@ -91,6 +93,26 @@ public class UserServiceImpl implements UserService {
     public void addEvent(final Long userId, final Event event) {
         event.setCreationDateTime(LocalDateTime.now(clock));
         eventRedisTemplate.opsForList().leftPush(eventsKey(userId), event);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.jeanchampemont.wtfdyum.service.UserService#applyLimit(java.lang.Long,
+     * com.jeanchampemont.wtfdyum.dto.UserLimitType)
+     */
+    @Override
+    public boolean applyLimit(final Long userId, final UserLimitType type) {
+        final boolean reached = longRedisTemplate.opsForValue().increment(limitKey(userId, type), 1L) >= type
+                .getLimitValue();
+        if (reached) {
+            for (final Feature f : Feature.values()) {
+                disableFeature(userId, f);
+            }
+            addEvent(userId, new Event(EventType.CREDENTIALS_INVALID_LIMIT_REACHED, ""));
+        }
+        return reached;
     }
 
     /*
@@ -163,6 +185,18 @@ public class UserServiceImpl implements UserService {
      * (non-Javadoc)
      *
      * @see
+     * com.jeanchampemont.wtfdyum.service.UserService#resetLimit(java.lang.Long,
+     * com.jeanchampemont.wtfdyum.dto.UserLimitType)
+     */
+    @Override
+    public void resetLimit(final Long userId, final UserLimitType type) {
+        longRedisTemplate.delete(limitKey(userId, type));
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
      * com.jeanchampemont.wtfdyum.service.UserService#saveFollowers(java.lang.
      * Long, java.util.Set)
      */
@@ -203,6 +237,19 @@ public class UserServiceImpl implements UserService {
      */
     private String followersKey(final Long userId) {
         return new StringBuilder(FOLLOWERS_KEY_PREFIX).append(userId.toString()).toString();
+    }
+
+    /**
+     * Limit key.
+     *
+     * @param userId
+     *            the user id
+     * @param type
+     *            the type
+     * @return the string
+     */
+    private String limitKey(final Long userId, final UserLimitType type) {
+        return new StringBuilder(type.name()).append("_").append(userId.toString()).toString();
     }
 
     /**

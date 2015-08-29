@@ -39,10 +39,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
 import com.jeanchampemont.wtfdyum.dto.Event;
-import com.jeanchampemont.wtfdyum.dto.EventType;
 import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.dto.User;
+import com.jeanchampemont.wtfdyum.dto.type.EventType;
+import com.jeanchampemont.wtfdyum.dto.type.UserLimitType;
 import com.jeanchampemont.wtfdyum.service.impl.CronServiceImpl;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMExceptionType;
@@ -94,6 +95,7 @@ public class CronServiceTest {
         when(twitterService.verifyCredentials(principal)).thenReturn(true);
 
         sut.checkCredentials();
+        verify(userService, times(1)).resetLimit(1L, UserLimitType.CREDENTIALS_INVALID);
     }
 
     /**
@@ -109,10 +111,8 @@ public class CronServiceTest {
 
         sut.checkCredentials();
 
-        for (final Feature feature : Feature.values()) {
-            verify(userService, times(1)).disableFeature(1L, feature);
-        }
         verify(userService, times(1)).addEvent(1L, new Event(EventType.INVALID_TWITTER_CREDENTIALS, ""));
+        verify(userService, times(1)).applyLimit(1L, UserLimitType.CREDENTIALS_INVALID);
     }
 
     /**

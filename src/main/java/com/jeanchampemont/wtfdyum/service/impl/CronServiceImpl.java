@@ -97,7 +97,7 @@ public class CronServiceImpl implements CronService {
      * @see com.jeanchampemont.wtfdyum.service.CronService#checkCredentials()
      */
     @Override
-    @Scheduled(fixedDelayString = "${wtfdyum.credentials-check-delay}")
+    @Scheduled(fixedDelayString = "${wtfdyum.credentials-check-delay}", initialDelay = 120000L)
     public void checkCredentials() {
         log.debug("Checking credentials...");
         final StopWatch watch = new StopWatch();
@@ -124,7 +124,7 @@ public class CronServiceImpl implements CronService {
      * @see com.jeanchampemont.wtfdyum.service.CronService#findUnfollowers()
      */
     @Override
-    @Scheduled(fixedDelayString = "${wtfdyum.unfollow-check-delay}")
+    @Scheduled(fixedDelayString = "${wtfdyum.unfollow-check-delay}", initialDelay = 120000L)
     public void findUnfollowers() {
         log.debug("Finding unnfollowers...");
         final StopWatch watch = new StopWatch();

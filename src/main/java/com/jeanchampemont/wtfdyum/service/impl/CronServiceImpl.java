@@ -108,9 +108,6 @@ public class CronServiceImpl implements CronService {
             final Principal principal = principalService.get(userId);
 
             if (!twitterService.verifyCredentials(principal)) {
-                for (final Feature feature : Feature.values()) {
-                    userService.disableFeature(userId, feature);
-                }
                 userService.addEvent(userId, new Event(EventType.INVALID_TWITTER_CREDENTIALS, ""));
             }
         }

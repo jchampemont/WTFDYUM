@@ -39,11 +39,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
 import com.jeanchampemont.wtfdyum.dto.Event;
-import com.jeanchampemont.wtfdyum.dto.EventType;
 import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.dto.User;
-import com.jeanchampemont.wtfdyum.dto.UserLimitType;
+import com.jeanchampemont.wtfdyum.dto.type.EventType;
+import com.jeanchampemont.wtfdyum.dto.type.UserLimitType;
 import com.jeanchampemont.wtfdyum.service.impl.CronServiceImpl;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMExceptionType;

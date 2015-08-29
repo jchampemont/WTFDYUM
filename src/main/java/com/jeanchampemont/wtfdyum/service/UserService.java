@@ -22,7 +22,7 @@ import java.util.Set;
 
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
-import com.jeanchampemont.wtfdyum.dto.UserLimitType;
+import com.jeanchampemont.wtfdyum.dto.type.UserLimitType;
 
 /**
  * The Interface UserService.

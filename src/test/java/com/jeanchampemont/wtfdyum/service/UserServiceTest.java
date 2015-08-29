@@ -47,9 +47,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
 import com.jeanchampemont.wtfdyum.dto.Event;
-import com.jeanchampemont.wtfdyum.dto.EventType;
 import com.jeanchampemont.wtfdyum.dto.Feature;
-import com.jeanchampemont.wtfdyum.dto.UserLimitType;
+import com.jeanchampemont.wtfdyum.dto.type.EventType;
+import com.jeanchampemont.wtfdyum.dto.type.UserLimitType;
 import com.jeanchampemont.wtfdyum.service.impl.UserServiceImpl;
 
 /**

@@ -29,11 +29,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
 import com.jeanchampemont.wtfdyum.dto.Event;
-import com.jeanchampemont.wtfdyum.dto.EventType;
 import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.dto.User;
-import com.jeanchampemont.wtfdyum.dto.UserLimitType;
+import com.jeanchampemont.wtfdyum.dto.type.EventType;
+import com.jeanchampemont.wtfdyum.dto.type.UserLimitType;
 import com.jeanchampemont.wtfdyum.service.CronService;
 import com.jeanchampemont.wtfdyum.service.PrincipalService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;

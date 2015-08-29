@@ -15,35 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jeanchampemont.wtfdyum.dto;
+package com.jeanchampemont.wtfdyum.dto.type;
 
 /**
- * The Enum UserLimitType.
+ * The Enum EventSeverityType.
  */
-public enum UserLimitType {
+public enum EventSeverityType {
 
-    /** The twitter exception. */
-    CREDENTIALS_INVALID(5);
+    /** The info. */
+    INFO,
 
-    /**
-     * Instantiates a new user limit type.
-     *
-     * @param limitValue
-     *            the limit value
-     */
-    private UserLimitType(final int limitValue) {
-        this.limitValue = limitValue;
-    }
+    /** The warning. */
+    WARNING,
 
-    /** The limit value. */
-    private int limitValue;
-
-    /**
-     * Gets the limit value.
-     *
-     * @return the limit value
-     */
-    public int getLimitValue() {
-        return limitValue;
-    }
+    /** The error. */
+    ERROR
 }

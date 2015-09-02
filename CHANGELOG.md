@@ -8,6 +8,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - This CHANGELOG file
 
 ### Changed
+- 5 invalid credentials check will disable all account's features.
+
+### Changed
 Nothing yet
 ### Fixed
 Nothing yet

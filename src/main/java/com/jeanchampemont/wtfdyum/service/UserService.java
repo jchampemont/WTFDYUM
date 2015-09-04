@@ -51,28 +51,6 @@ public interface UserService {
     boolean applyLimit(Long userId, UserLimitType type);
 
     /**
-     * Disable feature.
-     *
-     * @param userId
-     *            the user id
-     * @param feature
-     *            the feature
-     * @return true, if successful
-     */
-    boolean disableFeature(Long userId, Feature feature);
-
-    /**
-     * Enable feature.
-     *
-     * @param userId
-     *            the user id
-     * @param feature
-     *            the feature
-     * @return true, if successful
-     */
-    boolean enableFeature(Long userId, Feature feature);
-
-    /**
      * Gets the recent events.
      *
      * @param userId
@@ -95,17 +73,6 @@ public interface UserService {
     Set<Long> getUnfollowers(Long userId, Set<Long> currentFollowersId);
 
     /**
-     * Checks if the specified feature is enabled.
-     *
-     * @param userId
-     *            the user id
-     * @param feature
-     *            the feature
-     * @return true, if is feature enabled
-     */
-    boolean isFeatureEnabled(Long userId, Feature feature);
-
-    /**
      * Reset limit.
      *
      * @param userId
@@ -124,4 +91,12 @@ public interface UserService {
      *            the followers id
      */
     void saveFollowers(Long userId, Set<Long> followersId);
+    
+    /**
+     * Gets the enabled features.
+     *
+     * @param userId the user id
+     * @return the enabled features
+     */
+    Set<Feature> getEnabledFeatures(Long userId);
 }

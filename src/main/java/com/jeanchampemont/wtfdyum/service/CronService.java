@@ -28,7 +28,7 @@ public interface CronService {
     void checkCredentials();
 
     /**
-     * Find unfollowers.
+     * Cron.
      */
-    void findUnfollowers();
+    void cron();
 }

@@ -158,6 +158,21 @@ public class UserServiceTest {
     }
 
     /**
+     * Gets the enabled features test.
+     *
+     * @return the enabled features test
+     */
+    @Test
+    public void getEnabledFeaturesTest() {
+    	when(featureRedisTemplate.opsForSet()).thenReturn(featureSetOperations);
+    	when(featureSetOperations.members("FEATURES_1234")).thenReturn(new HashSet<>(Arrays.asList(Feature.NOTIFY_UNFOLLOW, Feature.TWEET_UNFOLLOW)));
+    	
+    	final Set<Feature> result = sut.getEnabledFeatures(1234L);
+    	
+    	assertThat(result).isEqualTo(new HashSet<>(Arrays.asList(Feature.NOTIFY_UNFOLLOW, Feature.TWEET_UNFOLLOW)));
+    }
+
+    /**
      * Gets the recent events test.
      *
      * @return the recent events test
@@ -178,29 +193,6 @@ public class UserServiceTest {
     }
 
     /**
-     * Gets the unfollowers test.
-     *
-     * @return the unfollowers test
-     */
-    @Test
-    public void getUnfollowersTest() {
-        final Set<Long> result = new HashSet<>(Arrays.asList(124L, 901L, 44L));
-
-        when(longRedisTemplate.opsForSet()).thenReturn(longSetOperations);
-        when(longSetOperations.difference("FOLLOWERS_12", "TEMP_FOLLOWERS_12")).thenReturn(result);
-
-        final Set<Long> currentFollowersId = new HashSet<>(Arrays.asList(999L, 998L, 997L, 978L));
-
-        final Set<Long> returnedResult = sut.getUnfollowers(12L, currentFollowersId);
-
-        verify(longSetOperations).add("TEMP_FOLLOWERS_12", 978L, 997L, 998L, 999L);
-        verify(longRedisTemplate).delete("TEMP_FOLLOWERS_12");
-
-        assertThat(returnedResult).isNotNull();
-        assertThat(returnedResult).isEqualTo(result);
-    }
-
-    /**
      * Reset limit test.
      */
     @Test
@@ -209,33 +201,5 @@ public class UserServiceTest {
         sut.resetLimit(199L, UserLimitType.CREDENTIALS_INVALID);
 
         verify(longRedisTemplate, times(1)).delete(UserLimitType.CREDENTIALS_INVALID.name() + "_199");
-    }
-
-    /**
-     * Save followers test.
-     */
-    @Test
-    public void saveFollowersTest() {
-        when(longRedisTemplate.opsForSet()).thenReturn(longSetOperations);
-
-        sut.saveFollowers(1788L, new HashSet<Long>(Arrays.asList(888L, 89L, 19L)));
-
-        verify(longRedisTemplate, times(1)).delete("FOLLOWERS_1788");
-        verify(longSetOperations, times(1)).add("FOLLOWERS_1788", 19L, 888L, 89L);
-    }
-    
-    /**
-     * Gets the enabled features test.
-     *
-     * @return the enabled features test
-     */
-    @Test
-    public void getEnabledFeaturesTest() {
-    	when(featureRedisTemplate.opsForSet()).thenReturn(featureSetOperations);
-    	when(featureSetOperations.members("FEATURES_1234")).thenReturn(new HashSet<>(Arrays.asList(Feature.NOTIFY_UNFOLLOW, Feature.TWEET_UNFOLLOW)));
-    	
-    	Set<Feature> result = sut.getEnabledFeatures(1234L);
-    	
-    	assertThat(result).isEqualTo(new HashSet<>(Arrays.asList(Feature.NOTIFY_UNFOLLOW, Feature.TWEET_UNFOLLOW)));
     }
 }

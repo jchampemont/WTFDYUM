@@ -24,8 +24,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +36,6 @@ import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.Principal;
-import com.jeanchampemont.wtfdyum.dto.User;
 import com.jeanchampemont.wtfdyum.dto.type.EventType;
 import com.jeanchampemont.wtfdyum.dto.type.UserLimitType;
 import com.jeanchampemont.wtfdyum.service.feature.FeaturesService;
@@ -64,7 +61,7 @@ public class CronServiceTest {
     /** The twitter service. */
     @Mock
     private TwitterService twitterService;
-    
+
     /** The features service. */
     @Mock
     private FeaturesService featuresService;
@@ -113,35 +110,73 @@ public class CronServiceTest {
         verify(userService, times(1)).applyLimit(1L, UserLimitType.CREDENTIALS_INVALID);
     }
 
-    @Test
-    public void cronTestDisabled() throws Exception {
-        principal(5L);
-        featureEnabled(5L, Feature.NOTIFY_UNFOLLOW, false);
-
-        sut.cron();
-    }
-
-    @Test
-    public void cronTestNominal() throws Exception {
-        final Principal principal = principal(1L);
-        featureEnabled(1L, Feature.NOTIFY_UNFOLLOW, true);
-
-        sut.cron();
-        
-        verify(featuresService, times(1)).cron(1L, Feature.NOTIFY_UNFOLLOW);
-        verify(featuresService, times(1)).completeCron(1L, Feature.NOTIFY_UNFOLLOW);
-    }
-
     /**
-     * Find unfollowers test npe error.
+     * Cron test disabled.
      *
      * @throws Exception
      *             the exception
      */
     @Test
-    public void findUnfollowersTestNPEError() throws Exception {
+    public void cronTestDisabled() throws Exception {
+        principal(5L);
+        featureEnabled(5L, true, Feature.NOTIFY_UNFOLLOW);
+
+        sut.cron();
+    }
+
+    /**
+     * Cron test events.
+     *
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void cronTestEvents() throws Exception {
+        principal(12L);
+        featureEnabled(12L, true, Feature.NOTIFY_UNFOLLOW, Feature.TWEET_UNFOLLOW);
+
+        when(featuresService.cron(12L, Feature.NOTIFY_UNFOLLOW))
+        .thenReturn(new HashSet<>(Arrays.asList(new Event(EventType.UNFOLLOW, "toto"))));
+        when(featuresService.cron(12L, Feature.TWEET_UNFOLLOW))
+        .thenReturn(new HashSet<>(Arrays.asList(new Event(EventType.UNFOLLOW, "toto"))));
+
+        sut.cron();
+
+        verify(featuresService, times(1)).cron(12L, Feature.NOTIFY_UNFOLLOW);
+        verify(featuresService, times(1)).cron(12L, Feature.TWEET_UNFOLLOW);
+        verify(featuresService, times(1)).completeCron(12L, Feature.NOTIFY_UNFOLLOW);
+        verify(featuresService, times(1)).completeCron(12L, Feature.TWEET_UNFOLLOW);
+
+        verify(userService, times(1)).addEvent(12L, new Event(EventType.UNFOLLOW, "toto"));
+    }
+
+    /**
+     * Cron test nominal.
+     *
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void cronTestNominal() throws Exception {
+        principal(1L);
+        featureEnabled(1L, true, Feature.NOTIFY_UNFOLLOW);
+
+        sut.cron();
+
+        verify(featuresService, times(1)).cron(1L, Feature.NOTIFY_UNFOLLOW);
+        verify(featuresService, times(1)).completeCron(1L, Feature.NOTIFY_UNFOLLOW);
+    }
+
+    /**
+     * Cron test npe error.
+     *
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void cronTestNPEError() throws Exception {
         principal(4L);
-        featureEnabled(4L, Feature.NOTIFY_UNFOLLOW, true);
+        featureEnabled(4L, true, Feature.NOTIFY_UNFOLLOW);
 
         when(featuresService.cron(4L, Feature.NOTIFY_UNFOLLOW)).thenThrow(new NullPointerException());
 
@@ -152,15 +187,16 @@ public class CronServiceTest {
     }
 
     /**
-     * Find unfollowers test rate limit error.
+     * Cron test rate limit error.
      *
-     * @throws Exception the exception
+     * @throws Exception
+     *             the exception
      */
     @Test
-    public void findUnfollowersTestRateLimitError() throws Exception {
-    	
-    	principal(3L);
-        featureEnabled(3L, Feature.NOTIFY_UNFOLLOW, true);
+    public void cronTestRateLimitError() throws Exception {
+
+        principal(3L);
+        featureEnabled(3L, true, Feature.NOTIFY_UNFOLLOW);
 
         when(featuresService.cron(3L, Feature.NOTIFY_UNFOLLOW)).thenThrow(new WTFDYUMException(WTFDYUMExceptionType.GET_FOLLOWERS_RATE_LIMIT_EXCEEDED));
 
@@ -171,15 +207,15 @@ public class CronServiceTest {
     }
 
     /**
-     * Find unfollowers test twitter error.
+     * Cron test twitter error.
      *
      * @throws Exception
      *             the exception
      */
     @Test
-    public void findUnfollowersTestTwitterError() throws Exception {
-    	principal(2L);
-        featureEnabled(2L, Feature.NOTIFY_UNFOLLOW, true);
+    public void cronTestTwitterError() throws Exception {
+        principal(2L);
+        featureEnabled(2L, true, Feature.NOTIFY_UNFOLLOW);
 
         when(featuresService.cron(2L, Feature.NOTIFY_UNFOLLOW)).thenThrow(new WTFDYUMException(WTFDYUMExceptionType.TWITTER_ERROR));
 
@@ -194,12 +230,12 @@ public class CronServiceTest {
      *
      * @param userId
      *            the user id
-     * @param feature
-     *            the feature
      * @param value
      *            the value
+     * @param feature
+     *            the feature
      */
-    private void featureEnabled(final long userId, final Feature feature, final boolean value) {
+    private void featureEnabled(final long userId, final boolean value, final Feature... feature) {
         when(userService.getEnabledFeatures(userId)).thenReturn(new HashSet<>(Arrays.asList(feature)));
     }
 

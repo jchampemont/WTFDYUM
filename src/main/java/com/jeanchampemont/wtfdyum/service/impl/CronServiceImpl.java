@@ -17,6 +17,7 @@
  */
 package com.jeanchampemont.wtfdyum.service.impl;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -81,7 +82,7 @@ public class CronServiceImpl implements CronService {
 
     /** The twitter service. */
     private final TwitterService twitterService;
-    
+
     /** The feature services. */
     private final FeaturesService featuresService;
 
@@ -126,23 +127,30 @@ public class CronServiceImpl implements CronService {
         final Set<Long> members = principalService.getMembers();
 
         for (final Long userId : members) {
-        	try {
-        		Set<Feature> enabledFeatures = userService.getEnabledFeatures(userId);
-        		for(Feature enabledFeature : enabledFeatures) {
-        			featuresService.cron(userId, enabledFeature);
-        		}
-        		for(Feature enabledFeature : enabledFeatures) {
-        			featuresService.completeCron(userId, enabledFeature);
-        		}
-	        } catch (final WTFDYUMException e) {
-	            if (WTFDYUMExceptionType.GET_FOLLOWERS_RATE_LIMIT_EXCEEDED.equals(e.getType())) {
-	                userService.addEvent(userId, new Event(EventType.RATE_LIMIT_EXCEEDED, null));
-	            } else {
-	                userService.addEvent(userId, new Event(EventType.TWITTER_ERROR, null));
-	            }
-	        } catch (final Throwable t) {
-	            userService.addEvent(userId, new Event(EventType.UNKNOWN_ERROR, null));
-	        }
+            try {
+                final Set<Feature> enabledFeatures = userService.getEnabledFeatures(userId);
+                final Set<Event> events = new HashSet<>();
+                for (final Feature enabledFeature : enabledFeatures) {
+                    final Set<Event> es = featuresService.cron(userId, enabledFeature);
+                    events.addAll(es);
+                }
+
+                for (final Event e : events) {
+                    userService.addEvent(userId, e);
+                }
+
+                for (final Feature enabledFeature : enabledFeatures) {
+                    featuresService.completeCron(userId, enabledFeature);
+                }
+            } catch (final WTFDYUMException e) {
+                if (WTFDYUMExceptionType.GET_FOLLOWERS_RATE_LIMIT_EXCEEDED.equals(e.getType())) {
+                    userService.addEvent(userId, new Event(EventType.RATE_LIMIT_EXCEEDED, null));
+                } else {
+                    userService.addEvent(userId, new Event(EventType.TWITTER_ERROR, null));
+                }
+            } catch (final Throwable t) {
+                userService.addEvent(userId, new Event(EventType.UNKNOWN_ERROR, null));
+            }
         }
         watch.stop();
         log.debug("Finished cron in {} ms", watch.getTotalTimeMillis());

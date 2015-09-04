@@ -30,9 +30,9 @@ import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.dto.User;
 import com.jeanchampemont.wtfdyum.dto.type.EventType;
+import com.jeanchampemont.wtfdyum.service.FollowersService;
 import com.jeanchampemont.wtfdyum.service.PrincipalService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
-import com.jeanchampemont.wtfdyum.service.UserService;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 
 /**
@@ -41,31 +41,35 @@ import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 @Service
 public class NotifyUnfollowFeatureService extends AbstractFeatureService {
 
-	/**
-	 * Instantiates a new notify unfollow feature service.
-	 *
-	 * @param principalService the principal service
-	 * @param userService the user service
-	 * @param twitterService the twitter service
-	 * @param unfollowDMText the unfollow dm text
-	 */
-	@Autowired
-	public NotifyUnfollowFeatureService(final PrincipalService principalService,
-            final UserService userService,
+    /**
+     * Instantiates a new notify unfollow feature service.
+     *
+     * @param principalService
+     *            the principal service
+     * @param followersService
+     *            the user service
+     * @param twitterService
+     *            the twitter service
+     * @param unfollowDMText
+     *            the unfollow dm text
+     */
+    @Autowired
+    public NotifyUnfollowFeatureService(final PrincipalService principalService,
+            final FollowersService followersService,
             final TwitterService twitterService,
             @Value("${wtfdyum.unfollow.dm-text}") final String unfollowDMText) {
-		super(Feature.NOTIFY_UNFOLLOW);
-		this.principalService = principalService;
-		this.userService = userService;
-		this.twitterService = twitterService;
-		this.unfollowDMText = unfollowDMText;
-	}
-	
-	 /** The principal service. */
+        super(Feature.NOTIFY_UNFOLLOW);
+        this.principalService = principalService;
+        this.followersService = followersService;
+        this.twitterService = twitterService;
+        this.unfollowDMText = unfollowDMText;
+    }
+
+    /** The principal service. */
     private final PrincipalService principalService;
 
     /** The user service. */
-    private final UserService userService;
+    private final FollowersService followersService;
 
     /** The twitter service. */
     private final TwitterService twitterService;
@@ -73,30 +77,33 @@ public class NotifyUnfollowFeatureService extends AbstractFeatureService {
     /** The unfollow dm text. */
     private final String unfollowDMText;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.jeanchampemont.wtfdyum.service.feature.FeatureService#hasCron()
-	 */
-	@Override
-	public boolean hasCron() {
-		return true;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.jeanchampemont.wtfdyum.service.feature.AbstractFeatureService#
+     * completeCron(java.lang.Long)
+     */
+    @Override
+    public void completeCron(final Long userId) throws WTFDYUMException {
+        final Principal principal = principalService.get(userId);
+        final Set<Long> followers = twitterService.getFollowers(userId, Optional.ofNullable(principal));
+        followersService.saveFollowers(userId, followers);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.jeanchampemont.wtfdyum.service.feature.AbstractFeatureService#cron(
-	 * java.lang.Long)
-	 */
-	@Override
-	public Set<Event> cron(Long userId) throws WTFDYUMException {
-		final Set<Event> result = new HashSet<>();
-		final Principal principal = principalService.get(userId);
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.jeanchampemont.wtfdyum.service.feature.AbstractFeatureService#cron(
+     * java.lang.Long)
+     */
+    @Override
+    public Set<Event> cron(final Long userId) throws WTFDYUMException {
+        final Set<Event> result = new HashSet<>();
+        final Principal principal = principalService.get(userId);
         final Set<Long> followers = twitterService.getFollowers(userId, Optional.ofNullable(principal));
 
-        final Set<Long> unfollowersId = userService.getUnfollowers(userId, followers);
+        final Set<Long> unfollowersId = followersService.getUnfollowers(userId, followers);
 
         for (final Long unfollowerId : unfollowersId) {
             final User unfollower = twitterService.getUser(principal, unfollowerId);
@@ -105,18 +112,15 @@ public class NotifyUnfollowFeatureService extends AbstractFeatureService {
                     String.format(unfollowDMText, unfollower.getScreenName()));
         }
         return result;
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.jeanchampemont.wtfdyum.service.feature.AbstractFeatureService#
-	 * completeCron(java.lang.Long)
-	 */
-	@Override
-	public void completeCron(Long userId) throws WTFDYUMException {
-		final Principal principal = principalService.get(userId);
-		final Set<Long> followers = twitterService.getFollowers(userId, Optional.ofNullable(principal));
-		userService.saveFollowers(userId, followers);
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.jeanchampemont.wtfdyum.service.feature.FeatureService#hasCron()
+     */
+    @Override
+    public boolean hasCron() {
+        return true;
+    }
 }

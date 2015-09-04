@@ -32,8 +32,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -64,69 +62,9 @@ public class FeaturesServiceTest {
 	@Before
 	public void _init() {
 		initMocks(this);
-		Map<Feature, FeatureService> featureServices = new HashMap<>();
+		final Map<Feature, FeatureService> featureServices = new HashMap<>();
 		featureServices.put(Feature.NOTIFY_UNFOLLOW, notifyUnfollowFeatureService);
 		sut = new FeaturesServiceImpl(featureServices);
-	}
-
-	/**
-	 * Enable feature test.
-	 */
-	@Test
-	public void enableFeatureTest() {
-		when(notifyUnfollowFeatureService.enableFeature(123L)).thenReturn(true);
-
-		boolean result = sut.enableFeature(123L, Feature.NOTIFY_UNFOLLOW);
-
-		verify(notifyUnfollowFeatureService, times(1)).enableFeature(123L);
-
-		assertThat(result).isTrue();
-	}
-
-	/**
-	 * Disable feature test.
-	 */
-	@Test
-	public void disableFeatureTest() {
-		when(notifyUnfollowFeatureService.disableFeature(123L)).thenReturn(false);
-
-		boolean result = sut.disableFeature(123L, Feature.NOTIFY_UNFOLLOW);
-
-		verify(notifyUnfollowFeatureService, times(1)).disableFeature(123L);
-
-		assertThat(result).isFalse();
-	}
-
-	/**
-	 * Checks if is enabled test.
-	 */
-	@Test
-	public void isEnabledTest() {
-		when(notifyUnfollowFeatureService.isEnabled(123L)).thenReturn(true);
-
-		boolean result = sut.isEnabled(123L, Feature.NOTIFY_UNFOLLOW);
-
-		verify(notifyUnfollowFeatureService, times(1)).isEnabled(123L);
-
-		assertThat(result).isTrue();
-	}
-
-	/**
-	 * Cron test.
-	 *
-	 * @throws WTFDYUMException
-	 *             the WTFDYUM exception
-	 */
-	@Test
-	public void cronTest() throws WTFDYUMException {
-		Set<Event> expectedResult = new HashSet<>();
-		when(notifyUnfollowFeatureService.cron(123L)).thenReturn(expectedResult);
-
-		Set<Event> result = sut.cron(123L, Feature.NOTIFY_UNFOLLOW);
-
-		verify(notifyUnfollowFeatureService, times(1)).cron(123L);
-
-		assertThat(result).isSameAs(expectedResult);
 	}
 
 	/**
@@ -140,5 +78,65 @@ public class FeaturesServiceTest {
 		sut.completeCron(123L, Feature.NOTIFY_UNFOLLOW);
 
 		verify(notifyUnfollowFeatureService, times(1)).completeCron(123L);
+	}
+
+	/**
+	 * Cron test.
+	 *
+	 * @throws WTFDYUMException
+	 *             the WTFDYUM exception
+	 */
+	@Test
+	public void cronTest() throws WTFDYUMException {
+		final Set<Event> expectedResult = new HashSet<>();
+		when(notifyUnfollowFeatureService.cron(123L)).thenReturn(expectedResult);
+
+		final Set<Event> result = sut.cron(123L, Feature.NOTIFY_UNFOLLOW);
+
+		verify(notifyUnfollowFeatureService, times(1)).cron(123L);
+
+		assertThat(result).isSameAs(expectedResult);
+	}
+
+	/**
+	 * Disable feature test.
+	 */
+	@Test
+	public void disableFeatureTest() {
+		when(notifyUnfollowFeatureService.disableFeature(123L)).thenReturn(false);
+
+		final boolean result = sut.disableFeature(123L, Feature.NOTIFY_UNFOLLOW);
+
+		verify(notifyUnfollowFeatureService, times(1)).disableFeature(123L);
+
+		assertThat(result).isFalse();
+	}
+
+	/**
+	 * Enable feature test.
+	 */
+	@Test
+	public void enableFeatureTest() {
+		when(notifyUnfollowFeatureService.enableFeature(123L)).thenReturn(true);
+
+		final boolean result = sut.enableFeature(123L, Feature.NOTIFY_UNFOLLOW);
+
+		verify(notifyUnfollowFeatureService, times(1)).enableFeature(123L);
+
+		assertThat(result).isTrue();
+	}
+
+	/**
+	 * Checks if is enabled test.
+	 */
+	@Test
+	public void isEnabledTest() {
+		when(notifyUnfollowFeatureService.isEnabled(123L)).thenReturn(true);
+
+		final boolean result = sut.isEnabled(123L, Feature.NOTIFY_UNFOLLOW);
+
+		verify(notifyUnfollowFeatureService, times(1)).isEnabled(123L);
+
+		assertThat(result).isTrue();
 	}
 }

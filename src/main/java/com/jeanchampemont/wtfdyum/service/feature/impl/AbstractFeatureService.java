@@ -33,106 +33,106 @@ import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
  */
 public abstract class AbstractFeatureService implements FeatureService {
 
-	/** The Constant FEATURES_KEY_PREFIX. */
-	private static final String FEATURES_KEY_PREFIX = "FEATURES_";
+    /** The Constant FEATURES_KEY_PREFIX. */
+    private static final String FEATURES_KEY_PREFIX = "FEATURES_";
 
-	/** The feature redis template. */
-	@Autowired
-	private RedisTemplate<String, Feature> featureRedisTemplate;
+    /**
+     * Instantiates a new abstract feature service.
+     *
+     * @param feature
+     *            the feature
+     */
+    public AbstractFeatureService(final Feature feature) {
+        this.feature = feature;
+    }
 
-	/** The feature. */
-	private final Feature feature;
+    /** The feature redis template. */
+    @Autowired
+    private RedisTemplate<String, Feature> featureRedisTemplate;
 
-	/**
-	 * Instantiates a new abstract feature service.
-	 *
-	 * @param feature
-	 *            the feature
-	 */
-	public AbstractFeatureService(Feature feature) {
-		this.feature = feature;
-	}
+    /** The feature. */
+    private final Feature feature;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.jeanchampemont.wtfdyum.service.feature.FeatureService#enableFeature(
-	 * java.lang.Long)
-	 */
-	@Override
-	public boolean enableFeature(Long userId) {
-		return featureRedisTemplate.opsForSet().add(featuresKey(userId), feature) == 1;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.jeanchampemont.wtfdyum.service.feature.FeatureService#completeCron(
+     * java.lang.Long)
+     */
+    @Override
+    public void completeCron(final Long userId) throws WTFDYUMException {
+        // Explicitly doing nothing
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.jeanchampemont.wtfdyum.service.feature.FeatureService#disableFeature(
-	 * java.lang.Long)
-	 */
-	@Override
-	public boolean disableFeature(Long userId) {
-		return featureRedisTemplate.opsForSet().remove(featuresKey(userId), feature) == 1;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.jeanchampemont.wtfdyum.service.feature.FeatureService#cron(java.lang.
+     * Long)
+     */
+    @Override
+    public Set<Event> cron(final Long userId) throws WTFDYUMException {
+        // Explicitly doing nothing
+        return Collections.emptySet();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.jeanchampemont.wtfdyum.service.feature.FeatureService#cron(java.lang.
-	 * Long)
-	 */
-	@Override
-	public Set<Event> cron(Long userId) throws WTFDYUMException {
-		// Explicitly doing nothing
-		return Collections.emptySet();
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.jeanchampemont.wtfdyum.service.feature.FeatureService#disableFeature(
+     * java.lang.Long)
+     */
+    @Override
+    public boolean disableFeature(final Long userId) {
+        return featureRedisTemplate.opsForSet().remove(featuresKey(userId), feature) == 1;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.jeanchampemont.wtfdyum.service.feature.FeatureService#completeCron(
-	 * java.lang.Long)
-	 */
-	@Override
-	public void completeCron(Long userId) throws WTFDYUMException {
-		// Explicitly doing nothing
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.jeanchampemont.wtfdyum.service.feature.FeatureService#enableFeature(
+     * java.lang.Long)
+     */
+    @Override
+    public boolean enableFeature(final Long userId) {
+        return featureRedisTemplate.opsForSet().add(featuresKey(userId), feature) == 1;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.jeanchampemont.wtfdyum.service.feature.FeatureService#isEnabled(java.
-	 * lang.Long)
-	 */
-	@Override
-	public boolean isEnabled(Long userId) {
-		return featureRedisTemplate.opsForSet().isMember(featuresKey(userId), feature);
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.jeanchampemont.wtfdyum.service.feature.FeatureService#getFeature()
+     */
+    @Override
+    public Feature getFeature() {
+        return feature;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.jeanchampemont.wtfdyum.service.feature.FeatureService#getFeature()
-	 */
-	@Override
-	public Feature getFeature() {
-		return feature;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.jeanchampemont.wtfdyum.service.feature.FeatureService#isEnabled(java.
+     * lang.Long)
+     */
+    @Override
+    public boolean isEnabled(final Long userId) {
+        return featureRedisTemplate.opsForSet().isMember(featuresKey(userId), feature);
+    }
 
-	/**
-	 * Build the features key.
-	 *
-	 * @param userId
-	 *            the user id
-	 * @return the string
-	 */
-	private String featuresKey(final Long userId) {
-		return new StringBuilder(FEATURES_KEY_PREFIX).append(userId.toString()).toString();
-	}
+    /**
+     * Build the features key.
+     *
+     * @param userId
+     *            the user id
+     * @return the string
+     */
+    private String featuresKey(final Long userId) {
+        return new StringBuilder(FEATURES_KEY_PREFIX).append(userId.toString()).toString();
+    }
 }

@@ -44,61 +44,64 @@ import com.jeanchampemont.wtfdyum.service.feature.impl.NotifyUnfollowFeatureServ
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = WTFDYUMApplication.class)
 public class NotifyUnfollowFeatureServiceTest extends AbstractFeatureServiceTest {
-	
-	/**
-	 * _init.
-	 */
+
+    /**
+     * _init.
+     */
+    @Override
     @Before
-	public void _init() {
-    	super._init();
-		sut = new NotifyUnfollowFeatureService(principalService, userService, twitterService, DM_TEXT);
-		ReflectionTestUtils.setField(sut, "featureRedisTemplate", featureRedisTemplate);
-	}
+    public void _init() {
+        super._init();
+        sut = new NotifyUnfollowFeatureService(principalService, followersService, twitterService, DM_TEXT);
+        ReflectionTestUtils.setField(sut, "featureRedisTemplate", featureRedisTemplate);
+    }
+
+    /**
+     * Complete cron test.
+     *
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void completeCronTest() throws Exception {
+        final Principal principal = principal(1L);
+
+        final Set<Long> followers = followers(principal, (s, f) -> s.thenReturn(f));
+
+        sut.completeCron(1L);
+
+        // New followers list should be saved
+        verify(followersService, times(1)).saveFollowers(1L, followers);
+    }
+
+    /**
+     * Cron test.
+     *
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void cronTest() throws Exception {
+        final Principal principal = principal(1L);
+
+        final Set<Long> followers = followers(principal, (s, f) -> s.thenReturn(f));
+
+        final List<User> unfollowers = unfollowers(principal, followers, (s, u) -> s.thenReturn(u));
+
+        final Set<Event> events = sut.cron(1L);
+
+        verifyUnfollowDM(principal, unfollowers.get(0));
+        verifyUnfollowDM(principal, unfollowers.get(1));
+
+        assertThat(events.contains(new Event(EventType.UNFOLLOW, unfollowers.get(0).getScreenName())));
+        assertThat(events.contains(new Event(EventType.UNFOLLOW, unfollowers.get(1).getScreenName())));
+    }
 
     /**
      * Checks for cron test.
      */
     @Test
     public void hasCronTest() {
-    	assertThat(sut.hasCron()).isTrue();
-    }
-    
-    /**
-     * Cron test.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    public void cronTest() throws Exception {
-    	 final Principal principal = principal(1L);
-
-         final Set<Long> followers = followers(principal, (s, f) -> s.thenReturn(f));
-
-         final List<User> unfollowers = unfollowers(principal, followers, (s, u) -> s.thenReturn(u));
-
-         Set<Event> events = sut.cron(1L);
-
-         verifyUnfollowDM(principal, unfollowers.get(0));
-         verifyUnfollowDM(principal, unfollowers.get(1));
-         
-         assertThat(events.contains(new Event(EventType.UNFOLLOW, unfollowers.get(0).getScreenName())));
-         assertThat(events.contains(new Event(EventType.UNFOLLOW, unfollowers.get(1).getScreenName())));
-    }
-    
-    /**
-     * Complete cron test.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    public void completeCronTest() throws Exception {
-    	final Principal principal = principal(1L);
-
-        final Set<Long> followers = followers(principal, (s, f) -> s.thenReturn(f));
-        
-        sut.completeCron(1L);
-        
-        // New followers list should be saved
-        verify(userService, times(1)).saveFollowers(1L, followers);
+        assertThat(sut.hasCron()).isTrue();
     }
 }

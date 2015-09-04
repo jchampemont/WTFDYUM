@@ -32,19 +32,20 @@ import com.jeanchampemont.wtfdyum.service.feature.FeatureService;
  */
 @Configuration
 public class FeatureConfiguration {
-	
-	/**
-	 * Feature services.
-	 *
-	 * @param featureServices the feature services
-	 * @return the map
-	 */
-	@Bean(name = "featureServices")
-	public Map<Feature, FeatureService> featureServices(List<FeatureService> featureServices) {
-		Map<Feature, FeatureService> result = new HashMap<>();
-		for(FeatureService featureService : featureServices) {
-			result.put(featureService.getFeature(), featureService);
-		}
-		return result;
-	}
+
+    /**
+     * Feature services.
+     *
+     * @param featureServices
+     *            the feature services
+     * @return the map
+     */
+    @Bean(name = "featureServices")
+    public Map<Feature, FeatureService> featureServices(final List<FeatureService> featureServices) {
+        final Map<Feature, FeatureService> result = new HashMap<>();
+        for (final FeatureService featureService : featureServices) {
+            result.put(featureService.getFeature(), featureService);
+        }
+        return result;
+    }
 }

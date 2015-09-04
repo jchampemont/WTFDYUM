@@ -28,69 +28,69 @@ import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
  */
 public interface FeatureService {
 
-	/**
-	 * Enable the feature for this userId.
-	 *
-	 * @param userId
-	 *            the user id
-	 * @return true if the feature was disabled and has been enabled, false
-	 *         otherwise
-	 */
-	boolean enableFeature(Long userId);
+    /**
+     * Complete cron.
+     *
+     * This method is called after all cron for this user have been executed
+     *
+     * @param userId
+     *            the user id
+     * @throws WTFDYUMException
+     */
+    void completeCron(Long userId) throws WTFDYUMException;
 
-	/**
-	 * Disable the feature for this userId.
-	 *
-	 * @param userId
-	 *            the user id
-	 * @return true if the feature was enabled and has been disabled, false
-	 *         otherwise
-	 */
-	boolean disableFeature(Long userId);
+    /**
+     * Method that should be executed periodically for this feature.
+     *
+     * @param userId
+     *            the user id
+     * @return the resulting events set
+     * @throws WTFDYUMException
+     *             the WTFDYUM exception
+     */
+    Set<Event> cron(Long userId) throws WTFDYUMException;
 
-	/**
-	 * Checks if is enabled.
-	 *
-	 * @param userId
-	 *            the user id
-	 * @return whether or not this feature is enabled
-	 */
-	boolean isEnabled(Long userId);
+    /**
+     * Disable the feature for this userId.
+     *
+     * @param userId
+     *            the user id
+     * @return true if the feature was enabled and has been disabled, false
+     *         otherwise
+     */
+    boolean disableFeature(Long userId);
 
-	/**
-	 * Checks for cron.
-	 *
-	 * @return whether or not this feature has a cron that should be executed
-	 *         periodically
-	 */
-	boolean hasCron();
+    /**
+     * Enable the feature for this userId.
+     *
+     * @param userId
+     *            the user id
+     * @return true if the feature was disabled and has been enabled, false
+     *         otherwise
+     */
+    boolean enableFeature(Long userId);
 
-	/**
-	 * Method that should be executed periodically for this feature.
-	 *
-	 * @param userId
-	 *            the user id
-	 * @return the resulting events set
-	 * @throws WTFDYUMException
-	 *             the WTFDYUM exception
-	 */
-	Set<Event> cron(Long userId) throws WTFDYUMException;
+    /**
+     * Gets the feature.
+     *
+     * @return the feature
+     */
+    Feature getFeature();
 
-	/**
-	 * Complete cron.
-	 * 
-	 * This method is called after all cron for this user have been executed
-	 *
-	 * @param userId
-	 *            the user id
-	 * @throws WTFDYUMException 
-	 */
-	void completeCron(Long userId) throws WTFDYUMException;
-	
-	/**
-	 * Gets the feature.
-	 *
-	 * @return the feature
-	 */
-	Feature getFeature();
+    /**
+     * Checks for cron.
+     *
+     * @return whether or not this feature has a cron that should be executed
+     *         periodically
+     */
+    boolean hasCron();
+
+    /**
+     * Checks if is enabled.
+     *
+     * @param userId
+     *            the user id
+     * @return whether or not this feature is enabled
+     */
+    boolean isEnabled(Long userId);
 }

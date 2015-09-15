@@ -247,6 +247,21 @@ public class TwitterServiceTest {
     }
 
     /**
+     * Gets the users empty test.
+     *
+     * @return the users empty test
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void getUsersEmptyTest() throws Exception {
+        final List<com.jeanchampemont.wtfdyum.dto.User> result = sut.getUsers(new Principal(1L, "", ""), new long[0]);
+
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(0);
+    }
+
+    /**
      * Gets the users multiple page test.
      *
      * @return the users multiple page test

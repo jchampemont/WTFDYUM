@@ -182,6 +182,9 @@ public class TwitterServiceImpl implements TwitterService {
     @Override
     public List<User> getUsers(final Principal principal, final long... ids) throws WTFDYUMException {
         final List<User> result = new ArrayList<>();
+        if (ids.length == 0) {
+            return result;
+        }
         try {
             final List<twitter4j.User> users = new ArrayList<>();
             for (int i = 0; i <= (ids.length - 1) / 100; i++) {
@@ -204,7 +207,7 @@ public class TwitterServiceImpl implements TwitterService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.jeanchampemont.wtfdyum.service.TwitterService#sendDirectMessage(com.
      * jeanchampemont.wtfdyum.dto.Principal, java.lang.Long, java.lang.String)

@@ -163,6 +163,7 @@ public class CronServiceImpl implements CronService {
                         userService.addEvent(userId, new Event(EventType.RATE_LIMIT_EXCEEDED, null));
                     } else {
                         userService.addEvent(userId, new Event(EventType.TWITTER_ERROR, null));
+                        log.error("Twitter error", e.getCause());
                     }
                 } catch (final Throwable t) {
                     userService.addEvent(userId, new Event(EventType.UNKNOWN_ERROR, null));

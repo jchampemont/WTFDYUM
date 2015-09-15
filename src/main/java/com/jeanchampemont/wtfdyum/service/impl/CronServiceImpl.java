@@ -17,6 +17,7 @@
  */
 package com.jeanchampemont.wtfdyum.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -28,6 +29,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
+import com.google.common.primitives.Longs;
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.Principal;
@@ -142,8 +144,9 @@ public class CronServiceImpl implements CronService {
 
                     final Set<Long> unfollowersId = userService.getUnfollowers(userId, followers);
 
-                    for (final Long unfollowerId : unfollowersId) {
-                        final User unfollower = twitterService.getUser(principal, unfollowerId);
+                    final List<User> unfollowers = twitterService.getUsers(principal, Longs.toArray(unfollowersId));
+
+                    for (final User unfollower : unfollowers) {
                         userService.addEvent(userId, new Event(EventType.UNFOLLOW, unfollower.getScreenName()));
 
                         if (notifyUnfollow) {
@@ -161,12 +164,14 @@ public class CronServiceImpl implements CronService {
                 } catch (final WTFDYUMException e) {
                     if (WTFDYUMExceptionType.GET_FOLLOWERS_RATE_LIMIT_EXCEEDED.equals(e.getType())) {
                         userService.addEvent(userId, new Event(EventType.RATE_LIMIT_EXCEEDED, null));
+                        log.warn("GET_FOLLOWERS_RATE_LIMIT_EXCEEDED for user id {}", userId);
                     } else {
                         userService.addEvent(userId, new Event(EventType.TWITTER_ERROR, null));
-                        log.error("Twitter error", e.getCause());
+                        log.error("Twitter error for user id " + userId, e.getCause());
                     }
                 } catch (final Throwable t) {
                     userService.addEvent(userId, new Event(EventType.UNKNOWN_ERROR, null));
+                    log.error("Unknown error for user id " + userId, t);
                 }
             }
         }

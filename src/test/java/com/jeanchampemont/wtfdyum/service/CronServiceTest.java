@@ -309,8 +309,7 @@ public class CronServiceTest {
         user11.setId(11L);
         user11.setScreenName("user11");
 
-        when(twitterService.getUser(principal, 10L)).thenReturn(user10);
-        when(twitterService.getUser(principal, 11L)).thenReturn(user11);
+        when(twitterService.getUsers(principal, 10L, 11L)).thenReturn(Arrays.asList(user10, user11));
         return Arrays.asList(user10, user11);
     }
 

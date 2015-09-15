@@ -17,8 +17,12 @@
  */
 package com.jeanchampemont.wtfdyum.service.impl;
 
+import static java.lang.Math.min;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -40,6 +44,7 @@ import com.jeanchampemont.wtfdyum.utils.WTFDYUMExceptionType;
 
 import twitter4j.IDs;
 import twitter4j.RateLimitStatus;
+import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
@@ -168,8 +173,45 @@ public class TwitterServiceImpl implements TwitterService {
         return result;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.jeanchampemont.wtfdyum.service.TwitterService#getUsers(com.
+     * jeanchampemont.wtfdyum.dto.Principal, java.lang.Long[])
+     */
     @Override
-    public void sendDirectMessage(final Principal principal, final Long toUserId, final String text) throws WTFDYUMException {
+    public List<User> getUsers(final Principal principal, final long... ids) throws WTFDYUMException {
+        final List<User> result = new ArrayList<>();
+        try {
+            final List<twitter4j.User> users = new ArrayList<>();
+            for (int i = 0; i <= (ids.length - 1) / 100; i++) {
+                final ResponseList<twitter4j.User> lookupUsers = twitter(principal).users()
+                        .lookupUsers(Arrays.copyOfRange(ids, i * 100, min((i + 1) * 100, ids.length)));
+
+                users.addAll(lookupUsers);
+            }
+
+            for (final twitter4j.User u : users) {
+                result.add(mapper.map(u, User.class));
+            }
+
+        } catch (final TwitterException e) {
+            log.debug("Error while getUsers", e);
+            throw new WTFDYUMException(e, WTFDYUMExceptionType.TWITTER_ERROR);
+        }
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.jeanchampemont.wtfdyum.service.TwitterService#sendDirectMessage(com.
+     * jeanchampemont.wtfdyum.dto.Principal, java.lang.Long, java.lang.String)
+     */
+    @Override
+    public void sendDirectMessage(final Principal principal, final Long toUserId, final String text)
+            throws WTFDYUMException {
         try {
             twitter(principal).sendDirectMessage(toUserId, text);
         } catch (final TwitterException e) {
@@ -209,7 +251,8 @@ public class TwitterServiceImpl implements TwitterService {
     /**
      * Verify credentials.
      *
-     * @param principal the principal
+     * @param principal
+     *            the principal
      * @return true, if successful
      */
     @Override

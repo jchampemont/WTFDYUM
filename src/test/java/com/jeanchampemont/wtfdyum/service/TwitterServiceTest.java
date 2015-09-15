@@ -24,7 +24,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 
 import org.assertj.core.api.Assertions;
@@ -40,12 +42,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.service.impl.TwitterServiceImpl;
+import com.jeanchampemont.wtfdyum.utils.ResponseListMockForTest;
 import com.jeanchampemont.wtfdyum.utils.TwitterFactoryHolder;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMExceptionType;
 
 import twitter4j.IDs;
 import twitter4j.RateLimitStatus;
+import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
@@ -240,6 +244,94 @@ public class TwitterServiceTest {
             assertThat(e.getType()).isEqualTo(WTFDYUMExceptionType.TWITTER_ERROR);
         }
 
+    }
+
+    /**
+     * Gets the users multiple page test.
+     *
+     * @return the users multiple page test
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void getUsersMultiplePageTest() throws Exception {
+        final User userMock = mock(User.class);
+        when(userMock.getName()).thenReturn("name");
+        when(userMock.getScreenName()).thenReturn("screenName");
+        when(userMock.getProfileImageURL()).thenReturn("profile img url");
+        when(userMock.getURL()).thenReturn("user url");
+
+        final ResponseList<User> users = new ResponseListMockForTest<User>();
+        final long[] ids = new long[150];
+
+        final long[] first100 = new long[100];
+        final long[] next50 = new long[50];
+
+        final Random rand = new Random();
+        for (int i = 0; i < 150; i++) {
+            users.add(userMock);
+            final long id = rand.nextLong();
+
+            when(userMock.getId()).thenReturn(id);
+
+            ids[i] = id;
+            if (i < 100) {
+                first100[i] = id;
+            } else {
+                next50[i - 100] = id;
+            }
+        }
+
+        final ResponseList<User> first100Users = new ResponseListMockForTest<>();
+        first100Users.addAll(users.subList(0, 100));
+
+        final ResponseList<User> next50Users = new ResponseListMockForTest<>();
+        next50Users.addAll(users.subList(100, 150));
+
+        when(twitter.users()).thenReturn(usersResources);
+        when(usersResources.lookupUsers(first100)).thenReturn(first100Users);
+        when(usersResources.lookupUsers(next50)).thenReturn(next50Users);
+
+        final List<com.jeanchampemont.wtfdyum.dto.User> result = sut.getUsers(new Principal(1L, "", ""), ids);
+
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(150);
+    }
+
+    /**
+     * Gets the users test.
+     *
+     * @return the users test
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void getUsersTest() throws Exception {
+        final User userMock = mock(User.class);
+        when(userMock.getName()).thenReturn("name");
+        when(userMock.getScreenName()).thenReturn("screenName");
+        when(userMock.getProfileImageURL()).thenReturn("profile img url");
+        when(userMock.getURL()).thenReturn("user url");
+
+        final ResponseList<User> users = new ResponseListMockForTest<User>();
+        final long[] ids = new long[100];
+
+        final Random rand = new Random();
+        for(int i = 0; i < 100; i++) {
+            users.add(userMock);
+            final long id = rand.nextLong();
+
+            when(userMock.getId()).thenReturn(id);
+            ids[i] = id;
+        }
+
+        when(twitter.users()).thenReturn(usersResources);
+        when(usersResources.lookupUsers(ids)).thenReturn(users);
+
+        final List<com.jeanchampemont.wtfdyum.dto.User> result = sut.getUsers(new Principal(1L, "", ""), ids);
+
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(100);
     }
 
     /**

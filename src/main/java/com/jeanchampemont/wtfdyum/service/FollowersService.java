@@ -17,18 +17,30 @@
  */
 package com.jeanchampemont.wtfdyum.service;
 
+import java.util.Set;
+
 /**
- * The Interface CronService.
+ * The Interface FollowersService.
  */
-public interface CronService {
+public interface FollowersService {
+    /**
+     * Gets the unfollowers.
+     *
+     * @param userId
+     *            the user id
+     * @param currentFollowersId
+     *            the current followers id
+     * @return the unfollowers
+     */
+    Set<Long> getUnfollowers(Long userId, Set<Long> currentFollowersId);
 
     /**
-     * Check credentials.
+     * Save followers.
+     *
+     * @param userId
+     *            the user id
+     * @param followersId
+     *            the followers id
      */
-    void checkCredentials();
-
-    /**
-     * Cron.
-     */
-    void cron();
+    void saveFollowers(Long userId, Set<Long> followersId);
 }

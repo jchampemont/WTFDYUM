@@ -45,6 +45,7 @@ import com.jeanchampemont.wtfdyum.service.AuthenticationService;
 import com.jeanchampemont.wtfdyum.service.PrincipalService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
 import com.jeanchampemont.wtfdyum.service.UserService;
+import com.jeanchampemont.wtfdyum.service.feature.FeaturesService;
 import com.jeanchampemont.wtfdyum.utils.SessionManager;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMExceptionType;
@@ -70,6 +71,10 @@ public class UserControllerTest extends AbstractControllerTest {
     /** The user service. */
     @Mock
     private UserService userService;
+    
+    /** The features service. */
+    @Mock
+    private FeaturesService featuresService;
 
     /** The main controller. */
     @InjectMocks
@@ -83,14 +88,14 @@ public class UserControllerTest extends AbstractControllerTest {
     @Test
     public void disableFeatureTest() throws Exception {
         when(authenticationService.getCurrentUserId()).thenReturn(12340L);
-        when(userService.disableFeature(12340L, Feature.NOTIFY_UNFOLLOW)).thenReturn(true);
+        when(featuresService.disableFeature(12340L, Feature.NOTIFY_UNFOLLOW)).thenReturn(true);
 
         mockMvc
         .perform(get("/user/feature/disable/NOTIFY_UNFOLLOW"))
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl("/user"));
 
-        verify(userService, times(1)).disableFeature(12340L, Feature.NOTIFY_UNFOLLOW);
+        verify(featuresService, times(1)).disableFeature(12340L, Feature.NOTIFY_UNFOLLOW);
         verify(userService, times(1)).addEvent(12340L,
                 new Event(EventType.FEATURE_DISABLED, Feature.NOTIFY_UNFOLLOW.getShortName()));
     }
@@ -104,14 +109,14 @@ public class UserControllerTest extends AbstractControllerTest {
     @Test
     public void enableFeatureTest() throws Exception {
         when(authenticationService.getCurrentUserId()).thenReturn(12340L);
-        when(userService.enableFeature(12340L, Feature.NOTIFY_UNFOLLOW)).thenReturn(true);
+        when(featuresService.enableFeature(12340L, Feature.NOTIFY_UNFOLLOW)).thenReturn(true);
 
         mockMvc
         .perform(get("/user/feature/enable/NOTIFY_UNFOLLOW"))
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl("/user"));
 
-        verify(userService, times(1)).enableFeature(12340L, Feature.NOTIFY_UNFOLLOW);
+        verify(featuresService, times(1)).enableFeature(12340L, Feature.NOTIFY_UNFOLLOW);
         verify(userService, times(1)).addEvent(12340L,
                 new Event(EventType.FEATURE_ENABLED, Feature.NOTIFY_UNFOLLOW.getShortName()));
     }
@@ -133,7 +138,7 @@ public class UserControllerTest extends AbstractControllerTest {
         when(authenticationService.getCurrentUserId()).thenReturn(12340L);
         when(twitterService.getUser(principal, 12340L)).thenReturn(u);
         when(userService.getRecentEvents(12340L, 10)).thenReturn(events);
-        when(userService.isFeatureEnabled(12340L, Feature.NOTIFY_UNFOLLOW)).thenReturn(true);
+        when(featuresService.isEnabled(12340L, Feature.NOTIFY_UNFOLLOW)).thenReturn(true);
 
         mockMvc
         .perform(get("/user"))

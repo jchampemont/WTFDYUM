@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *

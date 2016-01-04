@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -17,23 +17,6 @@
  */
 package com.jeanchampemont.wtfdyum.service.impl;
 
-import static java.lang.Math.min;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.dozer.Mapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import com.google.common.base.Preconditions;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.dto.User;
@@ -41,14 +24,18 @@ import com.jeanchampemont.wtfdyum.service.TwitterService;
 import com.jeanchampemont.wtfdyum.utils.TwitterFactoryHolder;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMExceptionType;
-
-import twitter4j.IDs;
-import twitter4j.RateLimitStatus;
-import twitter4j.ResponseList;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
+import org.dozer.Mapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import twitter4j.*;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * The Class TwitterServiceImpl. This is used to interact with twitter.
@@ -189,7 +176,7 @@ public class TwitterServiceImpl implements TwitterService {
             final List<twitter4j.User> users = new ArrayList<>();
             for (int i = 0; i <= (ids.length - 1) / 100; i++) {
                 final ResponseList<twitter4j.User> lookupUsers = twitter(principal).users()
-                        .lookupUsers(Arrays.copyOfRange(ids, i * 100, min((i + 1) * 100, ids.length)));
+                    .lookupUsers(Arrays.copyOfRange(ids, i * 100, Math.min((i + 1) * 100, ids.length)));
 
                 users.addAll(lookupUsers);
             }

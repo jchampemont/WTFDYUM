@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -17,31 +17,27 @@
  */
 package com.jeanchampemont.wtfdyum.service.impl;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StopWatch;
-
-import com.google.common.primitives.Longs;
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.Principal;
-import com.jeanchampemont.wtfdyum.dto.User;
 import com.jeanchampemont.wtfdyum.dto.type.EventType;
 import com.jeanchampemont.wtfdyum.dto.type.UserLimitType;
 import com.jeanchampemont.wtfdyum.service.CronService;
 import com.jeanchampemont.wtfdyum.service.PrincipalService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
 import com.jeanchampemont.wtfdyum.service.UserService;
+import com.jeanchampemont.wtfdyum.service.feature.FeaturesService;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMExceptionType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * The Class CronServiceImpl.
@@ -58,22 +54,18 @@ public class CronServiceImpl implements CronService {
      *            the user service
      * @param twitterService
      *            the twitter service
-     * @param unfollowDMText
-     *            the unfollow dm text
-     * @param unfollowTweetText
-     *            the unfollow tweet text
+     * @param featuresService
+     *            the features service
      */
     @Autowired
     public CronServiceImpl(final PrincipalService principalService,
             final UserService userService,
             final TwitterService twitterService,
-            @Value("${wtfdyum.unfollow.dm-text}") final String unfollowDMText,
-            @Value("${wtfdyum.unfollow.tweet-text}") final String unfollowTweetText) {
+            final FeaturesService featuresService) {
         this.principalService = principalService;
         this.userService = userService;
         this.twitterService = twitterService;
-        this.unfollowDMText = unfollowDMText;
-        this.unfollowTweetText = unfollowTweetText;
+        this.featuresService = featuresService;
     }
 
     /** The log. */
@@ -88,11 +80,8 @@ public class CronServiceImpl implements CronService {
     /** The twitter service. */
     private final TwitterService twitterService;
 
-    /** The unfollow dm text. */
-    private final String unfollowDMText;
-
-    /** The unfollow tweet text. */
-    private final String unfollowTweetText;
+    /** The feature services. */
+    private final FeaturesService featuresService;
 
     /*
      * (non-Javadoc)
@@ -128,55 +117,43 @@ public class CronServiceImpl implements CronService {
      */
     @Override
     @Scheduled(fixedDelayString = "${wtfdyum.unfollow-check-delay}", initialDelay = 120000L)
-    public void findUnfollowers() {
-        log.debug("Finding unnfollowers...");
+    public void cron() {
+        log.debug("Starting cron method...");
         final StopWatch watch = new StopWatch();
         watch.start();
         final Set<Long> members = principalService.getMembers();
 
         for (final Long userId : members) {
-            final boolean notifyUnfollow = userService.isFeatureEnabled(userId, Feature.NOTIFY_UNFOLLOW);
-            final boolean tweetUnfollow = userService.isFeatureEnabled(userId, Feature.TWEET_UNFOLLOW);
-            if (notifyUnfollow || tweetUnfollow) {
-                try {
-                    final Principal principal = principalService.get(userId);
-                    final Set<Long> followers = twitterService.getFollowers(userId, Optional.ofNullable(principal));
-
-                    final Set<Long> unfollowersId = userService.getUnfollowers(userId, followers);
-
-                    final List<User> unfollowers = twitterService.getUsers(principal, Longs.toArray(unfollowersId));
-
-                    for (final User unfollower : unfollowers) {
-                        userService.addEvent(userId, new Event(EventType.UNFOLLOW, unfollower.getScreenName()));
-
-                        if (notifyUnfollow) {
-                            twitterService.sendDirectMessage(principal, userId,
-                                    String.format(unfollowDMText, unfollower.getScreenName()));
-                        }
-
-                        if (tweetUnfollow) {
-                            twitterService.tweet(principal,
-                                    String.format(unfollowTweetText, unfollower.getScreenName()));
-                        }
-                    }
-
-                    userService.saveFollowers(userId, followers);
-                } catch (final WTFDYUMException e) {
-                    if (WTFDYUMExceptionType.GET_FOLLOWERS_RATE_LIMIT_EXCEEDED.equals(e.getType())) {
-                        userService.addEvent(userId, new Event(EventType.RATE_LIMIT_EXCEEDED, null));
-                        log.warn("GET_FOLLOWERS_RATE_LIMIT_EXCEEDED for user id {}", userId);
-                    } else {
-                        userService.addEvent(userId, new Event(EventType.TWITTER_ERROR, null));
-                        log.error("Twitter error for user id " + userId, e.getCause());
-                    }
-                } catch (final Throwable t) {
-                    userService.addEvent(userId, new Event(EventType.UNKNOWN_ERROR, null));
-                    log.error("Unknown error for user id " + userId, t);
+            try {
+                final Set<Feature> enabledFeatures = userService.getEnabledFeatures(userId);
+                final Set<Event> events = new HashSet<>();
+                for (final Feature enabledFeature : enabledFeatures) {
+                    final Set<Event> es = featuresService.cron(userId, enabledFeature);
+                    events.addAll(es);
                 }
+
+                for (final Event e : events) {
+                    userService.addEvent(userId, e);
+                }
+
+                for (final Feature enabledFeature : enabledFeatures) {
+                    featuresService.completeCron(userId, enabledFeature);
+                }
+            } catch (final WTFDYUMException e) {
+                if (WTFDYUMExceptionType.GET_FOLLOWERS_RATE_LIMIT_EXCEEDED.equals(e.getType())) {
+                    userService.addEvent(userId, new Event(EventType.RATE_LIMIT_EXCEEDED, null));
+                    log.warn("GET_FOLLOWERS_RATE_LIMIT_EXCEEDED for user id {}", userId);
+                } else {
+                    userService.addEvent(userId, new Event(EventType.TWITTER_ERROR, null));
+                    log.error("Twitter error for userId " + userId, e.getCause());
+                }
+            } catch (final Throwable t) {
+                userService.addEvent(userId, new Event(EventType.UNKNOWN_ERROR, null));
+                log.error("Unknown error for user id " + userId, t);
             }
         }
         watch.stop();
-        log.debug("Finished finding unfollowers in {} ms", watch.getTotalTimeMillis());
+        log.debug("Finished cron in {} ms", watch.getTotalTimeMillis());
     }
 
 }

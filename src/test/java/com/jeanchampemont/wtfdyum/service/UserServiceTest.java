@@ -50,6 +50,7 @@ import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.type.EventType;
 import com.jeanchampemont.wtfdyum.dto.type.UserLimitType;
+import com.jeanchampemont.wtfdyum.service.feature.FeaturesService;
 import com.jeanchampemont.wtfdyum.service.impl.UserServiceImpl;
 
 /**
@@ -89,6 +90,10 @@ public class UserServiceTest {
     /** The event list operations. */
     @Mock
     private ListOperations<String, Event> eventListOperations;
+    
+    /** The features service. */
+    @Mock
+    private FeaturesService featuresService;
 
     /** The clock. */
     private final Clock clock = Clock.fixed(Instant.parse("2007-12-03T10:15:30.00Z"), ZoneId.of("Z"));
@@ -99,7 +104,7 @@ public class UserServiceTest {
     @Before
     public void _init() {
         initMocks(this);
-        sut = new UserServiceImpl(eventRedisTemplate, featureRedisTemplate, longRedisTemplate, clock);
+        sut = new UserServiceImpl(eventRedisTemplate, featureRedisTemplate, longRedisTemplate, featuresService, clock);
     }
 
     /**
@@ -136,7 +141,6 @@ public class UserServiceTest {
     @Test
     public void applyLimitTestReached() {
         when(longRedisTemplate.opsForValue()).thenReturn(longValueOperations);
-        when(featureRedisTemplate.opsForSet()).thenReturn(featureSetOperations);
         when(eventRedisTemplate.opsForList()).thenReturn(eventListOperations);
         when(longValueOperations.increment(UserLimitType.CREDENTIALS_INVALID.name() + "_442", 1)).thenReturn(5L);
 
@@ -144,7 +148,7 @@ public class UserServiceTest {
 
         assertThat(result).isTrue();
         for (final Feature f : Feature.values()) {
-            verify(featureSetOperations, times(1)).remove("FEATURES_442", f);
+            verify(featuresService, times(1)).disableFeature(442L, f);
         }
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
         verify(eventListOperations, times(1)).leftPush(eq("EVENTS_442"), eventCaptor.capture());
@@ -154,63 +158,18 @@ public class UserServiceTest {
     }
 
     /**
-     * Disable feature test disabled feature.
+     * Gets the enabled features test.
+     *
+     * @return the enabled features test
      */
     @Test
-    public void disableFeatureTestDisabledFeature() {
-        when(featureRedisTemplate.opsForSet()).thenReturn(featureSetOperations);
-        when(featureSetOperations.remove("FEATURES_1334", Feature.NOTIFY_UNFOLLOW)).thenReturn(0L);
-
-        final boolean result = sut.disableFeature(1334L, Feature.NOTIFY_UNFOLLOW);
-
-        verify(featureSetOperations, times(1)).remove("FEATURES_1334", Feature.NOTIFY_UNFOLLOW);
-
-        assertThat(result).isFalse();
-    }
-
-    /**
-     * Disable feature test enabled feature.
-     */
-    @Test
-    public void disableFeatureTestEnabledFeature() {
-        when(featureRedisTemplate.opsForSet()).thenReturn(featureSetOperations);
-        when(featureSetOperations.remove("FEATURES_1334", Feature.NOTIFY_UNFOLLOW)).thenReturn(1L);
-
-        final boolean result = sut.disableFeature(1334L, Feature.NOTIFY_UNFOLLOW);
-
-        verify(featureSetOperations, times(1)).remove("FEATURES_1334", Feature.NOTIFY_UNFOLLOW);
-
-        assertThat(result).isTrue();
-    }
-
-    /**
-     * Enable feature test disabled feature.
-     */
-    @Test
-    public void enableFeatureTestDisabledFeature() {
-        when(featureRedisTemplate.opsForSet()).thenReturn(featureSetOperations);
-        when(featureSetOperations.add("FEATURES_1334", Feature.NOTIFY_UNFOLLOW)).thenReturn(1L);
-
-        final boolean result = sut.enableFeature(1334L, Feature.NOTIFY_UNFOLLOW);
-
-        verify(featureSetOperations, times(1)).add("FEATURES_1334", Feature.NOTIFY_UNFOLLOW);
-
-        assertThat(result).isTrue();
-    }
-
-    /**
-     * Enable feature test enabled feature.
-     */
-    @Test
-    public void enableFeatureTestEnabledFeature() {
-        when(featureRedisTemplate.opsForSet()).thenReturn(featureSetOperations);
-        when(featureSetOperations.add("FEATURES_1334", Feature.NOTIFY_UNFOLLOW)).thenReturn(0L);
-
-        final boolean result = sut.enableFeature(1334L, Feature.NOTIFY_UNFOLLOW);
-
-        verify(featureSetOperations, times(1)).add("FEATURES_1334", Feature.NOTIFY_UNFOLLOW);
-
-        assertThat(result).isFalse();
+    public void getEnabledFeaturesTest() {
+    	when(featureRedisTemplate.opsForSet()).thenReturn(featureSetOperations);
+    	when(featureSetOperations.members("FEATURES_1234")).thenReturn(new HashSet<>(Arrays.asList(Feature.NOTIFY_UNFOLLOW, Feature.TWEET_UNFOLLOW)));
+    	
+    	final Set<Feature> result = sut.getEnabledFeatures(1234L);
+    	
+    	assertThat(result).isEqualTo(new HashSet<>(Arrays.asList(Feature.NOTIFY_UNFOLLOW, Feature.TWEET_UNFOLLOW)));
     }
 
     /**
@@ -234,42 +193,6 @@ public class UserServiceTest {
     }
 
     /**
-     * Gets the unfollowers test.
-     *
-     * @return the unfollowers test
-     */
-    @Test
-    public void getUnfollowersTest() {
-        final Set<Long> result = new HashSet<>(Arrays.asList(124L, 901L, 44L));
-
-        when(longRedisTemplate.opsForSet()).thenReturn(longSetOperations);
-        when(longSetOperations.difference("FOLLOWERS_12", "TEMP_FOLLOWERS_12")).thenReturn(result);
-
-        final Set<Long> currentFollowersId = new HashSet<>(Arrays.asList(999L, 998L, 997L, 978L));
-
-        final Set<Long> returnedResult = sut.getUnfollowers(12L, currentFollowersId);
-
-        verify(longSetOperations).add("TEMP_FOLLOWERS_12", 978L, 997L, 998L, 999L);
-        verify(longRedisTemplate).delete("TEMP_FOLLOWERS_12");
-
-        assertThat(returnedResult).isNotNull();
-        assertThat(returnedResult).isEqualTo(result);
-    }
-
-    /**
-     * Checks if is feature enabled test.
-     */
-    @Test
-    public void isFeatureEnabledTest() {
-        when(featureRedisTemplate.opsForSet()).thenReturn(featureSetOperations);
-        when(featureSetOperations.isMember("FEATURES_1899", Feature.NOTIFY_UNFOLLOW)).thenReturn(true);
-
-        final boolean featureEnabled = sut.isFeatureEnabled(1899L, Feature.NOTIFY_UNFOLLOW);
-
-        assertThat(featureEnabled).isTrue();
-    }
-
-    /**
      * Reset limit test.
      */
     @Test
@@ -278,18 +201,5 @@ public class UserServiceTest {
         sut.resetLimit(199L, UserLimitType.CREDENTIALS_INVALID);
 
         verify(longRedisTemplate, times(1)).delete(UserLimitType.CREDENTIALS_INVALID.name() + "_199");
-    }
-
-    /**
-     * Save followers test.
-     */
-    @Test
-    public void saveFollowersTest() {
-        when(longRedisTemplate.opsForSet()).thenReturn(longSetOperations);
-
-        sut.saveFollowers(1788L, new HashSet<Long>(Arrays.asList(888L, 89L, 19L)));
-
-        verify(longRedisTemplate, times(1)).delete("FOLLOWERS_1788");
-        verify(longSetOperations, times(1)).add("FOLLOWERS_1788", 19L, 888L, 89L);
     }
 }

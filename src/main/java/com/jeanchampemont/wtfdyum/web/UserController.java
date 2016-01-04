@@ -35,6 +35,7 @@ import com.jeanchampemont.wtfdyum.security.Secured;
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
 import com.jeanchampemont.wtfdyum.service.UserService;
+import com.jeanchampemont.wtfdyum.service.feature.FeaturesService;
 import com.jeanchampemont.wtfdyum.utils.SessionManager;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 
@@ -56,6 +57,10 @@ public class UserController {
     /** The user service. */
     @Autowired
     private UserService userService;
+    
+    /** The features service. */
+    @Autowired
+    private FeaturesService featuresService;
 
     /**
      * Disable feature.
@@ -69,7 +74,7 @@ public class UserController {
     public RedirectView disableFeature(@PathVariable("feature") final Feature feature) {
         final Long userId = authenticationService.getCurrentUserId();
 
-        if (userService.disableFeature(userId, feature)) {
+        if (featuresService.disableFeature(userId, feature)) {
             userService.addEvent(userId, new Event(EventType.FEATURE_DISABLED, feature.getShortName()));
         }
 
@@ -86,7 +91,7 @@ public class UserController {
     public RedirectView enableFeature(@PathVariable("feature") final Feature feature) {
         final Long userId = authenticationService.getCurrentUserId();
 
-        if (userService.enableFeature(userId, feature)) {
+        if (featuresService.enableFeature(userId, feature)) {
             userService.addEvent(userId, new Event(EventType.FEATURE_ENABLED, feature.getShortName()));
         }
 
@@ -117,7 +122,7 @@ public class UserController {
 
         final Map<String, Boolean> featuresStatus = new HashMap<>();
         for (final Feature f : Feature.values()) {
-            featuresStatus.put(f.name(), userService.isFeatureEnabled(userId, f));
+            featuresStatus.put(f.name(), featuresService.isEnabled(userId, f));
         }
 
         result.getModel().put("featuresStatus", featuresStatus);

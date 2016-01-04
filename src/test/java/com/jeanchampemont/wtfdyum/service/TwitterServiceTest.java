@@ -300,6 +300,44 @@ public class TwitterServiceTest {
     }
 
     /**
+     * Gets the users twitter exception test.
+     *
+     * @return the users test
+     * @throws Exception
+     *             the exception
+     */
+    @Test
+    public void getUsersTwitterExceptionTest() throws Exception {
+        final User userMock = mock(User.class);
+        when(userMock.getName()).thenReturn("name");
+        when(userMock.getScreenName()).thenReturn("screenName");
+        when(userMock.getProfileImageURL()).thenReturn("profile img url");
+        when(userMock.getURL()).thenReturn("user url");
+
+        final ResponseList<User> users = new ResponseListMockForTest<User>();
+        final long[] ids = new long[100];
+
+        final Random rand = new Random();
+        for(int i = 0; i < 100; i++) {
+            users.add(userMock);
+            final long id = rand.nextLong();
+
+            when(userMock.getId()).thenReturn(id);
+            ids[i] = id;
+        }
+
+        when(twitter.users()).thenReturn(usersResources);
+        when(usersResources.lookupUsers(ids)).thenThrow(TwitterException.class);
+
+        try {
+            sut.getUsers(new Principal(1L, "", ""), ids);
+            Assertions.failBecauseExceptionWasNotThrown(WTFDYUMException.class);
+        } catch (WTFDYUMException e) {
+            assertThat(e.getType()).isEqualTo(WTFDYUMExceptionType.TWITTER_ERROR);
+        }
+    }
+
+    /**
      * Gets the followers test without principal rate limit.
      *
      * @return the followers test without principal rate limit

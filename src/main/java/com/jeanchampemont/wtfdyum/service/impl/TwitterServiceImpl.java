@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -17,10 +17,7 @@
  */
 package com.jeanchampemont.wtfdyum.service.impl;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.dozer.Mapper;
@@ -38,10 +35,7 @@ import com.jeanchampemont.wtfdyum.utils.TwitterFactoryHolder;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMExceptionType;
 
-import twitter4j.IDs;
-import twitter4j.RateLimitStatus;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
+import twitter4j.*;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
@@ -163,6 +157,38 @@ public class TwitterServiceImpl implements TwitterService {
             result = mapper.map(user, User.class);
         } catch (final TwitterException e) {
             log.debug("Error while getUser", e);
+            throw new WTFDYUMException(e, WTFDYUMExceptionType.TWITTER_ERROR);
+        }
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.jeanchampemont.wtfdyum.service.TwitterService#getUsers(com.
+     * jeanchampemont.wtfdyum.dto.Principal, java.lang.Long[])
+     */
+    @Override
+    public List<User> getUsers(final Principal principal, final long... ids) throws WTFDYUMException {
+        final List<User> result = new ArrayList<>();
+        if (ids.length == 0) {
+            return result;
+        }
+        try {
+            final List<twitter4j.User> users = new ArrayList<>();
+            for (int i = 0; i <= (ids.length - 1) / 100; i++) {
+                final ResponseList<twitter4j.User> lookupUsers = twitter(principal).users()
+                    .lookupUsers(Arrays.copyOfRange(ids, i * 100, Math.min((i + 1) * 100, ids.length)));
+
+                users.addAll(lookupUsers);
+            }
+
+            for (final twitter4j.User u : users) {
+                result.add(mapper.map(u, User.class));
+            }
+
+        } catch (final TwitterException e) {
+            log.debug("Error while getUsers", e);
             throw new WTFDYUMException(e, WTFDYUMExceptionType.TWITTER_ERROR);
         }
         return result;

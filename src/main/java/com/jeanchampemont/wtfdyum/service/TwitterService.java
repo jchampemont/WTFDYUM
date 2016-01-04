@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -17,6 +17,7 @@
  */
 package com.jeanchampemont.wtfdyum.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -74,6 +75,18 @@ public interface TwitterService {
      *             the WTFDYUM exception
      */
     User getUser(Principal principal, Long id) throws WTFDYUMException;
+
+    /**
+     * Gets the users.
+     *
+     * @param principal
+     *            the principal
+     * @param ids
+     *            the ids
+     * @return the users
+     * @throws WTFDYUMException
+     */
+    List<User> getUsers(Principal principal, long... ids) throws WTFDYUMException;
 
     /**
      * Send direct message.

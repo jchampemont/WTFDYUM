@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -18,9 +18,11 @@
 package com.jeanchampemont.wtfdyum.service.feature.impl;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.google.common.primitives.Longs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -105,8 +107,8 @@ public class NotifyUnfollowFeatureService extends AbstractFeatureService {
 
         final Set<Long> unfollowersId = followersService.getUnfollowers(userId, followers);
 
-        for (final Long unfollowerId : unfollowersId) {
-            final User unfollower = twitterService.getUser(principal, unfollowerId);
+        final List<User> unfollowers = twitterService.getUsers(principal, Longs.toArray(unfollowersId));
+        for (final User unfollower : unfollowers) {
             result.add(new Event(EventType.UNFOLLOW, unfollower.getScreenName()));
             twitterService.sendDirectMessage(principal, userId,
                     String.format(unfollowDMText, unfollower.getScreenName()));

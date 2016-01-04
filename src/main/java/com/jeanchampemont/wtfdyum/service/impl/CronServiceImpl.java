@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -145,11 +145,14 @@ public class CronServiceImpl implements CronService {
             } catch (final WTFDYUMException e) {
                 if (WTFDYUMExceptionType.GET_FOLLOWERS_RATE_LIMIT_EXCEEDED.equals(e.getType())) {
                     userService.addEvent(userId, new Event(EventType.RATE_LIMIT_EXCEEDED, null));
+                    log.warn("GET_FOLLOWERS_RATE_LIMIT_EXCEEDED for user id {}", userId);
                 } else {
                     userService.addEvent(userId, new Event(EventType.TWITTER_ERROR, null));
+                    log.error("Twitter error for userId " + userId, e.getCause());
                 }
             } catch (final Throwable t) {
                 userService.addEvent(userId, new Event(EventType.UNKNOWN_ERROR, null));
+                log.error("Unknown error for user id " + userId, t);
             }
         }
         watch.stop();

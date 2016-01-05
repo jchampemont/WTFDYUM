@@ -17,12 +17,7 @@
  */
 package com.jeanchampemont.wtfdyum.security;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.lang.annotation.Annotation;
-
+import com.jeanchampemont.wtfdyum.service.AuthenticationService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -31,7 +26,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.jeanchampemont.wtfdyum.service.AuthenticationService;
+import java.lang.annotation.Annotation;
+
+import static org.mockito.Mockito.*;
 
 /**
  * The Class SecurityAspectTest.

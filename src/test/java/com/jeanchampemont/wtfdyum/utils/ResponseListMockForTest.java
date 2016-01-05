@@ -17,10 +17,10 @@
  */
 package com.jeanchampemont.wtfdyum.utils;
 
-import java.util.ArrayList;
-
 import twitter4j.RateLimitStatus;
 import twitter4j.ResponseList;
+
+import java.util.ArrayList;
 
 /**
  * The Class ResponseListMockForTest.

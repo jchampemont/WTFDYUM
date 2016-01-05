@@ -17,16 +17,6 @@
  */
 package com.jeanchampemont.wtfdyum.web;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.view.RedirectView;
-
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.dto.type.EventType;
@@ -36,9 +26,17 @@ import com.jeanchampemont.wtfdyum.service.TwitterService;
 import com.jeanchampemont.wtfdyum.service.UserService;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMExceptionType;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.view.RedirectView;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * WTFDYUM Main controller.

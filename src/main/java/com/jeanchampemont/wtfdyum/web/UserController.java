@@ -17,17 +17,6 @@
  */
 package com.jeanchampemont.wtfdyum.web;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
-
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.type.EventType;
@@ -38,6 +27,16 @@ import com.jeanchampemont.wtfdyum.service.UserService;
 import com.jeanchampemont.wtfdyum.service.feature.FeaturesService;
 import com.jeanchampemont.wtfdyum.utils.SessionManager;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The Class UserController.
@@ -57,7 +56,7 @@ public class UserController {
     /** The user service. */
     @Autowired
     private UserService userService;
-    
+
     /** The features service. */
     @Autowired
     private FeaturesService featuresService;

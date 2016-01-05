@@ -17,16 +17,15 @@
  */
 package com.jeanchampemont.wtfdyum.service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.dto.User;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
-
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * The Interface TwitterService. This is used to interact with twitter.

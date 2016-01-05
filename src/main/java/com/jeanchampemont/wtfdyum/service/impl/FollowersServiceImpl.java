@@ -17,13 +17,12 @@
  */
 package com.jeanchampemont.wtfdyum.service.impl;
 
-import java.util.Set;
-
+import com.jeanchampemont.wtfdyum.service.FollowersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.jeanchampemont.wtfdyum.service.FollowersService;
+import java.util.Set;
 
 /**
  * The Class FollowersServiceImpl.

@@ -17,16 +17,7 @@
  */
 package com.jeanchampemont.wtfdyum.service.feature.impl;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
 import com.google.common.primitives.Longs;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.Principal;
@@ -36,6 +27,14 @@ import com.jeanchampemont.wtfdyum.service.FollowersService;
 import com.jeanchampemont.wtfdyum.service.PrincipalService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * The Class NotifyUnfollowFeatureService.

@@ -17,17 +17,16 @@
  */
 package com.jeanchampemont.wtfdyum.utils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.jeanchampemont.wtfdyum.dto.Principal;
+import com.jeanchampemont.wtfdyum.service.AuthenticationService;
+import com.jeanchampemont.wtfdyum.service.PrincipalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.jeanchampemont.wtfdyum.dto.Principal;
-import com.jeanchampemont.wtfdyum.service.AuthenticationService;
-import com.jeanchampemont.wtfdyum.service.PrincipalService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * The Class AuthenticationInterceptor. This class:

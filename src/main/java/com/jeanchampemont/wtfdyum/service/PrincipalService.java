@@ -17,9 +17,9 @@
  */
 package com.jeanchampemont.wtfdyum.service;
 
-import java.util.Set;
-
 import com.jeanchampemont.wtfdyum.dto.Principal;
+
+import java.util.Set;
 
 /**
  * The Interface PrincipalService.

@@ -17,25 +17,6 @@
  */
 package com.jeanchampemont.wtfdyum.web;
 
-import static org.hamcrest.Matchers.hasEntry;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.Principal;
@@ -49,6 +30,19 @@ import com.jeanchampemont.wtfdyum.service.feature.FeaturesService;
 import com.jeanchampemont.wtfdyum.utils.SessionManager;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMExceptionType;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.hamcrest.Matchers.hasEntry;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * The Class UserControllerTest.
@@ -71,7 +65,7 @@ public class UserControllerTest extends AbstractControllerTest {
     /** The user service. */
     @Mock
     private UserService userService;
-    
+
     /** The features service. */
     @Mock
     private FeaturesService featuresService;

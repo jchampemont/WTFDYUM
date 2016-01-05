@@ -17,12 +17,12 @@
  */
 package com.jeanchampemont.wtfdyum.service;
 
-import java.util.List;
-import java.util.Set;
-
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.type.UserLimitType;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * The Interface UserService.

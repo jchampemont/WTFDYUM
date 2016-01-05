@@ -18,11 +18,11 @@
 
 package com.jeanchampemont.wtfdyum.utils;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * The Class SessionProvider.

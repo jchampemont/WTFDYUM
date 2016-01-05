@@ -17,11 +17,11 @@
  */
 package com.jeanchampemont.wtfdyum.dto;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jeanchampemont.wtfdyum.dto.type.EventType;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * The Class Event.

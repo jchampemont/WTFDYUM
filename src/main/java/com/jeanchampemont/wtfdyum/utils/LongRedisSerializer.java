@@ -17,10 +17,10 @@
  */
 package com.jeanchampemont.wtfdyum.utils;
 
-import java.nio.charset.Charset;
-
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
+
+import java.nio.charset.Charset;
 
 /**
  * The Class LongRedisSerializer.

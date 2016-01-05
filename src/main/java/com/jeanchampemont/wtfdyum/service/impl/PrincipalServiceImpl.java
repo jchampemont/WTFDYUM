@@ -17,15 +17,14 @@
  */
 package com.jeanchampemont.wtfdyum.service.impl;
 
-import java.util.Set;
-
+import com.google.common.base.Preconditions;
+import com.jeanchampemont.wtfdyum.dto.Principal;
+import com.jeanchampemont.wtfdyum.service.PrincipalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.google.common.base.Preconditions;
-import com.jeanchampemont.wtfdyum.dto.Principal;
-import com.jeanchampemont.wtfdyum.service.PrincipalService;
+import java.util.Set;
 
 /**
  * The Class PrincipalServiceImpl.

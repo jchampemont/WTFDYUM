@@ -17,15 +17,14 @@
  */
 package com.jeanchampemont.wtfdyum.config;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.jeanchampemont.wtfdyum.dto.Feature;
+import com.jeanchampemont.wtfdyum.service.feature.FeatureService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.jeanchampemont.wtfdyum.dto.Feature;
-import com.jeanchampemont.wtfdyum.service.feature.FeatureService;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Class FeatureConfiguration.

@@ -18,7 +18,6 @@
 package com.jeanchampemont.wtfdyum.utils;
 
 import org.springframework.stereotype.Component;
-
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 

@@ -17,18 +17,16 @@
  */
 package com.jeanchampemont.wtfdyum.service.feature.impl;
 
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.service.feature.FeatureService;
 import com.jeanchampemont.wtfdyum.service.feature.FeaturesService;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * The Class FeaturesServiceImpl.

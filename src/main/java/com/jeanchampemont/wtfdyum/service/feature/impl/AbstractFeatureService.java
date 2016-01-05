@@ -17,16 +17,15 @@
  */
 package com.jeanchampemont.wtfdyum.service.feature.impl;
 
-import java.util.Collections;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.service.feature.FeatureService;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * The Class AbstractFeatureService .

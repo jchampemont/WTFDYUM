@@ -17,21 +17,20 @@
  */
 package com.jeanchampemont.wtfdyum.service.impl;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Service;
-
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.type.EventType;
 import com.jeanchampemont.wtfdyum.dto.type.UserLimitType;
 import com.jeanchampemont.wtfdyum.service.UserService;
 import com.jeanchampemont.wtfdyum.service.feature.FeaturesService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 /**
  * The Class UserServiceImpl.

@@ -17,15 +17,14 @@
  */
 package com.jeanchampemont.wtfdyum.service.impl;
 
-import javax.servlet.http.HttpSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.google.common.base.Preconditions;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
 import com.jeanchampemont.wtfdyum.utils.SessionProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * The Class SessionAuthenticationServiceImpl.

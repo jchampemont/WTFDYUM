@@ -17,21 +17,6 @@
  */
 package com.jeanchampemont.wtfdyum.service;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-
-import java.util.Arrays;
-import java.util.HashSet;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
@@ -42,6 +27,18 @@ import com.jeanchampemont.wtfdyum.service.feature.FeaturesService;
 import com.jeanchampemont.wtfdyum.service.impl.CronServiceImpl;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMExceptionType;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.Arrays;
+import java.util.HashSet;
+
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
  * The Class CronServiceTest.

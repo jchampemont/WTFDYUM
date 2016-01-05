@@ -17,12 +17,12 @@
  */
 package com.jeanchampemont.wtfdyum.config;
 
-import java.util.Arrays;
-
 import org.dozer.loader.api.BeanMappingBuilder;
 import org.dozer.spring.DozerBeanMapperFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Arrays;
 
 /**
  * The Class DozerConfiguration.

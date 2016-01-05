@@ -17,11 +17,11 @@
  */
 package com.jeanchampemont.wtfdyum.service.feature;
 
-import java.util.Set;
-
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
+
+import java.util.Set;
 
 /**
  * The Interface FeaturesService.

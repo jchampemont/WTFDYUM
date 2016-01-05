@@ -17,16 +17,9 @@
  */
 package com.jeanchampemont.wtfdyum.service;
 
-import static org.assertj.core.api.StrictAssertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
+import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
+import com.jeanchampemont.wtfdyum.dto.Principal;
+import com.jeanchampemont.wtfdyum.service.impl.PrincipalServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,9 +30,13 @@ import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
-import com.jeanchampemont.wtfdyum.dto.Principal;
-import com.jeanchampemont.wtfdyum.service.impl.PrincipalServiceImpl;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
  * The Class PrincipalServiceTest.

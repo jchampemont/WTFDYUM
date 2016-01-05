@@ -17,17 +17,12 @@
  */
 package com.jeanchampemont.wtfdyum.service.feature;
 
-import static org.assertj.core.api.StrictAssertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
+import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
+import com.jeanchampemont.wtfdyum.dto.Event;
+import com.jeanchampemont.wtfdyum.dto.Feature;
+import com.jeanchampemont.wtfdyum.service.feature.impl.FeaturesServiceImpl;
+import com.jeanchampemont.wtfdyum.service.feature.impl.NotifyUnfollowFeatureService;
+import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,12 +30,14 @@ import org.mockito.Mock;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
-import com.jeanchampemont.wtfdyum.dto.Event;
-import com.jeanchampemont.wtfdyum.dto.Feature;
-import com.jeanchampemont.wtfdyum.service.feature.impl.FeaturesServiceImpl;
-import com.jeanchampemont.wtfdyum.service.feature.impl.NotifyUnfollowFeatureService;
-import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
  * The Class FeaturesServiceTest.

@@ -17,27 +17,6 @@
  */
 package com.jeanchampemont.wtfdyum.service.feature;
 
-import static org.assertj.core.api.StrictAssertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiConsumer;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.stubbing.OngoingStubbing;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.SetOperations;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
 import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.Principal;
@@ -47,6 +26,19 @@ import com.jeanchampemont.wtfdyum.service.PrincipalService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
 import com.jeanchampemont.wtfdyum.service.feature.impl.AbstractFeatureService;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.stubbing.OngoingStubbing;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.*;
+import java.util.function.BiConsumer;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 /**
  * The Class AbstractFeatureServiceTest.

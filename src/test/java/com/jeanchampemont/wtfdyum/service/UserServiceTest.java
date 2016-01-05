@@ -17,22 +17,13 @@
  */
 package com.jeanchampemont.wtfdyum.service;
 
-import static org.assertj.core.api.StrictAssertions.assertThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-
-import java.time.Clock;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
+import com.jeanchampemont.wtfdyum.dto.Event;
+import com.jeanchampemont.wtfdyum.dto.Feature;
+import com.jeanchampemont.wtfdyum.dto.type.EventType;
+import com.jeanchampemont.wtfdyum.dto.type.UserLimitType;
+import com.jeanchampemont.wtfdyum.service.feature.FeaturesService;
+import com.jeanchampemont.wtfdyum.service.impl.UserServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,13 +36,19 @@ import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
-import com.jeanchampemont.wtfdyum.dto.Event;
-import com.jeanchampemont.wtfdyum.dto.Feature;
-import com.jeanchampemont.wtfdyum.dto.type.EventType;
-import com.jeanchampemont.wtfdyum.dto.type.UserLimitType;
-import com.jeanchampemont.wtfdyum.service.feature.FeaturesService;
-import com.jeanchampemont.wtfdyum.service.impl.UserServiceImpl;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
  * The Class UserServiceTest.
@@ -90,7 +87,7 @@ public class UserServiceTest {
     /** The event list operations. */
     @Mock
     private ListOperations<String, Event> eventListOperations;
-    
+
     /** The features service. */
     @Mock
     private FeaturesService featuresService;
@@ -166,9 +163,9 @@ public class UserServiceTest {
     public void getEnabledFeaturesTest() {
     	when(featureRedisTemplate.opsForSet()).thenReturn(featureSetOperations);
     	when(featureSetOperations.members("FEATURES_1234")).thenReturn(new HashSet<>(Arrays.asList(Feature.NOTIFY_UNFOLLOW, Feature.TWEET_UNFOLLOW)));
-    	
+
     	final Set<Feature> result = sut.getEnabledFeatures(1234L);
-    	
+
     	assertThat(result).isEqualTo(new HashSet<>(Arrays.asList(Feature.NOTIFY_UNFOLLOW, Feature.TWEET_UNFOLLOW)));
     }
 

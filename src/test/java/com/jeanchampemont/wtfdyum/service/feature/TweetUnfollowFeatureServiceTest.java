@@ -17,13 +17,12 @@
  */
 package com.jeanchampemont.wtfdyum.service.feature;
 
-import static org.assertj.core.api.StrictAssertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import java.util.List;
-import java.util.Set;
-
+import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
+import com.jeanchampemont.wtfdyum.dto.Event;
+import com.jeanchampemont.wtfdyum.dto.Principal;
+import com.jeanchampemont.wtfdyum.dto.User;
+import com.jeanchampemont.wtfdyum.dto.type.EventType;
+import com.jeanchampemont.wtfdyum.service.feature.impl.TweetUnfollowFeatureService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,12 +30,12 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
-import com.jeanchampemont.wtfdyum.dto.Event;
-import com.jeanchampemont.wtfdyum.dto.Principal;
-import com.jeanchampemont.wtfdyum.dto.User;
-import com.jeanchampemont.wtfdyum.dto.type.EventType;
-import com.jeanchampemont.wtfdyum.service.feature.impl.TweetUnfollowFeatureService;
+import java.util.List;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = WTFDYUMApplication.class)

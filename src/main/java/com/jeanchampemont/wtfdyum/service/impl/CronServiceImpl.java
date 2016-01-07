@@ -22,11 +22,7 @@ import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.dto.type.EventType;
 import com.jeanchampemont.wtfdyum.dto.type.UserLimitType;
-import com.jeanchampemont.wtfdyum.service.CronService;
-import com.jeanchampemont.wtfdyum.service.PrincipalService;
-import com.jeanchampemont.wtfdyum.service.TwitterService;
-import com.jeanchampemont.wtfdyum.service.UserService;
-import com.jeanchampemont.wtfdyum.service.feature.FeaturesService;
+import com.jeanchampemont.wtfdyum.service.*;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMExceptionType;
 import org.slf4j.Logger;
@@ -54,18 +50,18 @@ public class CronServiceImpl implements CronService {
      *            the user service
      * @param twitterService
      *            the twitter service
-     * @param featuresService
+     * @param featureService
      *            the features service
      */
     @Autowired
     public CronServiceImpl(final PrincipalService principalService,
             final UserService userService,
             final TwitterService twitterService,
-            final FeaturesService featuresService) {
+            final FeatureService featureService) {
         this.principalService = principalService;
         this.userService = userService;
         this.twitterService = twitterService;
-        this.featuresService = featuresService;
+        this.featureService = featureService;
     }
 
     /** The log. */
@@ -81,7 +77,7 @@ public class CronServiceImpl implements CronService {
     private final TwitterService twitterService;
 
     /** The feature services. */
-    private final FeaturesService featuresService;
+    private final FeatureService featureService;
 
     /*
      * (non-Javadoc)
@@ -128,7 +124,7 @@ public class CronServiceImpl implements CronService {
                 final Set<Feature> enabledFeatures = userService.getEnabledFeatures(userId);
                 final Set<Event> events = new HashSet<>();
                 for (final Feature enabledFeature : enabledFeatures) {
-                    final Set<Event> es = featuresService.cron(userId, enabledFeature);
+                    final Set<Event> es = featureService.cron(userId, enabledFeature);
                     events.addAll(es);
                 }
 
@@ -137,7 +133,7 @@ public class CronServiceImpl implements CronService {
                 }
 
                 for (final Feature enabledFeature : enabledFeatures) {
-                    featuresService.completeCron(userId, enabledFeature);
+                    featureService.completeCron(userId, enabledFeature);
                 }
             } catch (final WTFDYUMException e) {
                 if (WTFDYUMExceptionType.GET_FOLLOWERS_RATE_LIMIT_EXCEEDED.equals(e.getType())) {

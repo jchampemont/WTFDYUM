@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -22,7 +22,7 @@ import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.dto.User;
 import com.jeanchampemont.wtfdyum.dto.type.EventType;
-import com.jeanchampemont.wtfdyum.service.feature.impl.NotifyUnfollowFeatureService;
+import com.jeanchampemont.wtfdyum.service.feature.impl.NotifyUnfollowFeatureStrategy;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,11 +38,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 /**
- * The Class NotifyUnfollowFeatureServiceTest.
+ * The Class NotifyUnfollowFeatureStrategyTest.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = WTFDYUMApplication.class)
-public class NotifyUnfollowFeatureServiceTest extends AbstractFeatureServiceTest {
+public class NotifyUnfollowFeatureStrategyTest extends AbstractFeatureStrategyTest {
 
     /**
      * _init.
@@ -51,7 +51,7 @@ public class NotifyUnfollowFeatureServiceTest extends AbstractFeatureServiceTest
     @Before
     public void _init() {
         super._init();
-        sut = new NotifyUnfollowFeatureService(principalService, followersService, twitterService, DM_TEXT);
+        sut = new NotifyUnfollowFeatureStrategy(principalService, followersService, twitterService, DM_TEXT);
         ReflectionTestUtils.setField(sut, "featureRedisTemplate", featureRedisTemplate);
     }
 

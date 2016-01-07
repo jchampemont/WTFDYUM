@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -21,8 +21,8 @@ import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.type.EventType;
 import com.jeanchampemont.wtfdyum.dto.type.UserLimitType;
+import com.jeanchampemont.wtfdyum.service.FeatureService;
 import com.jeanchampemont.wtfdyum.service.UserService;
-import com.jeanchampemont.wtfdyum.service.feature.FeaturesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -58,12 +58,12 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(final RedisTemplate<String, Event> eventRedisTemplate,
             final RedisTemplate<String, Feature> featureRedisTemplate,
             final RedisTemplate<String, Long> longRedisTemplate,
-            final FeaturesService featuresService,
+            final FeatureService featureService,
             final Clock clock) {
         this.eventRedisTemplate = eventRedisTemplate;
         this.featureRedisTemplate = featureRedisTemplate;
         this.longRedisTemplate = longRedisTemplate;
-        this.featuresService = featuresService;
+        this.featureService = featureService;
         this.clock = clock;
     }
 
@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
     private final RedisTemplate<String, Long> longRedisTemplate;
 
     /** The features service. */
-    private final FeaturesService featuresService;
+    private final FeatureService featureService;
 
     /** The clock. */
     private final Clock clock;
@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
                 .getLimitValue();
         if (reached) {
             for (final Feature f : Feature.values()) {
-                featuresService.disableFeature(userId, f);
+                featureService.disableFeature(userId, f);
             }
             addEvent(userId, new Event(EventType.CREDENTIALS_INVALID_LIMIT_REACHED, ""));
         }

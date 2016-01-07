@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -22,7 +22,6 @@ import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.type.EventType;
 import com.jeanchampemont.wtfdyum.dto.type.UserLimitType;
-import com.jeanchampemont.wtfdyum.service.feature.FeaturesService;
 import com.jeanchampemont.wtfdyum.service.impl.UserServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -90,7 +89,7 @@ public class UserServiceTest {
 
     /** The features service. */
     @Mock
-    private FeaturesService featuresService;
+    private FeatureService featureService;
 
     /** The clock. */
     private final Clock clock = Clock.fixed(Instant.parse("2007-12-03T10:15:30.00Z"), ZoneId.of("Z"));
@@ -101,7 +100,7 @@ public class UserServiceTest {
     @Before
     public void _init() {
         initMocks(this);
-        sut = new UserServiceImpl(eventRedisTemplate, featureRedisTemplate, longRedisTemplate, featuresService, clock);
+        sut = new UserServiceImpl(eventRedisTemplate, featureRedisTemplate, longRedisTemplate, featureService, clock);
     }
 
     /**
@@ -145,7 +144,7 @@ public class UserServiceTest {
 
         assertThat(result).isTrue();
         for (final Feature f : Feature.values()) {
-            verify(featuresService, times(1)).disableFeature(442L, f);
+            verify(featureService, times(1)).disableFeature(442L, f);
         }
         final ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
         verify(eventListOperations, times(1)).leftPush(eq("EVENTS_442"), eventCaptor.capture());

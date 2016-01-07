@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -22,7 +22,7 @@ import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.dto.User;
 import com.jeanchampemont.wtfdyum.dto.type.EventType;
-import com.jeanchampemont.wtfdyum.service.feature.impl.TweetUnfollowFeatureService;
+import com.jeanchampemont.wtfdyum.service.feature.impl.TweetUnfollowFeatureStrategy;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +39,7 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = WTFDYUMApplication.class)
-public class TweetUnfollowFeatureServiceTest extends AbstractFeatureServiceTest {
+public class TweetUnfollowFeatureStrategyTest extends AbstractFeatureStrategyTest {
 
     /**
      * _init.
@@ -48,7 +48,7 @@ public class TweetUnfollowFeatureServiceTest extends AbstractFeatureServiceTest 
     @Before
     public void _init() {
         super._init();
-        sut = new TweetUnfollowFeatureService(principalService, followersService, twitterService, TWEET_TEXT);
+        sut = new TweetUnfollowFeatureStrategy(principalService, followersService, twitterService, TWEET_TEXT);
         ReflectionTestUtils.setField(sut, "featureRedisTemplate", featureRedisTemplate);
     }
 

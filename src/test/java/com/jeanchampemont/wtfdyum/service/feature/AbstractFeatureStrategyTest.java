@@ -24,7 +24,7 @@ import com.jeanchampemont.wtfdyum.dto.User;
 import com.jeanchampemont.wtfdyum.service.FollowersService;
 import com.jeanchampemont.wtfdyum.service.PrincipalService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
-import com.jeanchampemont.wtfdyum.service.feature.impl.AbstractFeatureService;
+import com.jeanchampemont.wtfdyum.service.feature.impl.AbstractFeatureStrategy;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,11 +41,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
- * The Class AbstractFeatureServiceTest.
+ * The Class AbstractFeatureStrategyTest.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = WTFDYUMApplication.class)
-public abstract class AbstractFeatureServiceTest {
+public abstract class AbstractFeatureStrategyTest {
 
     /** The Constant TWEET_TEXT. */
     protected static final String TWEET_TEXT = "@%s tweet";
@@ -63,7 +63,7 @@ public abstract class AbstractFeatureServiceTest {
     protected TwitterService twitterService;
 
     /** The sut. */
-    protected AbstractFeatureService sut;
+    protected AbstractFeatureStrategy sut;
 
     /** The Feature redis template mock. */
     protected RedisTemplate<String, Feature> featureRedisTemplate;

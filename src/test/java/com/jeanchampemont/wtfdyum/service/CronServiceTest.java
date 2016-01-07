@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -23,7 +23,6 @@ import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.dto.type.EventType;
 import com.jeanchampemont.wtfdyum.dto.type.UserLimitType;
-import com.jeanchampemont.wtfdyum.service.feature.FeaturesService;
 import com.jeanchampemont.wtfdyum.service.impl.CronServiceImpl;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMExceptionType;
@@ -61,7 +60,7 @@ public class CronServiceTest {
 
     /** The features service. */
     @Mock
-    private FeaturesService featuresService;
+    private FeatureService featureService;
 
     /** The system under test. */
     private CronService sut;
@@ -72,7 +71,7 @@ public class CronServiceTest {
     @Before
     public void _init() {
         initMocks(this);
-        sut = new CronServiceImpl(principalService, userService, twitterService, featuresService);
+        sut = new CronServiceImpl(principalService, userService, twitterService, featureService);
     }
 
     /**
@@ -132,17 +131,17 @@ public class CronServiceTest {
         principal(12L);
         featureEnabled(12L, true, Feature.NOTIFY_UNFOLLOW, Feature.TWEET_UNFOLLOW);
 
-        when(featuresService.cron(12L, Feature.NOTIFY_UNFOLLOW))
+        when(featureService.cron(12L, Feature.NOTIFY_UNFOLLOW))
         .thenReturn(new HashSet<>(Arrays.asList(new Event(EventType.UNFOLLOW, "toto"))));
-        when(featuresService.cron(12L, Feature.TWEET_UNFOLLOW))
+        when(featureService.cron(12L, Feature.TWEET_UNFOLLOW))
         .thenReturn(new HashSet<>(Arrays.asList(new Event(EventType.UNFOLLOW, "toto"))));
 
         sut.cron();
 
-        verify(featuresService, times(1)).cron(12L, Feature.NOTIFY_UNFOLLOW);
-        verify(featuresService, times(1)).cron(12L, Feature.TWEET_UNFOLLOW);
-        verify(featuresService, times(1)).completeCron(12L, Feature.NOTIFY_UNFOLLOW);
-        verify(featuresService, times(1)).completeCron(12L, Feature.TWEET_UNFOLLOW);
+        verify(featureService, times(1)).cron(12L, Feature.NOTIFY_UNFOLLOW);
+        verify(featureService, times(1)).cron(12L, Feature.TWEET_UNFOLLOW);
+        verify(featureService, times(1)).completeCron(12L, Feature.NOTIFY_UNFOLLOW);
+        verify(featureService, times(1)).completeCron(12L, Feature.TWEET_UNFOLLOW);
 
         verify(userService, times(1)).addEvent(12L, new Event(EventType.UNFOLLOW, "toto"));
     }
@@ -160,8 +159,8 @@ public class CronServiceTest {
 
         sut.cron();
 
-        verify(featuresService, times(1)).cron(1L, Feature.NOTIFY_UNFOLLOW);
-        verify(featuresService, times(1)).completeCron(1L, Feature.NOTIFY_UNFOLLOW);
+        verify(featureService, times(1)).cron(1L, Feature.NOTIFY_UNFOLLOW);
+        verify(featureService, times(1)).completeCron(1L, Feature.NOTIFY_UNFOLLOW);
     }
 
     /**
@@ -175,7 +174,7 @@ public class CronServiceTest {
         principal(4L);
         featureEnabled(4L, true, Feature.NOTIFY_UNFOLLOW);
 
-        when(featuresService.cron(4L, Feature.NOTIFY_UNFOLLOW)).thenThrow(new NullPointerException());
+        when(featureService.cron(4L, Feature.NOTIFY_UNFOLLOW)).thenThrow(new NullPointerException());
 
         sut.cron();
 
@@ -195,7 +194,7 @@ public class CronServiceTest {
         principal(3L);
         featureEnabled(3L, true, Feature.NOTIFY_UNFOLLOW);
 
-        when(featuresService.cron(3L, Feature.NOTIFY_UNFOLLOW)).thenThrow(new WTFDYUMException(WTFDYUMExceptionType.GET_FOLLOWERS_RATE_LIMIT_EXCEEDED));
+        when(featureService.cron(3L, Feature.NOTIFY_UNFOLLOW)).thenThrow(new WTFDYUMException(WTFDYUMExceptionType.GET_FOLLOWERS_RATE_LIMIT_EXCEEDED));
 
         sut.cron();
 
@@ -214,7 +213,7 @@ public class CronServiceTest {
         principal(2L);
         featureEnabled(2L, true, Feature.NOTIFY_UNFOLLOW);
 
-        when(featuresService.cron(2L, Feature.NOTIFY_UNFOLLOW)).thenThrow(new WTFDYUMException(WTFDYUMExceptionType.TWITTER_ERROR));
+        when(featureService.cron(2L, Feature.NOTIFY_UNFOLLOW)).thenThrow(new WTFDYUMException(WTFDYUMExceptionType.TWITTER_ERROR));
 
         sut.cron();
 

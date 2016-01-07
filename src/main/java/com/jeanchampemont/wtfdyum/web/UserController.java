@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -22,9 +22,9 @@ import com.jeanchampemont.wtfdyum.dto.Feature;
 import com.jeanchampemont.wtfdyum.dto.type.EventType;
 import com.jeanchampemont.wtfdyum.security.Secured;
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
+import com.jeanchampemont.wtfdyum.service.FeatureService;
 import com.jeanchampemont.wtfdyum.service.TwitterService;
 import com.jeanchampemont.wtfdyum.service.UserService;
-import com.jeanchampemont.wtfdyum.service.feature.FeaturesService;
 import com.jeanchampemont.wtfdyum.utils.SessionManager;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +59,7 @@ public class UserController {
 
     /** The features service. */
     @Autowired
-    private FeaturesService featuresService;
+    private FeatureService featureService;
 
     /**
      * Disable feature.
@@ -73,7 +73,7 @@ public class UserController {
     public RedirectView disableFeature(@PathVariable("feature") final Feature feature) {
         final Long userId = authenticationService.getCurrentUserId();
 
-        if (featuresService.disableFeature(userId, feature)) {
+        if (featureService.disableFeature(userId, feature)) {
             userService.addEvent(userId, new Event(EventType.FEATURE_DISABLED, feature.getShortName()));
         }
 
@@ -90,7 +90,7 @@ public class UserController {
     public RedirectView enableFeature(@PathVariable("feature") final Feature feature) {
         final Long userId = authenticationService.getCurrentUserId();
 
-        if (featuresService.enableFeature(userId, feature)) {
+        if (featureService.enableFeature(userId, feature)) {
             userService.addEvent(userId, new Event(EventType.FEATURE_ENABLED, feature.getShortName()));
         }
 
@@ -121,7 +121,7 @@ public class UserController {
 
         final Map<String, Boolean> featuresStatus = new HashMap<>();
         for (final Feature f : Feature.values()) {
-            featuresStatus.put(f.name(), featuresService.isEnabled(userId, f));
+            featuresStatus.put(f.name(), featureService.isEnabled(userId, f));
         }
 
         result.getModel().put("featuresStatus", featuresStatus);

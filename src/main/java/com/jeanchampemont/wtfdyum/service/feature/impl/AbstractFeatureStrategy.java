@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -19,7 +19,7 @@ package com.jeanchampemont.wtfdyum.service.feature.impl;
 
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
-import com.jeanchampemont.wtfdyum.service.feature.FeatureService;
+import com.jeanchampemont.wtfdyum.service.feature.FeatureStrategy;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -28,20 +28,20 @@ import java.util.Collections;
 import java.util.Set;
 
 /**
- * The Class AbstractFeatureService .
+ * The Class AbstractFeatureStrategy .
  */
-public abstract class AbstractFeatureService implements FeatureService {
+public abstract class AbstractFeatureStrategy implements FeatureStrategy {
 
     /** The Constant FEATURES_KEY_PREFIX. */
     private static final String FEATURES_KEY_PREFIX = "FEATURES_";
 
     /**
-     * Instantiates a new abstract feature service.
+     * Instantiates a new abstract feature strategy.
      *
      * @param feature
      *            the feature
      */
-    public AbstractFeatureService(final Feature feature) {
+    public AbstractFeatureStrategy(final Feature feature) {
         this.feature = feature;
     }
 
@@ -56,7 +56,7 @@ public abstract class AbstractFeatureService implements FeatureService {
      * (non-Javadoc)
      *
      * @see
-     * com.jeanchampemont.wtfdyum.service.feature.FeatureService#completeCron(
+     * com.jeanchampemont.wtfdyum.service.feature.FeatureStrategy#completeCron(
      * java.lang.Long)
      */
     @Override
@@ -68,7 +68,7 @@ public abstract class AbstractFeatureService implements FeatureService {
      * (non-Javadoc)
      *
      * @see
-     * com.jeanchampemont.wtfdyum.service.feature.FeatureService#cron(java.lang.
+     * com.jeanchampemont.wtfdyum.service.feature.FeatureStrategy#cron(java.lang.
      * Long)
      */
     @Override
@@ -81,7 +81,7 @@ public abstract class AbstractFeatureService implements FeatureService {
      * (non-Javadoc)
      *
      * @see
-     * com.jeanchampemont.wtfdyum.service.feature.FeatureService#disableFeature(
+     * com.jeanchampemont.wtfdyum.service.feature.FeatureStrategy#disableFeature(
      * java.lang.Long)
      */
     @Override
@@ -93,7 +93,7 @@ public abstract class AbstractFeatureService implements FeatureService {
      * (non-Javadoc)
      *
      * @see
-     * com.jeanchampemont.wtfdyum.service.feature.FeatureService#enableFeature(
+     * com.jeanchampemont.wtfdyum.service.feature.FeatureStrategy#enableFeature(
      * java.lang.Long)
      */
     @Override
@@ -105,7 +105,7 @@ public abstract class AbstractFeatureService implements FeatureService {
      * (non-Javadoc)
      *
      * @see
-     * com.jeanchampemont.wtfdyum.service.feature.FeatureService#getFeature()
+     * com.jeanchampemont.wtfdyum.service.feature.FeatureStrategy#getFeature()
      */
     @Override
     public Feature getFeature() {
@@ -116,7 +116,7 @@ public abstract class AbstractFeatureService implements FeatureService {
      * (non-Javadoc)
      *
      * @see
-     * com.jeanchampemont.wtfdyum.service.feature.FeatureService#isEnabled(java.
+     * com.jeanchampemont.wtfdyum.service.feature.FeatureStrategy#isEnabled(java.
      * lang.Long)
      */
     @Override

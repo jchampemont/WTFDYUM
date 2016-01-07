@@ -37,13 +37,13 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * The Class NotifyUnfollowFeatureService.
+ * The Class TweetUnfollowFeatureStrategy.
  */
 @Service
-public class NotifyUnfollowFeatureService extends AbstractFeatureService {
+public class TweetUnfollowFeatureStrategy extends AbstractFeatureStrategy {
 
     /**
-     * Instantiates a new notify unfollow feature service.
+     * Instantiates a new tweet unfollow feature strategy.
      *
      * @param principalService
      *            the principal service
@@ -51,19 +51,19 @@ public class NotifyUnfollowFeatureService extends AbstractFeatureService {
      *            the user service
      * @param twitterService
      *            the twitter service
-     * @param unfollowDMText
-     *            the unfollow dm text
+     * @param unfollowTweetText
+     *            the unfollow tweet text
      */
     @Autowired
-    public NotifyUnfollowFeatureService(final PrincipalService principalService,
-            final FollowersService followersService,
-            final TwitterService twitterService,
-            @Value("${wtfdyum.unfollow.dm-text}") final String unfollowDMText) {
-        super(Feature.NOTIFY_UNFOLLOW);
+    public TweetUnfollowFeatureStrategy(final PrincipalService principalService,
+                                        final FollowersService followersService,
+                                        final TwitterService twitterService,
+                                        @Value("${wtfdyum.unfollow.tweet-text}") final String unfollowTweetText) {
+        super(Feature.TWEET_UNFOLLOW);
         this.principalService = principalService;
         this.followersService = followersService;
         this.twitterService = twitterService;
-        this.unfollowDMText = unfollowDMText;
+        this.unfollowTweetText = unfollowTweetText;
     }
 
     /** The principal service. */
@@ -75,13 +75,13 @@ public class NotifyUnfollowFeatureService extends AbstractFeatureService {
     /** The twitter service. */
     private final TwitterService twitterService;
 
-    /** The unfollow dm text. */
-    private final String unfollowDMText;
+    /** The unfollow tweet text. */
+    private final String unfollowTweetText;
 
     /*
      * (non-Javadoc)
      *
-     * @see com.jeanchampemont.wtfdyum.service.feature.AbstractFeatureService#
+     * @see com.jeanchampemont.wtfdyum.service.feature.AbstractFeatureStrategy#
      * completeCron(java.lang.Long)
      */
     @Override
@@ -95,7 +95,7 @@ public class NotifyUnfollowFeatureService extends AbstractFeatureService {
      * (non-Javadoc)
      *
      * @see
-     * com.jeanchampemont.wtfdyum.service.feature.AbstractFeatureService#cron(
+     * com.jeanchampemont.wtfdyum.service.feature.AbstractFeatureStrategy#cron(
      * java.lang.Long)
      */
     @Override
@@ -109,8 +109,8 @@ public class NotifyUnfollowFeatureService extends AbstractFeatureService {
         final List<User> unfollowers = twitterService.getUsers(principal, Longs.toArray(unfollowersId));
         for (final User unfollower : unfollowers) {
             result.add(new Event(EventType.UNFOLLOW, unfollower.getScreenName()));
-            twitterService.sendDirectMessage(principal, userId,
-                    String.format(unfollowDMText, unfollower.getScreenName()));
+            twitterService.tweet(principal,
+                    String.format(unfollowTweetText, unfollower.getScreenName()));
         }
         return result;
     }
@@ -118,7 +118,7 @@ public class NotifyUnfollowFeatureService extends AbstractFeatureService {
     /*
      * (non-Javadoc)
      *
-     * @see com.jeanchampemont.wtfdyum.service.feature.FeatureService#hasCron()
+     * @see com.jeanchampemont.wtfdyum.service.feature.FeatureStrategy#hasCron()
      */
     @Override
     public boolean hasCron() {

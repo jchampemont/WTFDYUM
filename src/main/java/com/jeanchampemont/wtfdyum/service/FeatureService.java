@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jeanchampemont.wtfdyum.service.feature;
+package com.jeanchampemont.wtfdyum.service;
 
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
@@ -24,7 +24,7 @@ import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 import java.util.Set;
 
 /**
- * This interface should be implemented by all feature's services.
+ * The Interface FeatureService.
  */
 public interface FeatureService {
 
@@ -35,62 +35,58 @@ public interface FeatureService {
      *
      * @param userId
      *            the user id
+     * @param feature
+     *            the feature
      * @throws WTFDYUMException
+     *             the WTFDYUM exception
      */
-    void completeCron(Long userId) throws WTFDYUMException;
+    void completeCron(Long userId, Feature feature) throws WTFDYUMException;
 
     /**
      * Method that should be executed periodically for this feature.
      *
      * @param userId
      *            the user id
+     * @param feature
+     *            the feature
      * @return the resulting events set
      * @throws WTFDYUMException
      *             the WTFDYUM exception
      */
-    Set<Event> cron(Long userId) throws WTFDYUMException;
+    Set<Event> cron(Long userId, Feature feature) throws WTFDYUMException;
 
     /**
      * Disable the feature for this userId.
      *
      * @param userId
      *            the user id
+     * @param feature
+     *            the feature
      * @return true if the feature was enabled and has been disabled, false
      *         otherwise
      */
-    boolean disableFeature(Long userId);
+    boolean disableFeature(Long userId, Feature feature);
 
     /**
      * Enable the feature for this userId.
      *
      * @param userId
      *            the user id
+     * @param feature
+     *            the feature
      * @return true if the feature was disabled and has been enabled, false
      *         otherwise
      */
-    boolean enableFeature(Long userId);
-
-    /**
-     * Gets the feature.
-     *
-     * @return the feature
-     */
-    Feature getFeature();
-
-    /**
-     * Checks for cron.
-     *
-     * @return whether or not this feature has a cron that should be executed
-     *         periodically
-     */
-    boolean hasCron();
+    boolean enableFeature(Long userId, Feature feature);
 
     /**
      * Checks if is enabled.
      *
      * @param userId
      *            the user id
+     * @param feature
+     *            the feature
      * @return whether or not this feature is enabled
      */
-    boolean isEnabled(Long userId);
+    boolean isEnabled(Long userId, Feature feature);
 }

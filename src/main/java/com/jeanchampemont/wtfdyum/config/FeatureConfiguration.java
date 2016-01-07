@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -18,7 +18,7 @@
 package com.jeanchampemont.wtfdyum.config;
 
 import com.jeanchampemont.wtfdyum.dto.Feature;
-import com.jeanchampemont.wtfdyum.service.feature.FeatureService;
+import com.jeanchampemont.wtfdyum.service.feature.FeatureStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -35,15 +35,15 @@ public class FeatureConfiguration {
     /**
      * Feature services.
      *
-     * @param featureServices
-     *            the feature services
+     * @param featureStrategies
+     *            the feature strategies
      * @return the map
      */
-    @Bean(name = "featureServices")
-    public Map<Feature, FeatureService> featureServices(final List<FeatureService> featureServices) {
-        final Map<Feature, FeatureService> result = new HashMap<>();
-        for (final FeatureService featureService : featureServices) {
-            result.put(featureService.getFeature(), featureService);
+    @Bean(name = "featureStrategies")
+    public Map<Feature, FeatureStrategy> featureStrategies(final List<FeatureStrategy> featureStrategies) {
+        final Map<Feature, FeatureStrategy> result = new HashMap<>();
+        for (final FeatureStrategy featureStrategy : featureStrategies) {
+            result.put(featureStrategy.getFeature(), featureStrategy);
         }
         return result;
     }

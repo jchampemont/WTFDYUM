@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -15,13 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jeanchampemont.wtfdyum.service.feature;
+package com.jeanchampemont.wtfdyum.service;
 
 import com.jeanchampemont.wtfdyum.WTFDYUMApplication;
 import com.jeanchampemont.wtfdyum.dto.Event;
 import com.jeanchampemont.wtfdyum.dto.Feature;
-import com.jeanchampemont.wtfdyum.service.feature.impl.FeaturesServiceImpl;
-import com.jeanchampemont.wtfdyum.service.feature.impl.NotifyUnfollowFeatureService;
+import com.jeanchampemont.wtfdyum.service.feature.FeatureStrategy;
+import com.jeanchampemont.wtfdyum.service.impl.FeatureServiceImpl;
+import com.jeanchampemont.wtfdyum.service.feature.impl.NotifyUnfollowFeatureStrategy;
 import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,18 +41,18 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
- * The Class FeaturesServiceTest.
+ * The Class FeatureServiceTest.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = WTFDYUMApplication.class)
-public class FeaturesServiceTest {
+public class FeatureServiceTest {
 
 	/** The notify unfollow feature service. */
 	@Mock
-	NotifyUnfollowFeatureService notifyUnfollowFeatureService;
+    NotifyUnfollowFeatureStrategy notifyUnfollowFeatureService;
 
 	/** The sut. */
-	private FeaturesService sut;
+	private FeatureService sut;
 
 	/**
 	 * _init.
@@ -59,9 +60,9 @@ public class FeaturesServiceTest {
 	@Before
 	public void _init() {
 		initMocks(this);
-		final Map<Feature, FeatureService> featureServices = new HashMap<>();
+		final Map<Feature, FeatureStrategy> featureServices = new HashMap<>();
 		featureServices.put(Feature.NOTIFY_UNFOLLOW, notifyUnfollowFeatureService);
-		sut = new FeaturesServiceImpl(featureServices);
+		sut = new FeatureServiceImpl(featureServices);
 	}
 
 	/**

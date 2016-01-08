@@ -37,26 +37,9 @@ import twitter4j.auth.RequestToken;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * The Class TwitterServiceImpl. This is used to interact with twitter.
- */
 @Service
 public class TwitterServiceImpl implements TwitterService {
 
-    /**
-     * Instantiates a new twitter service.
-     *
-     * @param twitterFactory
-     *            the twitter factory
-     * @param mapper
-     *            the mapper
-     * @param baseUrl
-     *            the base url of WTFDYUM. Property wtfdyum.server-base-url
-     * @param appId
-     *            the app id
-     * @param appSecret
-     *            the app secret
-     */
     @Autowired
     public TwitterServiceImpl(final TwitterFactoryHolder twitterFactory, final Mapper mapper,
             @Value("${wtfdyum.server-base-url}") final String baseUrl,
@@ -69,30 +52,18 @@ public class TwitterServiceImpl implements TwitterService {
         this.appSecret = appSecret;
     }
 
-    /** The log. */
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    /** The base url of WTFDYUM. */
     private final String baseUrl;
 
-    /** The twitter. */
     private final TwitterFactoryHolder twitterFactory;
 
-    /** The mapper. */
     private final Mapper mapper;
 
-    /** The app id. */
     private final String appId;
 
-    /** The app secret. */
     private final String appSecret;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.jeanchampemont.wtfdyum.service.TwitterService#completeSignin(
-     * twitter4j.auth.RequestToken, java.lang.String)
-     */
     @Override
     public AccessToken completeSignin(final RequestToken requestToken, final String verifier) throws WTFDYUMException {
         AccessToken token = null;
@@ -105,13 +76,6 @@ public class TwitterServiceImpl implements TwitterService {
         return token;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.jeanchampemont.wtfdyum.service.TwitterService#getFollowers(java.lang.
-     * Long, java.util.Optional)
-     */
     @Override
     public Set<Long> getFollowers(final Long userId, final Optional<Principal> principal) throws WTFDYUMException {
         Preconditions.checkNotNull(userId);
@@ -141,12 +105,6 @@ public class TwitterServiceImpl implements TwitterService {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.jeanchampemont.wtfdyum.service.TwitterService#getUser(java.lang.Long)
-     */
     @Override
     public User getUser(final Principal principal, final Long id) throws WTFDYUMException {
         User result = null;
@@ -160,12 +118,6 @@ public class TwitterServiceImpl implements TwitterService {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.jeanchampemont.wtfdyum.service.TwitterService#getUsers(com.
-     * jeanchampemont.wtfdyum.dto.Principal, java.lang.Long[])
-     */
     @Override
     public List<User> getUsers(final Principal principal, final long... ids) throws WTFDYUMException {
         final List<User> result = new ArrayList<>();
@@ -192,13 +144,6 @@ public class TwitterServiceImpl implements TwitterService {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.jeanchampemont.wtfdyum.service.TwitterService#sendDirectMessage(com.
-     * jeanchampemont.wtfdyum.dto.Principal, java.lang.Long, java.lang.String)
-     */
     @Override
     public void sendDirectMessage(final Principal principal, final Long toUserId, final String text)
             throws WTFDYUMException {
@@ -210,12 +155,6 @@ public class TwitterServiceImpl implements TwitterService {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.jeanchampemont.wtfdyum.service.TwitterService#signin(java.lang.
-     * String)
-     */
     @Override
     public RequestToken signin(final String path) throws WTFDYUMException {
         RequestToken token = null;
@@ -238,13 +177,6 @@ public class TwitterServiceImpl implements TwitterService {
         }
     }
 
-    /**
-     * Verify credentials.
-     *
-     * @param principal
-     *            the principal
-     * @return true, if successful
-     */
     @Override
     public boolean verifyCredentials(final Principal principal) {
         boolean result = true;
@@ -256,16 +188,6 @@ public class TwitterServiceImpl implements TwitterService {
         return result;
     }
 
-    /**
-     * Check rate limit status.
-     *
-     * @param status
-     *            the status
-     * @param exceptionType
-     *            the exception type
-     * @throws WTFDYUMException
-     *             the WTFDYUM exception
-     */
     private void checkRateLimitStatus(final RateLimitStatus status, final WTFDYUMExceptionType exceptionType)
             throws WTFDYUMException {
         if (status.getRemaining() == 0) {
@@ -273,24 +195,12 @@ public class TwitterServiceImpl implements TwitterService {
         }
     }
 
-    /**
-     * Twitter.
-     *
-     * @return the twitter
-     */
     private Twitter twitter() {
         final Twitter instance = twitterFactory.getInstance();
         instance.setOAuthConsumer(appId, appSecret);
         return instance;
     }
 
-    /**
-     * Twitter.
-     *
-     * @param principal
-     *            the principal
-     * @return the twitter
-     */
     private Twitter twitter(final Principal principal) {
         final Twitter instance = twitter();
         instance.setOAuthAccessToken(new AccessToken(principal.getToken(), principal.getTokenSecret()));

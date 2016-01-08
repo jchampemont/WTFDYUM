@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -24,23 +24,14 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
- * The Class WebMvcConfiguration.
+ * Configuration for Spring MVC
  */
 @Configuration
 public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
 
-    /** The authentication interceptor. */
     @Autowired
     private AuthenticationInterceptor authenticationInterceptor;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
-     * #addInterceptors(org.springframework.web.servlet.config.annotation.
-     * InterceptorRegistry)
-     */
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor);

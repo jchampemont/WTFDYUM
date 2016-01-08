@@ -35,24 +35,9 @@ import org.springframework.util.StopWatch;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * The Class CronServiceImpl.
- */
 @Service
 public class CronServiceImpl implements CronService {
 
-    /**
-     * Instantiates a new cron service impl.
-     *
-     * @param principalService
-     *            the principal service
-     * @param userService
-     *            the user service
-     * @param twitterService
-     *            the twitter service
-     * @param featureService
-     *            the features service
-     */
     @Autowired
     public CronServiceImpl(final PrincipalService principalService,
             final UserService userService,
@@ -64,26 +49,16 @@ public class CronServiceImpl implements CronService {
         this.featureService = featureService;
     }
 
-    /** The log. */
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    /** The principal service. */
     private final PrincipalService principalService;
 
-    /** The user service. */
     private final UserService userService;
 
-    /** The twitter service. */
     private final TwitterService twitterService;
 
-    /** The feature services. */
     private final FeatureService featureService;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.jeanchampemont.wtfdyum.service.CronService#checkCredentials()
-     */
     @Override
     @Scheduled(fixedDelayString = "${wtfdyum.credentials-check-delay}", initialDelay = 120000L)
     public void checkCredentials() {
@@ -106,11 +81,6 @@ public class CronServiceImpl implements CronService {
         log.debug("Finished checking credentials in {} ms", watch.getTotalTimeMillis());
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.jeanchampemont.wtfdyum.service.CronService#findUnfollowers()
-     */
     @Override
     @Scheduled(fixedDelayString = "${wtfdyum.unfollow-check-delay}", initialDelay = 120000L)
     public void cron() {

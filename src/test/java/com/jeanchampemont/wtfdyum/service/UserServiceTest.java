@@ -49,63 +49,44 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-/**
- * The Class UserServiceTest.
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = WTFDYUMApplication.class)
 public class UserServiceTest {
 
-    /** The system under test. */
     private UserService sut;
 
-    /** The long redis template mock. */
     @Mock
     private RedisTemplate<String, Long> longRedisTemplate;
 
-    /** The Event redis template mock. */
     @Mock
     private RedisTemplate<String, Event> eventRedisTemplate;
 
-    /** The Feature redis template mock. */
     @Mock
     private RedisTemplate<String, Feature> featureRedisTemplate;
 
-    /** The Long Set operations. */
     @Mock
     private SetOperations<String, Long> longSetOperations;
 
-    /** The long value operations. */
     @Mock
     private ValueOperations<String, Long> longValueOperations;
 
-    /** The Feature Set operations. */
     @Mock
     private SetOperations<String, Feature> featureSetOperations;
 
-    /** The event list operations. */
     @Mock
     private ListOperations<String, Event> eventListOperations;
 
-    /** The features service. */
     @Mock
     private FeatureService featureService;
 
-    /** The clock. */
     private final Clock clock = Clock.fixed(Instant.parse("2007-12-03T10:15:30.00Z"), ZoneId.of("Z"));
 
-    /**
-     * Inits the test.
-     */
     @Before
     public void _init() {
         initMocks(this);
         sut = new UserServiceImpl(eventRedisTemplate, featureRedisTemplate, longRedisTemplate, featureService, clock);
     }
 
-    /**
-     * Adds the event test.
-     */
     @Test
     public void addEventTest() {
         when(eventRedisTemplate.opsForList()).thenReturn(eventListOperations);
@@ -118,9 +99,6 @@ public class UserServiceTest {
         assertThat(event.getCreationDateTime()).isEqualTo(LocalDateTime.now(clock));
     }
 
-    /**
-     * Apply limit test not reached.
-     */
     @Test
     public void applyLimitTestNotReached() {
         when(longRedisTemplate.opsForValue()).thenReturn(longValueOperations);
@@ -131,9 +109,6 @@ public class UserServiceTest {
         assertThat(result).isFalse();
     }
 
-    /**
-     * Apply limit test reached.
-     */
     @Test
     public void applyLimitTestReached() {
         when(longRedisTemplate.opsForValue()).thenReturn(longValueOperations);
@@ -153,11 +128,6 @@ public class UserServiceTest {
         assertThat(eventCaptor.getValue().getCreationDateTime()).isEqualTo(LocalDateTime.now(clock));
     }
 
-    /**
-     * Gets the enabled features test.
-     *
-     * @return the enabled features test
-     */
     @Test
     public void getEnabledFeaturesTest() {
     	when(featureRedisTemplate.opsForSet()).thenReturn(featureSetOperations);
@@ -168,11 +138,6 @@ public class UserServiceTest {
     	assertThat(result).isEqualTo(new HashSet<>(Arrays.asList(Feature.NOTIFY_UNFOLLOW, Feature.TWEET_UNFOLLOW)));
     }
 
-    /**
-     * Gets the recent events test.
-     *
-     * @return the recent events test
-     */
     @Test
     public void getRecentEventsTest() {
         final List<Event> result = Arrays.asList(new Event(EventType.REGISTRATION, "reg"),
@@ -188,9 +153,6 @@ public class UserServiceTest {
         assertThat(returnedResult).isEqualTo(result);
     }
 
-    /**
-     * Reset limit test.
-     */
     @Test
     public void resetLimitTest() {
 

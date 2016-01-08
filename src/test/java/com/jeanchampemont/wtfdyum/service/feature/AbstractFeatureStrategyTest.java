@@ -40,40 +40,26 @@ import java.util.function.BiConsumer;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-/**
- * The Class AbstractFeatureStrategyTest.
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = WTFDYUMApplication.class)
 public abstract class AbstractFeatureStrategyTest {
 
-    /** The Constant TWEET_TEXT. */
     protected static final String TWEET_TEXT = "@%s tweet";
 
-    /** The Constant DM_TEXT. */
     protected static final String DM_TEXT = "@%s DM";
 
-    /** The principal service. */
     protected PrincipalService principalService;
 
-    /** The user service. */
     protected FollowersService followersService;
 
-    /** The twitter service. */
     protected TwitterService twitterService;
 
-    /** The sut. */
     protected AbstractFeatureStrategy sut;
 
-    /** The Feature redis template mock. */
     protected RedisTemplate<String, Feature> featureRedisTemplate;
 
-    /** The Feature Set operations. */
     protected SetOperations<String, Feature> featureSetOperations;
 
-    /**
-     * Disable feature test disabled feature.
-     */
     @Test
     public void disableFeatureTestDisabledFeature() {
         when(featureRedisTemplate.opsForSet()).thenReturn(featureSetOperations);
@@ -86,9 +72,6 @@ public abstract class AbstractFeatureStrategyTest {
         assertThat(result).isFalse();
     }
 
-    /**
-     * Disable feature test enabled feature.
-     */
     @Test
     public void disableFeatureTestEnabledFeature() {
         when(featureRedisTemplate.opsForSet()).thenReturn(featureSetOperations);
@@ -101,9 +84,6 @@ public abstract class AbstractFeatureStrategyTest {
         assertThat(result).isTrue();
     }
 
-    /**
-     * Enable feature test disabled feature.
-     */
     @Test
     public void enableFeatureTestDisabledFeature() {
         when(featureRedisTemplate.opsForSet()).thenReturn(featureSetOperations);
@@ -116,9 +96,6 @@ public abstract class AbstractFeatureStrategyTest {
         assertThat(result).isTrue();
     }
 
-    /**
-     * Enable feature test enabled feature.
-     */
     @Test
     public void enableFeatureTestEnabledFeature() {
         when(featureRedisTemplate.opsForSet()).thenReturn(featureSetOperations);
@@ -131,9 +108,6 @@ public abstract class AbstractFeatureStrategyTest {
         assertThat(result).isFalse();
     }
 
-    /**
-     * Checks if is feature enabled test.
-     */
     @Test
     public void isFeatureEnabledTest() {
         when(featureRedisTemplate.opsForSet()).thenReturn(featureSetOperations);
@@ -144,9 +118,6 @@ public abstract class AbstractFeatureStrategyTest {
         assertThat(featureEnabled).isTrue();
     }
 
-    /**
-     * _init.
-     */
     @SuppressWarnings("unchecked")
     protected void _init() {
         principalService = mock(PrincipalService.class);
@@ -156,17 +127,6 @@ public abstract class AbstractFeatureStrategyTest {
         featureSetOperations = mock(SetOperations.class);
     }
 
-    /**
-     * Followers.
-     *
-     * @param principal
-     *            the principal
-     * @param l
-     *            the lambda expression
-     * @return the sets of followers ids
-     * @throws WTFDYUMException
-     *             the WTFDYUM exception
-     */
     protected Set<Long> followers(final Principal principal, final BiConsumer<OngoingStubbing<Set<Long>>, Set<Long>> l)
             throws WTFDYUMException {
         final Set<Long> followers = new HashSet<>(Arrays.asList(10L, 11L, 12L));
@@ -174,13 +134,6 @@ public abstract class AbstractFeatureStrategyTest {
         return followers;
     }
 
-    /**
-     * Principal.
-     *
-     * @param id
-     *            the id
-     * @return the principal
-     */
     protected Principal principal(final long id) {
         when(principalService.getMembers()).thenReturn(new HashSet<>(Arrays.asList(id)));
         final Principal principal = new Principal(id, "Principal 1 Token", "Principal 1 Token Secret");
@@ -188,19 +141,6 @@ public abstract class AbstractFeatureStrategyTest {
         return principal;
     }
 
-    /**
-     * Unfollowers.
-     *
-     * @param principal
-     *            the principal
-     * @param followersIds
-     *            the followers ids
-     * @param l
-     *            the l
-     * @return the sets the
-     * @throws WTFDYUMException
-     *             the WTFDYUM exception
-     */
     protected List<User> unfollowers(final Principal principal, final Set<Long> followersIds,
             final BiConsumer<OngoingStubbing<Set<Long>>, Set<Long>> l) throws WTFDYUMException {
         final Set<Long> unfollowers = new HashSet<>(Arrays.asList(10L, 11L));
@@ -219,31 +159,11 @@ public abstract class AbstractFeatureStrategyTest {
         return Arrays.asList(user10, user11);
     }
 
-    /**
-     * Verify unfollow dm.
-     *
-     * @param principal
-     *            the principal
-     * @param unfollower
-     *            the unfollower
-     * @throws WTFDYUMException
-     *             the WTFDYUM exception
-     */
     protected void verifyUnfollowDM(final Principal principal, final User unfollower) throws WTFDYUMException {
         verify(twitterService, times(1)).sendDirectMessage(principal, principal.getUserId(),
                 String.format(DM_TEXT, unfollower.getScreenName()));
     }
 
-    /**
-     * Verify unfollow tweet.
-     *
-     * @param principal
-     *            the principal
-     * @param unfollower
-     *            the unfollower
-     * @throws WTFDYUMException
-     *             the WTFDYUM exception
-     */
     protected void verifyUnfollowTweet(final Principal principal, final User unfollower) throws WTFDYUMException {
         verify(twitterService, times(1)).tweet(principal, String.format(TWEET_TEXT, unfollower.getScreenName()));
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -25,18 +25,11 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpSession;
 
 /**
- * The Class SessionProvider.
- *
  * Utility class to provide session.
  */
 @Component
 public class SessionProvider {
 
-    /**
-     * Gets the session.
-     *
-     * @return the session
-     */
     public HttpSession getSession() {
         return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getSession();
     }

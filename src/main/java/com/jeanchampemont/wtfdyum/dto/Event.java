@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -23,45 +23,23 @@ import com.jeanchampemont.wtfdyum.dto.type.EventType;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-/**
- * The Class Event.
- */
 public class Event {
 
-    /**
-     * Instantiates a new event.
-     */
     public Event() {
         // left deliberately empty
     }
 
-    /**
-     * Instantiates a new event.
-     *
-     * @param type
-     *            the type
-     * @param additionalData
-     *            the additional data
-     */
     public Event(final EventType type, final String additionalData) {
         this.type = type;
         this.additionalData = additionalData;
     }
 
-    /** The type. */
     private EventType type;
 
-    /** The additional data. */
     private String additionalData;
 
-    /** The creation date time. */
     private LocalDateTime creationDateTime;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
@@ -94,81 +72,37 @@ public class Event {
         return true;
     }
 
-    /**
-     * Gets the additional data.
-     *
-     * @return the additional data
-     */
     public String getAdditionalData() {
         return additionalData;
     }
 
-    /**
-     * Gets the creation date time.
-     *
-     * @return the creation date time
-     */
     public LocalDateTime getCreationDateTime() {
         return creationDateTime;
     }
 
-    /**
-     * Gets the message.
-     *
-     * @return the message
-     */
     @JsonIgnore
     public String getMessage() {
         return String.format(type.getMessage(), additionalData);
     }
 
-    /**
-     * Gets the type.
-     *
-     * @return the type
-     */
     public EventType getType() {
         return type;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#hashCode()
-     */
     @Override
     public int hashCode() {
         return Objects.hash(this.type, this.creationDateTime, this.additionalData);
     }
 
-    /**
-     * Sets the additional data.
-     *
-     * @param additionalData
-     *            the new additional data
-     */
     public void setAdditionalData(final String additionalData) {
         this.additionalData = additionalData;
     }
 
-    /**
-     * Sets the creation date time.
-     *
-     * @param creationDateTime
-     *            the new creation date time
-     */
     public void setCreationDateTime(final LocalDateTime creationDateTime) {
         this.creationDateTime = creationDateTime;
     }
 
-    /**
-     * Sets the type.
-     *
-     * @param type
-     *            the new type
-     */
     public void setType(final EventType type) {
         this.type = type;
     }
-
 }

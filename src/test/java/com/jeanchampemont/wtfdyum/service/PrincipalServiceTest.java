@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -38,44 +38,30 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-/**
- * The Class PrincipalServiceTest.
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = WTFDYUMApplication.class)
 public class PrincipalServiceTest {
 
-    /** The system under test. */
     private PrincipalService sut;
 
-    /** The long redis template mock. */
     @Mock
     private RedisTemplate<String, Long> longRedisTemplate;
 
-    /** The principal redis template mock. */
     @Mock
     private RedisTemplate<String, Principal> principalRedisTemplate;
 
-    /** The value operations. */
     @Mock
     private ValueOperations<String, Principal> valueOperations;
 
-    /** The Set operations. */
     @Mock
     private SetOperations<String, Long> setOperations;
 
-    /**
-     * Inits the test.
-     */
     @Before
     public void ainit() {
         initMocks(this);
         sut = new PrincipalServiceImpl(principalRedisTemplate, longRedisTemplate);
     }
 
-    /**
-     * Count members test.
-     */
     @Test
     public void countMembersTest() {
         when(longRedisTemplate.opsForSet()).thenReturn(setOperations);
@@ -86,11 +72,6 @@ public class PrincipalServiceTest {
         assertThat(result).isEqualTo(133);
     }
 
-    /**
-     * Gets the members test.
-     *
-     * @return the members test
-     */
     @Test
     public void getMembersTest() {
         when(longRedisTemplate.opsForSet()).thenReturn(setOperations);
@@ -105,11 +86,6 @@ public class PrincipalServiceTest {
         assertThat(members.contains(190L)).isTrue();
     }
 
-    /**
-     * Gets the test.
-     *
-     * @return the test
-     */
     @Test
     public void getTest() {
         final Principal u = new Principal(12L, "tokdf", "secrrr");
@@ -123,35 +99,21 @@ public class PrincipalServiceTest {
         assertThat(principal).isEqualTo(u);
     }
 
-    /**
-     * Gets the test null id.
-     *
-     * @return the test null id
-     */
     @Test(expected = NullPointerException.class)
     public void getTestNullId() {
         sut.get(null);
     }
 
-    /**
-     * Save update null user id test.
-     */
     @Test(expected = NullPointerException.class)
     public void saveUpdateNullUserIdTest() {
         sut.saveUpdate(new Principal(null, "lkdf", "sec"));
     }
 
-    /**
-     * Save update null user test.
-     */
     @Test(expected = NullPointerException.class)
     public void saveUpdateNullUserTest() {
         sut.saveUpdate(null);
     }
 
-    /**
-     * Save update test.
-     */
     @Test
     public void saveUpdateTest() {
         final Principal u = new Principal(12L, "tokdf", "secrrr");

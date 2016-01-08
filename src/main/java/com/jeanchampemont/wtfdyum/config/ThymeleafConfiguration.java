@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -22,16 +22,11 @@ import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 
 /**
- * The Class ThymeleafConfiguration.
+ * Spring configuration for Thymeleaf
  */
 @Configuration
 public class ThymeleafConfiguration {
 
-    /**
-     * Java8 time dialect.
-     *
-     * @return the java8 time dialect
-     */
     @Bean
     public Java8TimeDialect java8TimeDialect() {
         return new Java8TimeDialect();

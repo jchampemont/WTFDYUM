@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -17,18 +17,9 @@
  */
 package com.jeanchampemont.wtfdyum.service;
 
-/**
- * The Interface CronService.
- */
 public interface CronService {
 
-    /**
-     * Check credentials.
-     */
     void checkCredentials();
 
-    /**
-     * Cron.
-     */
     void cron();
 }

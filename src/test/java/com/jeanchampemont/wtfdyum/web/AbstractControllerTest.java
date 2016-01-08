@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -47,10 +47,5 @@ public abstract class AbstractControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(getTestedController()).build();
     }
 
-    /**
-     * Gets the tested controller.
-     *
-     * @return the tested controller
-     */
     protected abstract Object getTestedController();
 }

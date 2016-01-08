@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -19,48 +19,24 @@ package com.jeanchampemont.wtfdyum.dto;
 
 import java.util.Objects;
 
-/**
- * The Class Principal.
- */
 public class Principal {
 
-    /**
-     * Instantiates a new user.
-     */
     public Principal() {
         // left deliberately empty
     }
 
-    /**
-     * Instantiates a new principal.
-     *
-     * @param userId
-     *            the user id
-     * @param token
-     *            the token
-     * @param tokenSecret
-     *            the token secret
-     */
     public Principal(final Long userId, final String token, final String tokenSecret) {
         this.userId = userId;
         this.token = token;
         this.tokenSecret = tokenSecret;
     }
 
-    /** The user id. */
     private Long userId;
 
-    /** The token. */
     private String token;
 
-    /** The token secret. */
     private String tokenSecret;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
@@ -97,69 +73,31 @@ public class Principal {
         return true;
     }
 
-    /**
-     * Gets the token.
-     *
-     * @return the token
-     */
     public String getToken() {
         return token;
     }
 
-    /**
-     * Gets the token secret.
-     *
-     * @return the token secret
-     */
     public String getTokenSecret() {
         return tokenSecret;
     }
 
-    /**
-     * Gets the user id.
-     *
-     * @return the user id
-     */
     public Long getUserId() {
         return userId;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#hashCode()
-     */
     @Override
     public int hashCode() {
         return Objects.hash(token, tokenSecret, userId);
     }
 
-    /**
-     * Sets the token.
-     *
-     * @param token
-     *            the new token
-     */
     public void setToken(final String token) {
         this.token = token;
     }
 
-    /**
-     * Sets the token secret.
-     *
-     * @param tokenSecret
-     *            the new token secret
-     */
     public void setTokenSecret(final String tokenSecret) {
         this.tokenSecret = tokenSecret;
     }
 
-    /**
-     * Sets the user id.
-     *
-     * @param userId
-     *            the new user id
-     */
     public void setUserId(final Long userId) {
         this.userId = userId;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -25,16 +25,11 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Arrays;
 
 /**
- * The Class DozerConfiguration.
+ * Spring Configuration for Dozer related beans
  */
 @Configuration
 public class DozerConfiguration {
 
-    /**
-     * Dozer bean mapper factory bean.
-     *
-     * @return the dozer bean mapper factory bean
-     */
     @Bean
     public DozerBeanMapperFactoryBean dozerBeanMapperFactoryBean() {
         final DozerBeanMapperFactoryBean dozerBeanMapperFactoryBean = new DozerBeanMapperFactoryBean();
@@ -42,11 +37,6 @@ public class DozerConfiguration {
         return dozerBeanMapperFactoryBean;
     }
 
-    /**
-     * Bean mapping builder.
-     *
-     * @return the bean mapping builder
-     */
     private BeanMappingBuilder beanMappingBuilder() {
         return new BeanMappingBuilder() {
             @Override

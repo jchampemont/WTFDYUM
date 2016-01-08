@@ -44,41 +44,27 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * The Class UserControllerTest.
- */
 @RunWith(value = MockitoJUnitRunner.class)
 public class UserControllerTest extends AbstractControllerTest {
 
-    /** The twitter service mock. */
     @Mock
     private TwitterService twitterService;
 
-    /** The user service. */
     @Mock
     private PrincipalService principalService;
 
-    /** The authentication service. */
     @Mock
     private AuthenticationService authenticationService;
 
-    /** The user service. */
     @Mock
     private UserService userService;
 
-    /** The features service. */
     @Mock
     private FeatureService featureService;
 
-    /** The main controller. */
     @InjectMocks
     private UserController userController;
 
-    /**
-     * Disable feature test.
-     *
-     * @throws Exception the exception
-     */
     @Test
     public void disableFeatureTest() throws Exception {
         when(authenticationService.getCurrentUserId()).thenReturn(12340L);
@@ -94,12 +80,6 @@ public class UserControllerTest extends AbstractControllerTest {
                 new Event(EventType.FEATURE_DISABLED, Feature.NOTIFY_UNFOLLOW.getShortName()));
     }
 
-    /**
-     * Enable feature test.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void enableFeatureTest() throws Exception {
         when(authenticationService.getCurrentUserId()).thenReturn(12340L);
@@ -115,12 +95,6 @@ public class UserControllerTest extends AbstractControllerTest {
                 new Event(EventType.FEATURE_ENABLED, Feature.NOTIFY_UNFOLLOW.getShortName()));
     }
 
-    /**
-     * Index test.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void indexTest() throws Exception {
         final Principal principal = new Principal(1L, "tok", "toksec");
@@ -145,12 +119,6 @@ public class UserControllerTest extends AbstractControllerTest {
                 model().attribute("featuresStatus", hasEntry(Feature.NOTIFY_UNFOLLOW.name(), true)));
     }
 
-    /**
-     * Index test twitter error exception.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void indexTestTwitterErrorException() throws Exception {
         final Principal principal = new Principal(1L, "tok", "toksec");
@@ -168,12 +136,6 @@ public class UserControllerTest extends AbstractControllerTest {
         verify(authenticationService, times(1)).logOut();
     }
 
-    /**
-     * Logout test.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void logoutTest() throws Exception {
         mockMvc
@@ -185,13 +147,6 @@ public class UserControllerTest extends AbstractControllerTest {
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.jeanchampemont.wtfdyum.web.AbstractControllerTest#getTestedController
-     * ()
-     */
     @Override
     protected Object getTestedController() {
         return userController;

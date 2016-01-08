@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -17,32 +17,15 @@
  */
 package com.jeanchampemont.wtfdyum.dto.type;
 
-/**
- * The Enum UserLimitType.
- */
 public enum UserLimitType {
-
-    /** The twitter exception. */
     CREDENTIALS_INVALID(5);
 
-    /**
-     * Instantiates a new user limit type.
-     *
-     * @param limitValue
-     *            the limit value
-     */
     private UserLimitType(final int limitValue) {
         this.limitValue = limitValue;
     }
 
-    /** The limit value. */
     private int limitValue;
 
-    /**
-     * Gets the limit value.
-     *
-     * @return the limit value
-     */
     public int getLimitValue() {
         return limitValue;
     }

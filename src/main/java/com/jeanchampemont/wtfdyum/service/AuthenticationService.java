@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -19,9 +19,6 @@ package com.jeanchampemont.wtfdyum.service;
 
 import com.jeanchampemont.wtfdyum.dto.Principal;
 
-/**
- * The Interface AuthenticationService.
- */
 public interface AuthenticationService {
 
     /**
@@ -41,7 +38,7 @@ public interface AuthenticationService {
     Long getCurrentUserId();
 
     /**
-     * Checks if is authenticated.
+     * Checks if the current user is authenticated.
      *
      * @return the boolean
      */

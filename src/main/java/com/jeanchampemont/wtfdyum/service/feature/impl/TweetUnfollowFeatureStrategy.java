@@ -36,24 +36,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-/**
- * The Class TweetUnfollowFeatureStrategy.
- */
 @Service
 public class TweetUnfollowFeatureStrategy extends AbstractFeatureStrategy {
 
-    /**
-     * Instantiates a new tweet unfollow feature strategy.
-     *
-     * @param principalService
-     *            the principal service
-     * @param followersService
-     *            the user service
-     * @param twitterService
-     *            the twitter service
-     * @param unfollowTweetText
-     *            the unfollow tweet text
-     */
     @Autowired
     public TweetUnfollowFeatureStrategy(final PrincipalService principalService,
                                         final FollowersService followersService,
@@ -66,24 +51,14 @@ public class TweetUnfollowFeatureStrategy extends AbstractFeatureStrategy {
         this.unfollowTweetText = unfollowTweetText;
     }
 
-    /** The principal service. */
     private final PrincipalService principalService;
 
-    /** The user service. */
     private final FollowersService followersService;
 
-    /** The twitter service. */
     private final TwitterService twitterService;
 
-    /** The unfollow tweet text. */
     private final String unfollowTweetText;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.jeanchampemont.wtfdyum.service.feature.AbstractFeatureStrategy#
-     * completeCron(java.lang.Long)
-     */
     @Override
     public void completeCron(final Long userId) throws WTFDYUMException {
         final Principal principal = principalService.get(userId);
@@ -91,13 +66,6 @@ public class TweetUnfollowFeatureStrategy extends AbstractFeatureStrategy {
         followersService.saveFollowers(userId, followers);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.jeanchampemont.wtfdyum.service.feature.AbstractFeatureStrategy#cron(
-     * java.lang.Long)
-     */
     @Override
     public Set<Event> cron(final Long userId) throws WTFDYUMException {
         final Set<Event> result = new HashSet<>();
@@ -115,11 +83,6 @@ public class TweetUnfollowFeatureStrategy extends AbstractFeatureStrategy {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.jeanchampemont.wtfdyum.service.feature.FeatureStrategy#hasCron()
-     */
     @Override
     public boolean hasCron() {
         return true;

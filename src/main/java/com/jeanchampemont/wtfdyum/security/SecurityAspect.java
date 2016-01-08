@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -26,30 +26,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * The Class SecurityAspect.
- */
 @Aspect
 @Component
 public class SecurityAspect {
 
-    /** The log. */
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    /** The authentication service. */
     @Autowired
     private AuthenticationService authenticationService;
 
     /**
-     * Around secured method.
+     * Around method annotated with @Secured.
      *
-     * @param pjp
-     *            the pjp
-     * @param secured
-     *            the secured
-     * @return the object
-     * @throws Throwable
-     *             the throwable
      */
     @Around("execution(public * *(..)) && @annotation(secured)")
     public Object aroundSecuredMethod(final ProceedingJoinPoint pjp, final Secured secured) throws Throwable {

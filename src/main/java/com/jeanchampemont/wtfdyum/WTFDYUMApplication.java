@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -24,31 +24,15 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.time.Clock;
 
-/**
- * Spring Application Class.
- *
- * @author Jean Champémont
- */
 @SpringBootApplication
 @EnableScheduling
 public class WTFDYUMApplication {
 
-    /**
-     * Clock.
-     *
-     * @return the clock
-     */
     @Bean
     public Clock clock() {
         return Clock.systemDefaultZone();
     }
 
-    /**
-     * Main.
-     *
-     * @param args
-     *            the arguments
-     */
     public static void main(final String[] args) {
         SpringApplication.run(WTFDYUMApplication.class, args);
     }

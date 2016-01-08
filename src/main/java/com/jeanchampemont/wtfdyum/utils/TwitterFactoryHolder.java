@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -22,29 +22,18 @@ import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 
 /**
- * The Class TwitterFactoryHolder.
- *
  * Simple Holder of TwitterFactory to facilitate mocking. (TwitterFactory is
  * final...)
  */
 @Component
 public class TwitterFactoryHolder {
 
-    /**
-     * Instantiates a new twitter factory holder.
-     */
     public TwitterFactoryHolder() {
         twitterFactory = new TwitterFactory();
     }
 
-    /** The twitter factory. */
     private final TwitterFactory twitterFactory;
 
-    /**
-     * Gets the instance of Twitter.
-     *
-     * @return instance of Twitter
-     */
     public Twitter getInstance() {
         return twitterFactory.getInstance();
     }

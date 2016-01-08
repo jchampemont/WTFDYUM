@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -26,36 +26,18 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 
-/**
- * The Class SessionAuthenticationServiceImpl.
- */
 @Service
 public class SessionAuthenticationServiceImpl implements AuthenticationService {
 
-    /** The Constant CURRENT_USER_ID. */
     private static final String CURRENT_USER_ID = "CURRENT_USER_ID";
 
-    /**
-     * Instantiates a new session authentication service impl.
-     *
-     * @param sessionProvider
-     *            the session provider
-     */
     @Autowired
     public SessionAuthenticationServiceImpl(final SessionProvider sessionProvider) {
         this.sessionProvider = sessionProvider;
     }
 
-    /** The session provider. */
     private final SessionProvider sessionProvider;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.jeanchampemont.wtfdyum.service.AuthenticationService#authenticate(com
-     * .jeanchampemont.wtfdyum.dto.User)
-     */
     @Override
     public Long authenticate(final Principal user) {
         Preconditions.checkNotNull(user);
@@ -65,45 +47,21 @@ public class SessionAuthenticationServiceImpl implements AuthenticationService {
         return user.getUserId();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.jeanchampemont.wtfdyum.service.AuthenticationService#getCurrentUserId
-     * ()
-     */
     @Override
     public Long getCurrentUserId() {
         return (Long) session().getAttribute(CURRENT_USER_ID);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.jeanchampemont.wtfdyum.service.AuthenticationService#isAuthenticated(
-     * )
-     */
     @Override
     public Boolean isAuthenticated() {
         return getCurrentUserId() != null;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.jeanchampemont.wtfdyum.service.AuthenticationService#logOut()
-     */
     @Override
     public void logOut() {
         session().removeAttribute(CURRENT_USER_ID);
     }
 
-    /**
-     * Session.
-     *
-     * @return the http session
-     */
     private HttpSession session() {
         return sessionProvider.getSession();
     }

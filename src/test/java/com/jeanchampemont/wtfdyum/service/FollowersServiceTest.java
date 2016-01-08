@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -36,38 +36,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-/**
- * The Class FollowersServiceTest.
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = WTFDYUMApplication.class)
 public class FollowersServiceTest {
 
-    /** The system under test. */
     private FollowersServiceImpl sut;
 
-    /** The long redis template mock. */
     @Mock
     private RedisTemplate<String, Long> longRedisTemplate;
 
-    /** The Long Set operations. */
     @Mock
     private SetOperations<String, Long> longSetOperations;
 
-    /**
-     * Inits the test.
-     */
     @Before
     public void _init() {
         initMocks(this);
         sut = new FollowersServiceImpl(longRedisTemplate);
     }
 
-    /**
-     * Gets the unfollowers test.
-     *
-     * @return the unfollowers test
-     */
     @Test
     public void getUnfollowersTest() {
         final Set<Long> result = new HashSet<>(Arrays.asList(124L, 901L, 44L));
@@ -86,9 +72,6 @@ public class FollowersServiceTest {
         assertThat(returnedResult).isEqualTo(result);
     }
 
-    /**
-     * Save followers test.
-     */
     @Test
     public void saveFollowersTest() {
         when(longRedisTemplate.opsForSet()).thenReturn(longSetOperations);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -42,38 +42,24 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * The Class MainControllerTest.
- */
 @RunWith(value = MockitoJUnitRunner.class)
 public class MainControllerTest extends AbstractControllerTest {
 
-    /** The twitter service mock. */
     @Mock
     private TwitterService twitterService;
 
-    /** The user service. */
     @Mock
     private PrincipalService principalService;
 
-    /** The authentication service. */
     @Mock
     private AuthenticationService authenticationService;
 
-    /** The user service. */
     @Mock
     private UserService userService;
 
-    /** The main controller. */
     @InjectMocks
     private MainController mainController;
 
-    /**
-     * Index test.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void indexTest() throws Exception {
         mockMvc
@@ -82,12 +68,6 @@ public class MainControllerTest extends AbstractControllerTest {
         .andExpect(view().name("index"));
     }
 
-    /**
-     * Signin already authenticated test.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void signinAlreadyAuthenticatedTest() throws Exception {
         when(authenticationService.isAuthenticated()).thenReturn(true);
@@ -98,12 +78,6 @@ public class MainControllerTest extends AbstractControllerTest {
         .andExpect(redirectedUrl("/user"));
     }
 
-    /**
-     * Signin callback test.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void signinCallbackTest() throws Exception {
         final RequestToken returnedRequestToken = new RequestToken("my_super_token", "");
@@ -140,12 +114,6 @@ public class MainControllerTest extends AbstractControllerTest {
         verify(authenticationService, times(1)).authenticate(builtUser);
     }
 
-    /**
-     * Signin test.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void signinTest() throws Exception {
         final RequestToken returnedRequestToken = new RequestToken("my_super_token", "");
@@ -158,12 +126,6 @@ public class MainControllerTest extends AbstractControllerTest {
         .andExpect(redirectedUrlPattern("http*://**/**my_super_token"));
     }
 
-    /**
-     * Signin test max members.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void signinTestMaxMembers() throws Exception {
         ReflectionTestUtils.setField(mainController, "maxMembers", 100);
@@ -175,13 +137,6 @@ public class MainControllerTest extends AbstractControllerTest {
         .andExpect(status().is5xxServerError());
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.jeanchampemont.wtfdyum.web.AbstractControllerTest#getTestedController
-     * ()
-     */
     @Override
     protected Object getTestedController() {
         return mainController;

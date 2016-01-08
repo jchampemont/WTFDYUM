@@ -41,9 +41,6 @@ import static org.mockito.Mockito.verify;
 @SpringApplicationConfiguration(classes = WTFDYUMApplication.class)
 public class TweetUnfollowFeatureStrategyTest extends AbstractFeatureStrategyTest {
 
-    /**
-     * _init.
-     */
     @Override
     @Before
     public void _init() {
@@ -52,12 +49,6 @@ public class TweetUnfollowFeatureStrategyTest extends AbstractFeatureStrategyTes
         ReflectionTestUtils.setField(sut, "featureRedisTemplate", featureRedisTemplate);
     }
 
-    /**
-     * Complete cron test.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void completeCronTest() throws Exception {
         final Principal principal = principal(1L);
@@ -70,12 +61,6 @@ public class TweetUnfollowFeatureStrategyTest extends AbstractFeatureStrategyTes
         verify(followersService, times(1)).saveFollowers(1L, followers);
     }
 
-    /**
-     * Cron test.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void cronTest() throws Exception {
         final Principal principal = principal(1L);
@@ -93,9 +78,6 @@ public class TweetUnfollowFeatureStrategyTest extends AbstractFeatureStrategyTes
         assertThat(events.contains(new Event(EventType.UNFOLLOW, unfollowers.get(1).getScreenName())));
     }
 
-    /**
-     * Checks for cron test.
-     */
     @Test
     public void hasCronTest() {
         assertThat(sut.hasCron()).isTrue();

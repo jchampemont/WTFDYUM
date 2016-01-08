@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -40,53 +40,32 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * WTFDYUM Main controller.
- *
- * @author Jean
  */
 @Controller
 public class MainController {
 
-    /** The Constant SESSION_REQUEST_TOKEN. */
     static final String SESSION_REQUEST_TOKEN = "requestToken";
 
-    /** The twitter service. */
     @Autowired
     private TwitterService twitterService;
 
-    /** The user service. */
     @Autowired
     private PrincipalService principalService;
 
-    /** The authentication service. */
     @Autowired
     private AuthenticationService authenticationService;
 
-    /** The user service. */
     @Autowired
     private UserService userService;
 
     @Value("${wtfdyum.max-members}")
     private int maxMembers;
 
-    /**
-     * Show the index page.
-     *
-     * @return "index"
-     */
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index() {
         return "index";
     }
 
-    /**
-     * Signin.
-     *
-     * @param request
-     *            the request
-     * @return the redirect view
-     * @throws WTFDYUMException
-     *             the WTFDYUM exception
-     */
     @RequestMapping(value = "/signin", method = RequestMethod.GET)
     public RedirectView signin(final HttpServletRequest request) throws WTFDYUMException {
         if (authenticationService.isAuthenticated()) {
@@ -104,17 +83,6 @@ public class MainController {
         return new RedirectView(requestToken.getAuthenticationURL());
     }
 
-    /**
-     * Signin callback.
-     *
-     * @param verifier
-     *            the verifier
-     * @param request
-     *            the request
-     * @return the string
-     * @throws WTFDYUMException
-     *             the WTFDYUM exception
-     */
     @RequestMapping(value = "/signin/callback", method = RequestMethod.GET)
     public RedirectView signinCallback(@RequestParam("oauth_verifier") final String verifier,
             final HttpServletRequest request) throws WTFDYUMException {

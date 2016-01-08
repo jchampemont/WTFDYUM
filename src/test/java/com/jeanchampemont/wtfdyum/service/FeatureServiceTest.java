@@ -40,23 +40,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-/**
- * The Class FeatureServiceTest.
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = WTFDYUMApplication.class)
 public class FeatureServiceTest {
 
-	/** The notify unfollow feature service. */
 	@Mock
     NotifyUnfollowFeatureStrategy notifyUnfollowFeatureService;
 
-	/** The sut. */
 	private FeatureService sut;
 
-	/**
-	 * _init.
-	 */
 	@Before
 	public void _init() {
 		initMocks(this);
@@ -65,12 +57,6 @@ public class FeatureServiceTest {
 		sut = new FeatureServiceImpl(featureServices);
 	}
 
-	/**
-	 * Complete cron test.
-	 *
-	 * @throws WTFDYUMException
-	 *             the WTFDYUM exception
-	 */
 	@Test
 	public void completeCronTest() throws WTFDYUMException {
 		sut.completeCron(123L, Feature.NOTIFY_UNFOLLOW);
@@ -78,12 +64,6 @@ public class FeatureServiceTest {
 		verify(notifyUnfollowFeatureService, times(1)).completeCron(123L);
 	}
 
-	/**
-	 * Cron test.
-	 *
-	 * @throws WTFDYUMException
-	 *             the WTFDYUM exception
-	 */
 	@Test
 	public void cronTest() throws WTFDYUMException {
 		final Set<Event> expectedResult = new HashSet<>();
@@ -96,9 +76,6 @@ public class FeatureServiceTest {
 		assertThat(result).isSameAs(expectedResult);
 	}
 
-	/**
-	 * Disable feature test.
-	 */
 	@Test
 	public void disableFeatureTest() {
 		when(notifyUnfollowFeatureService.disableFeature(123L)).thenReturn(false);
@@ -110,9 +87,6 @@ public class FeatureServiceTest {
 		assertThat(result).isFalse();
 	}
 
-	/**
-	 * Enable feature test.
-	 */
 	@Test
 	public void enableFeatureTest() {
 		when(notifyUnfollowFeatureService.enableFeature(123L)).thenReturn(true);
@@ -124,9 +98,6 @@ public class FeatureServiceTest {
 		assertThat(result).isTrue();
 	}
 
-	/**
-	 * Checks if is enabled test.
-	 */
 	@Test
 	public void isEnabledTest() {
 		when(notifyUnfollowFeatureService.isEnabled(123L)).thenReturn(true);

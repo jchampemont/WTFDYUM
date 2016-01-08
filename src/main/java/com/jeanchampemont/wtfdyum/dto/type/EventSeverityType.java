@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -17,17 +17,8 @@
  */
 package com.jeanchampemont.wtfdyum.dto.type;
 
-/**
- * The Enum EventSeverityType.
- */
 public enum EventSeverityType {
-
-    /** The info. */
     INFO,
-
-    /** The warning. */
     WARNING,
-
-    /** The error. */
     ERROR
 }

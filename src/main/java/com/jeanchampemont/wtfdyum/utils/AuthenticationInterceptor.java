@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -37,22 +37,12 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 
-    /** The authentication service. */
     @Autowired
     private AuthenticationService authenticationService;
 
-    /** The principal service. */
     @Autowired
     private PrincipalService principalService;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.springframework.web.servlet.handler.HandlerInterceptorAdapter#
-     * postHandle(javax.servlet.http.HttpServletRequest,
-     * javax.servlet.http.HttpServletResponse, java.lang.Object,
-     * org.springframework.web.servlet.ModelAndView)
-     */
     @Override
     public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler,
             final ModelAndView modelAndView) throws Exception {
@@ -63,13 +53,6 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
         super.postHandle(request, response, handler, modelAndView);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.springframework.web.servlet.handler.HandlerInterceptorAdapter#
-     * preHandle(javax.servlet.http.HttpServletRequest,
-     * javax.servlet.http.HttpServletResponse, java.lang.Object)
-     */
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
             throws Exception {

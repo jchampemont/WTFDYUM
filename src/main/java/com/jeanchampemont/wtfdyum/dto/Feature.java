@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -17,49 +17,25 @@
  */
 package com.jeanchampemont.wtfdyum.dto;
 
-/**
- * The Enum Feature.
- */
 public enum Feature {
 
-    /** The notify unfollow. */
     NOTIFY_UNFOLLOW("Send me a direct message when someone stops following me", "unfollow notifications"),
 
     TWEET_UNFOLLOW("Send a public tweet with @mention when someone stops following me", "unfollow tweet");
 
-    /**
-     * Instantiates a new feature.
-     *
-     * @param message
-     *            the message
-     * @param shortName
-     *            the short name
-     */
     private Feature(final String message, final String shortName) {
         this.message = message;
         this.shortName = shortName;
     }
 
-    /** The message. */
     private String message;
 
-    /** The String. */
     private String shortName;
 
-    /**
-     * Gets the message.
-     *
-     * @return the message
-     */
     public String getMessage() {
         return message;
     }
 
-    /**
-     * Gets the short name.
-     *
-     * @return the short name
-     */
     public String getShortName() {
         return shortName;
     }

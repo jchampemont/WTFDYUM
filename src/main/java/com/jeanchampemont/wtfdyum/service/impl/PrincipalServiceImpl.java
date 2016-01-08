@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -26,22 +26,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
-/**
- * The Class PrincipalServiceImpl.
- */
 @Service
 public class PrincipalServiceImpl implements PrincipalService {
 
     private static final String MEMBERS_KEY = "MEMBERS";
 
-    /**
-     * Instantiates a new user service impl.
-     *
-     * @param principalRedisTemplate
-     *            the principal redis template
-     * @param longRedisTemplate
-     *            the long redis template
-     */
     @Autowired
     public PrincipalServiceImpl(final RedisTemplate<String, Principal> principalRedisTemplate,
             final RedisTemplate<String, Long> longRedisTemplate) {
@@ -49,28 +38,15 @@ public class PrincipalServiceImpl implements PrincipalService {
         this.longRedisTemplate = longRedisTemplate;
     }
 
-    /** The principal redis template. */
     private final RedisTemplate<String, Principal> principalRedisTemplate;
 
-    /** The long redis template. */
     private final RedisTemplate<String, Long> longRedisTemplate;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.jeanchampemont.wtfdyum.service.PrincipalService#countMembers()
-     */
     @Override
     public int countMembers() {
         return longRedisTemplate.opsForSet().size(MEMBERS_KEY).intValue();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.jeanchampemont.wtfdyum.service.PrincipalService#get(java.lang.Long)
-     */
     @Override
     public Principal get(final Long id) {
         Preconditions.checkNotNull(id);
@@ -82,12 +58,6 @@ public class PrincipalServiceImpl implements PrincipalService {
         return longRedisTemplate.opsForSet().members(MEMBERS_KEY);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.jeanchampemont.wtfdyum.service.PrincipalService#saveUpdate(com.
-     * jeanchampemont.wtfdyum.dto.User)
-     */
     @Override
     public void saveUpdate(final Principal user) {
         Preconditions.checkNotNull(user);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -33,20 +33,11 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-/**
- * The Class RedisConfiguration.
- */
 @Configuration
 public class RedisConfiguration {
-    /** The env. */
     @Autowired
     private Environment env;
 
-    /**
-     * Event redis template.
-     *
-     * @return the redis template
-     */
     @Bean
     public RedisTemplate<String, Event> eventRedisTemplate() {
         final RedisTemplate<String, Event> template = new RedisTemplate<>();
@@ -57,11 +48,6 @@ public class RedisConfiguration {
         return template;
     }
 
-    /**
-     * Feature redis template.
-     *
-     * @return the redis template
-     */
     @Bean
     public RedisTemplate<String, Feature> featureRedisTemplate() {
         final RedisTemplate<String, Feature> template = new RedisTemplate<>();
@@ -72,11 +58,6 @@ public class RedisConfiguration {
         return template;
     }
 
-    /**
-     * Long redis template.
-     *
-     * @return the redis template
-     */
     @Bean
     public RedisTemplate<String, Long> longRedisTemplate() {
         final RedisTemplate<String, Long> template = new RedisTemplate<>();
@@ -87,11 +68,6 @@ public class RedisConfiguration {
         return template;
     }
 
-    /**
-     * Object mapper.
-     *
-     * @return the object mapper
-     */
     @Bean
     public ObjectMapper objectMapper() {
         final ObjectMapper result = new ObjectMapper();
@@ -99,11 +75,6 @@ public class RedisConfiguration {
         return result;
     }
 
-    /**
-     * Principal redis template.
-     *
-     * @return the redis template
-     */
     @Bean
     public RedisTemplate<String, Principal> principalRedisTemplate() {
         final RedisTemplate<String, Principal> template = new RedisTemplate<>();
@@ -114,11 +85,6 @@ public class RedisConfiguration {
         return template;
     }
 
-    /**
-     * Redis connection factory.
-     *
-     * @return the redis connection factory
-     */
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         final JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
@@ -128,17 +94,6 @@ public class RedisConfiguration {
         return jedisConnectionFactory;
     }
 
-    /**
-     * Json serializer.
-     *
-     * @param <T>
-     *            the generic type
-     * @param clazz
-     *            the clazz
-     * @param mapper
-     *            the mapper
-     * @return the jackson2 json redis serializer
-     */
     private <T> Jackson2JsonRedisSerializer<T> jsonSerializer(final Class<T> clazz, final ObjectMapper mapper) {
         final Jackson2JsonRedisSerializer<T> result = new Jackson2JsonRedisSerializer<>(clazz);
         result.setObjectMapper(mapper);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -19,29 +19,14 @@ package com.jeanchampemont.wtfdyum.utils;
 
 import com.jeanchampemont.wtfdyum.dto.Principal;
 
-/**
- * The Class SessionManager.
- */
 public class SessionManager {
 
-    /** The principal. */
     private static ThreadLocal<Principal> principal = new ThreadLocal<>();
 
-    /**
-     * Gets the principal.
-     *
-     * @return the principal
-     */
     public static Principal getPrincipal() {
         return principal.get();
     }
 
-    /**
-     * Sets the principal.
-     *
-     * @param principal
-     *            the new principal
-     */
     public static void setPrincipal(final Principal principal) {
         if (principal == null) {
             SessionManager.principal.remove();

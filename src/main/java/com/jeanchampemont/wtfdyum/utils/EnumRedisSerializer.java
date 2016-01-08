@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -22,44 +22,22 @@ import org.springframework.data.redis.serializer.SerializationException;
 
 import java.nio.charset.Charset;
 
-/**
- * The Class EnumRedisSerializer.
- */
 public class EnumRedisSerializer<T extends Enum<T>> implements RedisSerializer<T> {
 
-    /**
-     * Instantiates a new enum redis serializer.
-     */
     public EnumRedisSerializer(final Class<T> enumType) {
         charset = Charset.forName("UTF8");
         this.enumType = enumType;
     }
 
-    /** The charset. */
     private final Charset charset;
 
-    /** The enum type. */
     private final Class<T> enumType;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.springframework.data.redis.serializer.RedisSerializer#deserialize(
-     * byte[])
-     */
     @Override
     public T deserialize(final byte[] bytes) throws SerializationException {
         return (bytes == null ? null : Enum.valueOf(enumType, new String(bytes, charset)));
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.springframework.data.redis.serializer.RedisSerializer#serialize(java.
-     * lang.Object)
-     */
     @Override
     public byte[] serialize(final T val) throws SerializationException {
         return (val == null ? null : val.name().getBytes(charset));

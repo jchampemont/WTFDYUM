@@ -23,9 +23,6 @@ import com.jeanchampemont.wtfdyum.utils.WTFDYUMException;
 
 import java.util.Set;
 
-/**
- * The Interface FeatureService.
- */
 public interface FeatureService {
 
     /**

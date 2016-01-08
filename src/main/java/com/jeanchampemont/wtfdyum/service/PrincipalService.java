@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -21,38 +21,13 @@ import com.jeanchampemont.wtfdyum.dto.Principal;
 
 import java.util.Set;
 
-/**
- * The Interface PrincipalService.
- */
 public interface PrincipalService {
 
-    /**
-     * Count members.
-     *
-     * @return the number of members
-     */
     int countMembers();
 
-    /**
-     * Gets the principal.
-     *
-     * @param id the id
-     * @return the principal
-     */
     Principal get(Long id);
 
-    /**
-     * Gets the members.
-     *
-     * @return the members
-     */
     Set<Long> getMembers();
 
-    /**
-     * Save update.
-     *
-     * @param user
-     *            the user
-     */
     void saveUpdate(Principal user);
 }

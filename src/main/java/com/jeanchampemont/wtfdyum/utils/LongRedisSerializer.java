@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -22,50 +22,23 @@ import org.springframework.data.redis.serializer.SerializationException;
 
 import java.nio.charset.Charset;
 
-/**
- * The Class LongRedisSerializer.
- */
 public class LongRedisSerializer implements RedisSerializer<Long> {
 
-    /**
-     * Instantiates a new long redis serializer.
-     */
     public LongRedisSerializer() {
         this(Charset.forName("UTF8"));
     }
 
-    /**
-     * Instantiates a new long redis serializer.
-     *
-     * @param charset
-     *            the charset
-     */
     public LongRedisSerializer(final Charset charset) {
         this.charset = charset;
     }
 
-    /** The charset. */
     private final Charset charset;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.springframework.data.redis.serializer.RedisSerializer#deserialize(
-     * byte[])
-     */
     @Override
     public Long deserialize(final byte[] bytes) throws SerializationException {
         return (bytes == null ? null : Long.parseLong(new String(bytes, charset)));
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.springframework.data.redis.serializer.RedisSerializer#serialize(java.
-     * lang.Object)
-     */
     @Override
     public byte[] serialize(final Long val) throws SerializationException {
         return (val == null ? null : val.toString().getBytes(charset));

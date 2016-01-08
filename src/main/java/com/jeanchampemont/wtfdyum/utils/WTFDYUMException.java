@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -26,38 +26,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "WTFDYUMException")
 public class WTFDYUMException extends Exception {
 
-    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 4147162490508812242L;
 
-    /**
-     * Instantiates a new WTFDYUM exception.
-     *
-     * @param e
-     *            the wrapped exception
-     */
     public WTFDYUMException(final Exception e, final WTFDYUMExceptionType type) {
         super(e);
         this.type = type;
     }
 
-    /**
-     * Instantiates a new WTFDYUM exception.
-     *
-     * @param exceptionType
-     *            the exception type
-     */
     public WTFDYUMException(final WTFDYUMExceptionType type) {
         this.type = type;
     }
 
-    /** The type. */
     private final WTFDYUMExceptionType type;
 
-    /**
-     * Gets the type.
-     *
-     * @return the type
-     */
     public WTFDYUMExceptionType getType() {
         return type;
     }

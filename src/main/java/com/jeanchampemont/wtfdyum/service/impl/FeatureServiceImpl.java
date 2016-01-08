@@ -28,91 +28,42 @@ import javax.annotation.Resource;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * The Class FeatureServiceImpl.
- */
 @Service
 public class FeatureServiceImpl implements FeatureService {
 
-    /**
-     * Instantiates a new features service impl.
-     */
     public FeatureServiceImpl() {
         // left deliberately empty
     }
 
-    /**
-     * Instantiates a new features service impl.
-     *
-     * @param featureStrategies
-     *            the feature services
-     */
     public FeatureServiceImpl(final Map<Feature, FeatureStrategy> featureStrategies) {
         this.featureStrategies = featureStrategies;
     }
 
-    /** The feature services. */
     @Resource
     private Map<Feature, FeatureStrategy> featureStrategies;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.jeanchampemont.wtfdyum.service.FeatureService#completeCron(
-     * java.lang.Long, com.jeanchampemont.wtfdyum.dto.Feature)
-     */
     @Override
     public void completeCron(final Long userId, final Feature feature) throws WTFDYUMException {
         featureStrategies.get(feature).completeCron(userId);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.jeanchampemont.wtfdyum.service.FeatureService#cron(java.lang
-     * .Long, com.jeanchampemont.wtfdyum.dto.Feature)
-     */
     @Override
     public Set<Event> cron(final Long userId, final Feature feature) throws WTFDYUMException {
         return featureStrategies.get(feature).cron(userId);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.jeanchampemont.wtfdyum.service.FeatureService#disableFeature
-     * (java.lang.Long, com.jeanchampemont.wtfdyum.dto.Feature)
-     */
     @Override
     public boolean disableFeature(final Long userId, final Feature feature) {
         return featureStrategies.get(feature).disableFeature(userId);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.jeanchampemont.wtfdyum.service.FeatureService#enableFeature(
-     * java.lang.Long, com.jeanchampemont.wtfdyum.dto.Feature)
-     */
     @Override
     public boolean enableFeature(final Long userId, final Feature feature) {
         return featureStrategies.get(feature).enableFeature(userId);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.jeanchampemont.wtfdyum.service.FeatureService#isEnabled(java
-     * .lang.Long, com.jeanchampemont.wtfdyum.dto.Feature)
-     */
     @Override
     public boolean isEnabled(final Long userId, final Feature feature) {
         return featureStrategies.get(feature).isEnabled(userId);
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -36,27 +36,18 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-/**
- * The Class AuthenticationServiceTest.
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = WTFDYUMApplication.class)
 public class AuthenticationServiceTest {
 
-    /** The session. */
     @Mock
     private HttpSession session;
 
-    /** The session provider. */
     @Mock
     private SessionProvider sessionProvider;
 
-    /** The system under test. */
     private AuthenticationService sut;
 
-    /**
-     * Inits the test.
-     */
     @Before
     public void ainit() {
         initMocks(this);
@@ -64,25 +55,16 @@ public class AuthenticationServiceTest {
         sut = new SessionAuthenticationServiceImpl(sessionProvider);
     }
 
-    /**
-     * Authenticate null user id test.
-     */
     @Test(expected = NullPointerException.class)
     public void authenticateNullUserIdTest() {
         sut.authenticate(new Principal(null, "toke", "secrt"));
     }
 
-    /**
-     * Authenticate null user test.
-     */
     @Test(expected = NullPointerException.class)
     public void authenticateNullUserTest() {
         sut.authenticate(null);
     }
 
-    /**
-     * Authenticate test.
-     */
     @Test
     public void authenticateTest() {
         sut.authenticate(new Principal(120L, "tok", "secret"));
@@ -90,11 +72,6 @@ public class AuthenticationServiceTest {
         verify(session, times(1)).setAttribute(anyString(), eq(120L));
     }
 
-    /**
-     * Gets the current user id authenticated test.
-     *
-     * @return the current user id authenticated test
-     */
     @Test
     public void getCurrentUserIdAuthenticatedTest() {
         when(session.getAttribute(anyString())).thenReturn(144L);
@@ -104,11 +81,6 @@ public class AuthenticationServiceTest {
         assertThat(currentUserId).isEqualTo(144L);
     }
 
-    /**
-     * Gets the current user id not authenticated test.
-     *
-     * @return the current user id not authenticated test
-     */
     @Test
     public void getCurrentUserIdNotAuthenticatedTest() {
         when(session.getAttribute(anyString())).thenReturn(null);
@@ -117,9 +89,6 @@ public class AuthenticationServiceTest {
         assertThat(currentUserId).isNull();
     }
 
-    /**
-     * Checks if is authenticated authenticated test.
-     */
     @Test
     public void isAuthenticatedAuthenticatedTest() {
         when(session.getAttribute(anyString())).thenReturn(144L);
@@ -129,9 +98,6 @@ public class AuthenticationServiceTest {
         assertThat(isAuthenticated).isTrue();
     }
 
-    /**
-     * Checks if is authenticated not authenticated test.
-     */
     @Test
     public void isAuthenticatedNotAuthenticatedTest() {
         when(session.getAttribute(anyString())).thenReturn(null);
@@ -141,9 +107,6 @@ public class AuthenticationServiceTest {
         assertThat(isAuthenticated).isFalse();
     }
 
-    /**
-     * Log out test.
-     */
     @Test
     public void logOutTest() {
         sut.logOut();

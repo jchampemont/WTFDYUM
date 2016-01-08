@@ -39,47 +39,30 @@ import java.util.HashSet;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-/**
- * The Class CronServiceTest.
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = WTFDYUMApplication.class)
 public class CronServiceTest {
 
-    /** The principal service. */
     @Mock
     private PrincipalService principalService;
 
-    /** The user service. */
     @Mock
     private UserService userService;
 
-    /** The twitter service. */
     @Mock
     private TwitterService twitterService;
 
-    /** The features service. */
     @Mock
     private FeatureService featureService;
 
-    /** The system under test. */
     private CronService sut;
 
-    /**
-     * Inits the test.
-     */
     @Before
     public void _init() {
         initMocks(this);
         sut = new CronServiceImpl(principalService, userService, twitterService, featureService);
     }
 
-    /**
-     * Check credentials test.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void checkCredentialsTest() throws Exception {
         final Principal principal = principal(1L);
@@ -89,12 +72,6 @@ public class CronServiceTest {
         verify(userService, times(1)).resetLimit(1L, UserLimitType.CREDENTIALS_INVALID);
     }
 
-    /**
-     * Check credentials test invalid.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void checkCredentialsTestInvalid() throws Exception {
         final Principal principal = principal(1L);
@@ -106,12 +83,6 @@ public class CronServiceTest {
         verify(userService, times(1)).applyLimit(1L, UserLimitType.CREDENTIALS_INVALID);
     }
 
-    /**
-     * Cron test disabled.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void cronTestDisabled() throws Exception {
         principal(5L);
@@ -120,12 +91,6 @@ public class CronServiceTest {
         sut.cron();
     }
 
-    /**
-     * Cron test events.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void cronTestEvents() throws Exception {
         principal(12L);
@@ -146,12 +111,6 @@ public class CronServiceTest {
         verify(userService, times(1)).addEvent(12L, new Event(EventType.UNFOLLOW, "toto"));
     }
 
-    /**
-     * Cron test nominal.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void cronTestNominal() throws Exception {
         principal(1L);
@@ -163,12 +122,6 @@ public class CronServiceTest {
         verify(featureService, times(1)).completeCron(1L, Feature.NOTIFY_UNFOLLOW);
     }
 
-    /**
-     * Cron test npe error.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void cronTestNPEError() throws Exception {
         principal(4L);
@@ -182,12 +135,6 @@ public class CronServiceTest {
         verify(userService, times(1)).addEvent(4L, new Event(EventType.UNKNOWN_ERROR, null));
     }
 
-    /**
-     * Cron test rate limit error.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void cronTestRateLimitError() throws Exception {
 
@@ -202,12 +149,6 @@ public class CronServiceTest {
         verify(userService, times(1)).addEvent(3L, new Event(EventType.RATE_LIMIT_EXCEEDED, null));
     }
 
-    /**
-     * Cron test twitter error.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void cronTestTwitterError() throws Exception {
         principal(2L);
@@ -221,27 +162,10 @@ public class CronServiceTest {
         verify(userService, times(1)).addEvent(2L, new Event(EventType.TWITTER_ERROR, null));
     }
 
-    /**
-     * Feature enabled.
-     *
-     * @param userId
-     *            the user id
-     * @param value
-     *            the value
-     * @param feature
-     *            the feature
-     */
     private void featureEnabled(final long userId, final boolean value, final Feature... feature) {
         when(userService.getEnabledFeatures(userId)).thenReturn(new HashSet<>(Arrays.asList(feature)));
     }
 
-    /**
-     * Principal.
-     *
-     * @param id
-     *            the id
-     * @return the principal
-     */
     private Principal principal(final long id) {
         when(principalService.getMembers()).thenReturn(new HashSet<>(Arrays.asList(id)));
         final Principal principal = new Principal(id, "Principal 1 Token", "Principal 1 Token Secret");

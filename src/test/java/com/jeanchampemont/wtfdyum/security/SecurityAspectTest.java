@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 WTFDYUM
+ * Copyright (C) 2015, 2016 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -30,27 +30,18 @@ import java.lang.annotation.Annotation;
 
 import static org.mockito.Mockito.*;
 
-/**
- * The Class SecurityAspectTest.
- */
 @RunWith(MockitoJUnitRunner.class)
 public class SecurityAspectTest {
 
-    /** The authentication service. */
     @Mock
     private AuthenticationService authenticationService;
 
-    /** The pjp. */
     @Mock
     private ProceedingJoinPoint pjp;
 
-    /** The sut. */
     @InjectMocks
     private SecurityAspect sut;
 
-    /**
-     * Around secured method test authorized.
-     */
     @Test
     public void aroundSecuredMethodTestAuthorized() throws Throwable {
         final Object expectedResult = new Object();
@@ -61,7 +52,6 @@ public class SecurityAspectTest {
         final Object result = sut.aroundSecuredMethod(pjp, new Secured() {
             @Override
             public Class<? extends Annotation> annotationType() {
-                // TODO Auto-generated method stub
                 return null;
             }
         });
@@ -70,9 +60,6 @@ public class SecurityAspectTest {
         verify(pjp, times(1)).proceed();
     }
 
-    /**
-     * Around secured method test unauthorized.
-     */
     @Test(expected = SecurityException.class)
     public void aroundSecuredMethodTestUnauthorized() throws Throwable {
         when(authenticationService.isAuthenticated()).thenReturn(false);

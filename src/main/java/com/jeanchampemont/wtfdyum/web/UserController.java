@@ -38,36 +38,22 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * The Class UserController.
- */
 @Controller
 @RequestMapping(value = "/user")
 public class UserController {
 
-    /** The authentication service. */
     @Autowired
     private AuthenticationService authenticationService;
 
-    /** The twitter service. */
     @Autowired
     private TwitterService twitterService;
 
-    /** The user service. */
     @Autowired
     private UserService userService;
 
-    /** The features service. */
     @Autowired
     private FeatureService featureService;
 
-    /**
-     * Disable feature.
-     *
-     * @param feature
-     *            the feature
-     * @return the redirect view
-     */
     @RequestMapping(value = "/feature/disable/{feature}", method = RequestMethod.GET)
     @Secured
     public RedirectView disableFeature(@PathVariable("feature") final Feature feature) {
@@ -80,11 +66,6 @@ public class UserController {
         return new RedirectView("/user", true);
     }
 
-    /**
-     * Enable feature.
-     *
-     * @return the redirect view
-     */
     @RequestMapping(value = "/feature/enable/{feature}", method = RequestMethod.GET)
     @Secured
     public RedirectView enableFeature(@PathVariable("feature") final Feature feature) {
@@ -97,12 +78,6 @@ public class UserController {
         return new RedirectView("/user", true);
     }
 
-    /**
-     * Index.
-     *
-     * @return the string
-     * @throws WTFDYUMException
-     */
     @RequestMapping(method = RequestMethod.GET)
     @Secured
     public ModelAndView index() {
@@ -129,11 +104,6 @@ public class UserController {
         return result;
     }
 
-    /**
-     * Logout.
-     *
-     * @return the redirect view
-     */
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public RedirectView logout() {
         authenticationService.logOut();

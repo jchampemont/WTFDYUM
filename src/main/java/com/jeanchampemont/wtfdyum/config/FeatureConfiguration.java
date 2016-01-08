@@ -27,18 +27,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The Class FeatureConfiguration.
+ * Spring configuration for feature strategies beans
  */
 @Configuration
 public class FeatureConfiguration {
 
-    /**
-     * Feature services.
-     *
-     * @param featureStrategies
-     *            the feature strategies
-     * @return the map
-     */
     @Bean(name = "featureStrategies")
     public Map<Feature, FeatureStrategy> featureStrategies(final List<FeatureStrategy> featureStrategies) {
         final Map<Feature, FeatureStrategy> result = new HashMap<>();

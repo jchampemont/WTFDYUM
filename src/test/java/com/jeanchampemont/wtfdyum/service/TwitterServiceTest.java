@@ -47,41 +47,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-/**
- * The Class TwitterServiceTest.
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = WTFDYUMApplication.class)
 public class TwitterServiceTest {
 
-    /** The Constant DEFAULT_BASE_URL. */
     private static final String DEFAULT_BASE_URL = "http://url/toto/";
 
-    /** The Constant DEFAULT_PATH. */
     private static final String DEFAULT_PATH = "default/path";
 
-    /** The mapper. */
     @Autowired
     private Mapper mapper;
 
-    /** The system under test. */
     private TwitterService sut;
 
-    /** The twitter mock. */
     @Mock
     private Twitter twitter;
 
-    /** The users resources. */
     @Mock
     private UsersResources usersResources;
 
-    /** The twitter factory. */
     @Mock
     private TwitterFactoryHolder twitterFactory;
 
-    /**
-     * Inits the test.
-     */
     @Before
     public void ainit() {
         initMocks(this);
@@ -89,12 +76,6 @@ public class TwitterServiceTest {
         sut = new TwitterServiceImpl(twitterFactory, mapper, DEFAULT_BASE_URL, "appId", "appSecret");
     }
 
-    /**
-     * Complete signin test nominal.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void completeSigninTestNominal() throws Exception {
         final AccessToken returnedToken = new AccessToken("TOKTOK", "TOK_secret");
@@ -112,12 +93,6 @@ public class TwitterServiceTest {
         assertThat(accessToken).isEqualTo(returnedToken);
     }
 
-    /**
-     * Complete signin test twitter exception.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test(expected = WTFDYUMException.class)
     public void completeSigninTestTwitterException() throws Exception {
         final RequestToken paramToken = new RequestToken("TOK", "SECRET_tok");
@@ -130,13 +105,6 @@ public class TwitterServiceTest {
         Assertions.fail("Exception not throwned");
     }
 
-    /**
-     * Gets the followers test.
-     *
-     * @return the followers test
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void getFollowersTest() throws Exception {
         final Optional<Principal> principal = Optional.of(new Principal(123L, "toktok", "secsecret"));
@@ -162,13 +130,6 @@ public class TwitterServiceTest {
         verify(twitter, times(1)).setOAuthAccessToken(new AccessToken("toktok", "secsecret"));
     }
 
-    /**
-     * Gets the followers test without principal.
-     *
-     * @return the followers test without principal
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void getFollowersTestWithoutPrincipal() throws Exception {
         final IDs idsMock = mock(IDs.class);
@@ -191,13 +152,6 @@ public class TwitterServiceTest {
         assertThat(followers.contains(999L));
     }
 
-    /**
-     * Gets the users empty test.
-     *
-     * @return the users empty test
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void getUsersEmptyTest() throws Exception {
         final List<com.jeanchampemont.wtfdyum.dto.User> result = sut.getUsers(new Principal(1L, "", ""), new long[0]);
@@ -206,13 +160,6 @@ public class TwitterServiceTest {
         assertThat(result.size()).isEqualTo(0);
     }
 
-    /**
-     * Gets the users multiple page test.
-     *
-     * @return the users multiple page test
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void getUsersMultiplePageTest() throws Exception {
         final User userMock = mock(User.class);
@@ -258,13 +205,6 @@ public class TwitterServiceTest {
         assertThat(result.size()).isEqualTo(150);
     }
 
-    /**
-     * Gets the users test.
-     *
-     * @return the users test
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void getUsersTest() throws Exception {
         final User userMock = mock(User.class);
@@ -294,13 +234,6 @@ public class TwitterServiceTest {
         assertThat(result.size()).isEqualTo(100);
     }
 
-    /**
-     * Gets the users twitter exception test.
-     *
-     * @return the users test
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void getUsersTwitterExceptionTest() throws Exception {
         final User userMock = mock(User.class);
@@ -332,13 +265,6 @@ public class TwitterServiceTest {
         }
     }
 
-    /**
-     * Gets the followers test without principal rate limit.
-     *
-     * @return the followers test without principal rate limit
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void getFollowersTestWithoutPrincipalRateLimit() throws Exception {
         final IDs idsMock = mock(IDs.class);
@@ -357,13 +283,6 @@ public class TwitterServiceTest {
         }
     }
 
-    /**
-     * Gets the followers test without principal twitter exception.
-     *
-     * @return the followers test without principal twitter exception
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void getFollowersTestWithoutPrincipalTwitterException() throws Exception {
         when(twitter.getFollowersIDs(444L, -1)).thenThrow(new TwitterException("msg"));
@@ -377,12 +296,6 @@ public class TwitterServiceTest {
 
     }
 
-    /**
-     * Gets the user test.
-     *
-     * @return the user test
-     * @throws Exception the exception
-     */
     @Test
     public void getUserTest() throws Exception {
         final User userMock = mock(User.class);
@@ -405,13 +318,6 @@ public class TwitterServiceTest {
         assertThat(result.getURL()).isEqualTo("user url");
     }
 
-    /**
-     * Gets the user test exception.
-     *
-     * @return the user test exception
-     * @throws Exception
-     *             the exception
-     */
     @Test(expected = WTFDYUMException.class)
     public void getUserTestException() throws Exception {
         when(twitter.users()).thenReturn(usersResources);
@@ -420,12 +326,6 @@ public class TwitterServiceTest {
         sut.getUser(new Principal(1L, "", ""), 123L);
     }
 
-    /**
-     * Send direct message test.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void sendDirectMessageTest() throws Exception {
         final Principal principal = new Principal(123L, "toktok", "secsecret");
@@ -434,12 +334,6 @@ public class TwitterServiceTest {
         verify(twitter, times(1)).sendDirectMessage(555L, "text");
     }
 
-    /**
-     * Send direct message test exception.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void sendDirectMessageTestException() throws Exception {
         when(twitter.sendDirectMessage(444L, "text")).thenThrow(new TwitterException("msg"));
@@ -452,12 +346,6 @@ public class TwitterServiceTest {
         }
     }
 
-    /**
-     * Signin test nominal.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void signinTestNominal() throws Exception {
         final RequestToken returnedToken = new RequestToken("TOK", "SECRET_tok");
@@ -472,12 +360,6 @@ public class TwitterServiceTest {
         assertThat(requestToken).isEqualTo(returnedToken);
     }
 
-    /**
-     * Signin test twitter exception.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test(expected = WTFDYUMException.class)
     public void signinTestTwitterException() throws Exception {
         when(twitter.getOAuthRequestToken(DEFAULT_BASE_URL + DEFAULT_PATH)).thenThrow(new TwitterException("dummy"));
@@ -487,36 +369,18 @@ public class TwitterServiceTest {
         Assertions.fail("Exception not throwned");
     }
 
-    /**
-     * Tweet test.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void tweetTest() throws Exception {
         sut.tweet(new Principal(144L, "tok", "toksec"), "my brand new tweet");
         verify(twitter, times(1)).updateStatus("my brand new tweet");
     }
 
-    /**
-     * Tweet test exception.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test(expected = WTFDYUMException.class)
     public void tweetTestException() throws Exception {
         when(twitter.updateStatus("my brand new tweet")).thenThrow(new TwitterException(""));
         sut.tweet(new Principal(144L, "tok", "toksec"), "my brand new tweet");
     }
 
-    /**
-     * Verify credentials test false.
-     *
-     * @throws TwitterException
-     *             the twitter exception
-     */
     @Test
     public void verifyCredentialsTestFalse() throws TwitterException {
         when(twitter.verifyCredentials()).thenThrow(new TwitterException(""));
@@ -524,12 +388,6 @@ public class TwitterServiceTest {
         assertThat(result).isFalse();
     }
 
-    /**
-     * Verify credentials test true.
-     *
-     * @throws TwitterException
-     *             the twitter exception
-     */
     @Test
     public void verifyCredentialsTestTrue() throws TwitterException {
         when(twitter.verifyCredentials()).thenReturn(null);

@@ -159,9 +159,9 @@ public class UserServiceTest {
             new Event(EventType.UNFOLLOW, "unfoll"));
 
         when(eventRedisTemplate.opsForList()).thenReturn(eventListOperations);
-        when(eventListOperations.range("EVENTS_1249", 11, 12)).thenReturn(result);
+        when(eventListOperations.range("EVENTS_1249", 10, 15)).thenReturn(result);
 
-        final List<Event> returnedResult = sut.getRecentEvents(1249L, 12, 11);
+        final List<Event> returnedResult = sut.getRecentEvents(1249L, 5, 10);
 
         assertThat(returnedResult).isNotNull();
         assertThat(returnedResult.size()).isEqualTo(2);

@@ -154,6 +154,21 @@ public class UserServiceTest {
     }
 
     @Test
+    public void getRecentEventsWithStartTest() {
+        final List<Event> result = Arrays.asList(new Event(EventType.REGISTRATION, "reg"),
+            new Event(EventType.UNFOLLOW, "unfoll"));
+
+        when(eventRedisTemplate.opsForList()).thenReturn(eventListOperations);
+        when(eventListOperations.range("EVENTS_1249", 11, 12)).thenReturn(result);
+
+        final List<Event> returnedResult = sut.getRecentEvents(1249L, 12, 11);
+
+        assertThat(returnedResult).isNotNull();
+        assertThat(returnedResult.size()).isEqualTo(2);
+        assertThat(returnedResult).isEqualTo(result);
+    }
+
+    @Test
     public void resetLimitTest() {
 
         sut.resetLimit(199L, UserLimitType.CREDENTIALS_INVALID);

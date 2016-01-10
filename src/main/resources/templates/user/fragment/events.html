@@ -1,0 +1,11 @@
+<div th:fragment="events" th:each="event : ${events}" th:switch="${event.type.severity.name()}">
+    <div th:case="'INFO'" class="alert alert-info" role="alert">
+        <strong th:text="${#temporals.format(event.creationDateTime, 'dd/MM/yyyy HH:mm')}"></strong>: <span th:text="${event.message}"></span>
+    </div>
+    <div th:case="'WARNING'" class="alert alert-warning" role="alert">
+        <strong th:text="${#temporals.format(event.creationDateTime, 'dd/MM/yyyy HH:mm')}"></strong>: <span th:text="${event.message}"></span>
+    </div>
+    <div th:case="'ERROR'" class="alert alert-danger" role="alert">
+        <strong th:text="${#temporals.format(event.creationDateTime, 'dd/MM/yyyy HH:mm')}"></strong>: <span th:text="${event.message}"></span>
+    </div>
+</div>

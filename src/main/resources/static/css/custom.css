@@ -76,3 +76,7 @@ body {
         border-bottom: 0;
     }
 }
+
+#more-button {
+    margin-bottom: 20px;
+}

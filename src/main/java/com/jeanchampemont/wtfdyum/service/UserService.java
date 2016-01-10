@@ -34,5 +34,7 @@ public interface UserService {
 
     List<Event> getRecentEvents(Long userId, int count);
 
+    List<Event> getRecentEvents(Long userId, int count, int start);
+
     void resetLimit(Long userId, UserLimitType type);
 }

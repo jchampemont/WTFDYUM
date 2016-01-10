@@ -23,4 +23,13 @@ $(function() {
             window.location.href = "/user/feature/disable/" + $(this).data('name');
         }
     });
+
+    $('#more-button').on('click', function() {
+        $.get("/ajax/recentEvents/" + ($('#events div.alert').length + 1), function(events) {
+            if(events.trim().length == 0) {
+                $('#more-button').hide();
+            }
+            $('#events').append(events);
+        });
+    });
 });

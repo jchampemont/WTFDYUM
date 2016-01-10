@@ -88,7 +88,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<Event> getRecentEvents(final Long userId, final int count) {
-        return eventRedisTemplate.opsForList().range(eventsKey(userId), 0, count);
+        return getRecentEvents(userId, count, 0);
+    }
+
+    @Override
+    public List<Event> getRecentEvents(Long userId, int count, int start) {
+        return eventRedisTemplate.opsForList().range(eventsKey(userId), start, start + count);
     }
 
     @Override

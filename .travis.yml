@@ -3,9 +3,8 @@ jdk:
   - oraclejdk8
 script:
   - mvn test jacoco:report coveralls:report -Dmaven.javadoc.skip=true
-  - mvn package -DskipTests=true
 addons:
   artifacts:
     paths:
-      - $HOME/build/jchampemont/WTFDYUM/target/*.jar
-      - $HOME/build/jchampemont/WTFDYUM/target/*.zip
+      - /home/travis/build/jchampemont/WTFDYUM/target/wtfdyum-1.1.0-SNAPSHOT.jar
+      - /home/travis/build/jchampemont/WTFDYUM/target/wtfdyum-1.1.0-SNAPSHOT-main.zip

@@ -1,7 +1,12 @@
 language: java
 jdk:
   - oraclejdk8
+script:
+  - mvn install -DskipTests=true
+  - mvn test jacoco:report coveralls:report -Dmaven.javadoc.skip=true
 after_success:
-  - mvn clean test jacoco:report coveralls:report
+  - mvn package
 addons:
-  artifacts: true
+  artifacts:
+    paths:
+      - $HOME/target/*.jar

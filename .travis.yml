@@ -4,5 +4,5 @@ jdk:
 script:
   - mvn test jacoco:report coveralls:report -Dmaven.javadoc.skip=true
 after_success:
-  - "curl -T /home/travis/build/jchampemont/WTFDYUM/target/wtfdyum-1.1.0-SNAPSHOT.jar -H \"X-Bintray-Publish: 1\" -H \"X-Bintray-Override: 1\" -u$BINTRAY_USER:$BINTRAY_KEY https://api.bintray.com/content/$BINTRAY_USER/wtfdyum/distrib/1.1.0-SNAPSHOT/wtfdyum.jar"
-  - "curl -T /home/travis/build/jchampemont/WTFDYUM/target/wtfdyum-1.1.0-SNAPSHOT-main.zip -H \"X-Bintray-Publish: 1\" -H \"X-Bintray-Override: 1\" -u$BINTRAY_USER:$BINTRAY_KEY https://api.bintray.com/content/$BINTRAY_USER/wtfdyum/distrib/1.1.0-SNAPSHOT/wtfdyum.zip"
+  - "curl -T /home/travis/build/jchampemont/WTFDYUM/target/wtfdyum-1.1.0-SNAPSHOT.jar -H \"X-Bintray-Publish: 1\" -H \"X-Bintray-Override: 1\" -u$BINTRAY_USER:$BINTRAY_KEY https://api.bintray.com/content/$BINTRAY_USER/wtfdyum/binary/0/wtfdyum-1.1.0-SNAPSHOT.jar"
+  - "curl -T /home/travis/build/jchampemont/WTFDYUM/target/wtfdyum-1.1.0-SNAPSHOT-main.zip -H \"X-Bintray-Publish: 1\" -H \"X-Bintray-Override: 1\" -u$BINTRAY_USER:$BINTRAY_KEY https://api.bintray.com/content/$BINTRAY_USER/wtfdyum/binary/0/wtfdyum-1.1.0-SNAPSHOT.zip"

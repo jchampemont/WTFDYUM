@@ -4,5 +4,5 @@ jdk:
 after_success:
   - mvn clean test jacoco:report coveralls:report
 addons:
-  artifacts: true
+  artifacts:
     s3_region: "eu-central-1"

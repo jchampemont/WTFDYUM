@@ -25,6 +25,10 @@ Download latest release from here : https://github.com/jchampemont/WTFDYUM/relea
 
 See bundled `INSTALL.md` file for installation details.
 
+### Docker
+
+A docker image is available on Docker Hub. ([jchampemont/wtfdyum](https://hub.docker.com/r/jchampemont/wtfdyum/))
+
 ### Bug reporting
 
 If you encounter any bug or issue while using this software, feel free to report it using GitHub issues tracker. We will definitely have a look at it.

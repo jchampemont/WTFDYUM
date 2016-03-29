@@ -85,7 +85,7 @@ public class TwitterServiceImpl implements TwitterService {
         final Set<Long> result = new HashSet<>();
         try {
             IDs followersIDs = null;
-            final long cursor = -1;
+            long cursor = -1;
             do {
                 followersIDs = twitter.getFollowersIDs(userId, cursor);
                 if(followersIDs.hasNext()) {

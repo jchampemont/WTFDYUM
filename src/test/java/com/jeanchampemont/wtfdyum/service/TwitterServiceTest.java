@@ -271,6 +271,7 @@ public class TwitterServiceTest {
         when(twitter.getFollowersIDs(444L, -1)).thenReturn(idsMock);
 
         final RateLimitStatus rateLimitStatusMock = mock(RateLimitStatus.class);
+        when(idsMock.hasNext()).thenReturn(true);
         when(idsMock.getRateLimitStatus()).thenReturn(rateLimitStatusMock);
 
         when(rateLimitStatusMock.getRemaining()).thenReturn(0);

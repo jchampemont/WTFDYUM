@@ -131,6 +131,41 @@ public class TwitterServiceTest {
     }
 
     @Test
+    public void getFollowersMultiplePageTest() throws Exception {
+        final Optional<Principal> principal = Optional.of(new Principal(123L, "toktok", "secsecret"));
+        final IDs idsMock = mock(IDs.class);
+        when(twitter.getFollowersIDs(444L, -1)).thenReturn(idsMock);
+
+        final RateLimitStatus rateLimitStatusMock = mock(RateLimitStatus.class);
+        when(idsMock.getRateLimitStatus()).thenReturn(rateLimitStatusMock);
+        when(idsMock.hasNext()).thenReturn(true);
+
+        when(rateLimitStatusMock.getRemaining()).thenReturn(1);
+
+        when(idsMock.getIDs()).thenReturn(new long[]{12L, 34L, 44L, 42L, 42L, 999L});
+
+        when(idsMock.hasNext()).thenReturn(false);
+
+        when(rateLimitStatusMock.getRemaining()).thenReturn(0);
+
+        when(idsMock.getIDs()).thenReturn(new long[]{1001L, 1002L, 1003L});
+
+        final Set<Long> followers = sut.getFollowers(444L, principal);
+
+        assertThat(followers).isNotNull();
+        assertThat(followers.contains(12L));
+        assertThat(followers.contains(34L));
+        assertThat(followers.contains(44L));
+        assertThat(followers.contains(42L));
+        assertThat(followers.contains(999L));
+        assertThat(followers.contains(1001L));
+        assertThat(followers.contains(1002L));
+        assertThat(followers.contains(1003L));
+
+        verify(twitter, times(1)).setOAuthAccessToken(new AccessToken("toktok", "secsecret"));
+    }
+
+    @Test
     public void getFollowersTestWithoutPrincipal() throws Exception {
         final IDs idsMock = mock(IDs.class);
         when(twitter.getFollowersIDs(444L, -1)).thenReturn(idsMock);

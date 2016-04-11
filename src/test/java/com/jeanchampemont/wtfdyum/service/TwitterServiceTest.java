@@ -133,34 +133,29 @@ public class TwitterServiceTest {
     @Test
     public void getFollowersMultiplePageTest() throws Exception {
         final Optional<Principal> principal = Optional.of(new Principal(123L, "toktok", "secsecret"));
-        final IDs idsMock = mock(IDs.class);
-        when(twitter.getFollowersIDs(444L, -1)).thenReturn(idsMock);
+        final IDs firstPageMock = mock(IDs.class);
+        final IDs secondPageMock = mock(IDs.class);
 
-        final RateLimitStatus rateLimitStatusMock = mock(RateLimitStatus.class);
-        when(idsMock.getRateLimitStatus()).thenReturn(rateLimitStatusMock);
-        when(idsMock.hasNext()).thenReturn(true);
+        final RateLimitStatus firstPageRateLimitMock = mock(RateLimitStatus.class);
+        when(firstPageRateLimitMock.getRemaining()).thenReturn(1);
+        when(firstPageMock.getRateLimitStatus()).thenReturn(firstPageRateLimitMock);
+        when(firstPageMock.hasNext()).thenReturn(true);
+        when(firstPageMock.getIDs()).thenReturn(new long[]{12L, 34L, 44L, 42L, 42L, 999L});
+        when(firstPageMock.getNextCursor()).thenReturn(42L);
 
-        when(rateLimitStatusMock.getRemaining()).thenReturn(1);
+        final RateLimitStatus secondPageRateLimitMock = mock(RateLimitStatus.class);
+        when(secondPageRateLimitMock.getRemaining()).thenReturn(0);
+        when(secondPageMock.getRateLimitStatus()).thenReturn(secondPageRateLimitMock);
+        when(secondPageMock.hasNext()).thenReturn(false);
+        when(secondPageMock.getIDs()).thenReturn(new long[]{1001L, 1002L, 1003L});
 
-        when(idsMock.getIDs()).thenReturn(new long[]{12L, 34L, 44L, 42L, 42L, 999L});
-
-        when(idsMock.hasNext()).thenReturn(false);
-
-        when(rateLimitStatusMock.getRemaining()).thenReturn(0);
-
-        when(idsMock.getIDs()).thenReturn(new long[]{1001L, 1002L, 1003L});
+        when(twitter.getFollowersIDs(444L, -1)).thenReturn(firstPageMock);
+        when(twitter.getFollowersIDs(444L, 42)).thenReturn(secondPageMock);
 
         final Set<Long> followers = sut.getFollowers(444L, principal);
 
         assertThat(followers).isNotNull();
-        assertThat(followers.contains(12L));
-        assertThat(followers.contains(34L));
-        assertThat(followers.contains(44L));
-        assertThat(followers.contains(42L));
-        assertThat(followers.contains(999L));
-        assertThat(followers.contains(1001L));
-        assertThat(followers.contains(1002L));
-        assertThat(followers.contains(1003L));
+        assertThat(followers).containsOnly(12L, 34L, 44L, 42L, 999L, 1001L, 1002L, 1003L);
 
         verify(twitter, times(1)).setOAuthAccessToken(new AccessToken("toktok", "secsecret"));
     }

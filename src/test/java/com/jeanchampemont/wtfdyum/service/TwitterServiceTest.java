@@ -131,6 +131,36 @@ public class TwitterServiceTest {
     }
 
     @Test
+    public void getFollowersMultiplePageTest() throws Exception {
+        final Optional<Principal> principal = Optional.of(new Principal(123L, "toktok", "secsecret"));
+        final IDs firstPageMock = mock(IDs.class);
+        final IDs secondPageMock = mock(IDs.class);
+
+        final RateLimitStatus firstPageRateLimitMock = mock(RateLimitStatus.class);
+        when(firstPageRateLimitMock.getRemaining()).thenReturn(1);
+        when(firstPageMock.getRateLimitStatus()).thenReturn(firstPageRateLimitMock);
+        when(firstPageMock.hasNext()).thenReturn(true);
+        when(firstPageMock.getIDs()).thenReturn(new long[]{12L, 34L, 44L, 42L, 42L, 999L});
+        when(firstPageMock.getNextCursor()).thenReturn(42L);
+
+        final RateLimitStatus secondPageRateLimitMock = mock(RateLimitStatus.class);
+        when(secondPageRateLimitMock.getRemaining()).thenReturn(0);
+        when(secondPageMock.getRateLimitStatus()).thenReturn(secondPageRateLimitMock);
+        when(secondPageMock.hasNext()).thenReturn(false);
+        when(secondPageMock.getIDs()).thenReturn(new long[]{1001L, 1002L, 1003L});
+
+        when(twitter.getFollowersIDs(444L, -1)).thenReturn(firstPageMock);
+        when(twitter.getFollowersIDs(444L, 42)).thenReturn(secondPageMock);
+
+        final Set<Long> followers = sut.getFollowers(444L, principal);
+
+        assertThat(followers).isNotNull();
+        assertThat(followers).containsOnly(12L, 34L, 44L, 42L, 999L, 1001L, 1002L, 1003L);
+
+        verify(twitter, times(1)).setOAuthAccessToken(new AccessToken("toktok", "secsecret"));
+    }
+
+    @Test
     public void getFollowersTestWithoutPrincipal() throws Exception {
         final IDs idsMock = mock(IDs.class);
         when(twitter.getFollowersIDs(444L, -1)).thenReturn(idsMock);
@@ -271,6 +301,7 @@ public class TwitterServiceTest {
         when(twitter.getFollowersIDs(444L, -1)).thenReturn(idsMock);
 
         final RateLimitStatus rateLimitStatusMock = mock(RateLimitStatus.class);
+        when(idsMock.hasNext()).thenReturn(true);
         when(idsMock.getRateLimitStatus()).thenReturn(rateLimitStatusMock);
 
         when(rateLimitStatusMock.getRemaining()).thenReturn(0);

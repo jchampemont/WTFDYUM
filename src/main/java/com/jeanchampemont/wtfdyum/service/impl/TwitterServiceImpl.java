@@ -85,12 +85,14 @@ public class TwitterServiceImpl implements TwitterService {
         final Set<Long> result = new HashSet<>();
         try {
             IDs followersIDs = null;
-            final long cursor = -1;
+            long cursor = -1;
             do {
                 followersIDs = twitter.getFollowersIDs(userId, cursor);
-
-                checkRateLimitStatus(followersIDs.getRateLimitStatus(),
+                if(followersIDs.hasNext()) {
+                    cursor = followersIDs.getNextCursor();
+                    checkRateLimitStatus(followersIDs.getRateLimitStatus(),
                         WTFDYUMExceptionType.GET_FOLLOWERS_RATE_LIMIT_EXCEEDED);
+                }
 
                 final Set<Long> currentFollowers = Arrays.stream(followersIDs.getIDs()).boxed()
                         .collect(Collectors.toCollection(() -> new HashSet<>()));

@@ -29,6 +29,12 @@ See bundled `INSTALL.md` file for installation details.
 
 A docker image is available on Docker Hub. ([jchampemont/wtfdyum](https://hub.docker.com/r/jchampemont/wtfdyum/))
 
+Create your twitter app as before and declare your appId and secret as environment variables
+
+```
+docker run -it --rm -p 8080:8080 -e APPID=<TWITTER_APP> -e APPSECRET=<TWITTER_SECRET> -v /etc/localtime:/etc/localtime:ro jchampemont/wtfdyum
+```
+
 ### Bug reporting
 
 If you encounter any bug or issue while using this software, feel free to report it using GitHub issues tracker. We will definitely have a look at it.

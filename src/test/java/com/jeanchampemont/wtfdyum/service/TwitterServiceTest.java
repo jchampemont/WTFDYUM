@@ -312,7 +312,9 @@ public class TwitterServiceTest {
         ids[0] = id;
 
         when(twitter.users()).thenReturn(usersResources);
-        when(usersResources.lookupUsers(ids)).thenThrow(TwitterException.class);
+        TwitterException exception = mock(TwitterException.class);
+        when(exception.getErrorCode()).thenReturn(17);
+        when(usersResources.lookupUsers(ids)).thenThrow(exception);
 
         List<com.jeanchampemont.wtfdyum.dto.User> result = sut.getUsers(new Principal(1L, "", ""), ids);
         assertThat(result).isNotNull().isEmpty();

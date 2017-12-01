@@ -140,13 +140,11 @@ public class TwitterServiceImpl implements TwitterService {
             }
 
         } catch (final TwitterException e) {
-            // If we get a 404 when looking up for users and we lookup only one user,
-            // it means this user does not exists anymore. Nothing to really worry about then.
-            if (ids.length > 1) {
+            if (e.getErrorCode() == 17) {
+                log.debug("Error while getUsers for ids: " + Arrays.toString(ids) + ". Seems like those users are not on twitter anymore.");
+            } else {
                 log.debug("Error while getUsers for ids: " + Arrays.toString(ids), e);
                 throw new WTFDYUMException(e, WTFDYUMExceptionType.TWITTER_ERROR);
-            } else {
-                log.debug("Error while getUsers for id: " + Arrays.toString(ids) + ". Seems like this user is not on twitter anymore.");
             }
         }
         return result;

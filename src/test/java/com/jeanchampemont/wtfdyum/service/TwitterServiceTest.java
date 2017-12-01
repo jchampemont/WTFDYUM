@@ -296,6 +296,29 @@ public class TwitterServiceTest {
     }
 
     @Test
+    public void getUsersTwitterExceptionButJustOneUserLookedUpTest() throws Exception {
+        final User userMock = mock(User.class);
+        when(userMock.getName()).thenReturn("name");
+        when(userMock.getScreenName()).thenReturn("screenName");
+        when(userMock.getProfileImageURL()).thenReturn("profile img url");
+        when(userMock.getURL()).thenReturn("user url");
+
+        final ResponseList<User> users = new ResponseListMockForTest<User>();
+        final long[] ids = new long[1];
+
+        users.add(userMock);
+        final long id = new Random().nextLong();
+        when(userMock.getId()).thenReturn(id);
+        ids[0] = id;
+
+        when(twitter.users()).thenReturn(usersResources);
+        when(usersResources.lookupUsers(ids)).thenThrow(TwitterException.class);
+
+        List<com.jeanchampemont.wtfdyum.dto.User> result = sut.getUsers(new Principal(1L, "", ""), ids);
+        assertThat(result).isNotNull().isEmpty();
+    }
+
+    @Test
     public void getFollowersTestWithoutPrincipalRateLimit() throws Exception {
         final IDs idsMock = mock(IDs.class);
         when(twitter.getFollowersIDs(444L, -1)).thenReturn(idsMock);

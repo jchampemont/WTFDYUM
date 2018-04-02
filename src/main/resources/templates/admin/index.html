@@ -12,7 +12,7 @@
             <h3>Admin statistics:</h3>
             Total members: [[${membersCount}]].<br />
             Feature adoption: <br />
-            <p th:each="feature : ${availableFeatures}">[[${feature.name()}]]: [[${featureEnabledCount[__${feature.name()}__]}]]</p>
+            <p th:remove="tag" th:each="feature : ${availableFeatures}">[[${feature.name()}]]: [[${featureEnabledCount[__${feature.name()}__]}]]<br /></p>
         </div>
     </div>
     <!-- /container -->

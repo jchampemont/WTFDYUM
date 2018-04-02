@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased][unreleased]
 ### Added
 - This CHANGELOG file
+- Add a property to include an analytics tracking code (`wtfdyum.tracking.code`)
 
 ### Changed
 - 5 invalid credentials check will disable all account's features.

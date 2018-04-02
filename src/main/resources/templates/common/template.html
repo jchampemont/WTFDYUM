@@ -45,6 +45,7 @@
     </div>
 
     <footer class="footer" th:fragment="footer">
+        <div th:remove="tag" th:utext="${@environment.getProperty('wtfdyum.tracking.code')}"></div>
         <p>&copy; WTFDYUM 2015</p>
         <script type="text/javascript" src="/js/jquery-2.1.4.min.js"></script>
         <script type="text/javascript" src="/js/bootstrap.min.js"></script>

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015, 2016 WTFDYUM
+ * Copyright (C) 2015, 2016, 2018 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -43,6 +43,11 @@ public interface AuthenticationService {
      * @return the boolean
      */
     Boolean isAuthenticated();
+
+    /**
+     * @return whether or not the current user is an admin.
+     */
+    Boolean isAdmin();
 
     /**
      * Log out.

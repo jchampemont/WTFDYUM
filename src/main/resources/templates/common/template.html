@@ -32,6 +32,9 @@
                         <a th:if="${!authenticated}" href="/">Home</a>
                         <a th:if="${authenticated}" href="/user" th:text="Home"></a>
                     </li>
+                    <li role="presentation" th:if="${admin}">
+                        <a href="/admin" th:text="Admin"></a>
+                    </li>
                     <li role="presentation">
                         <a th:if="${authenticated}" href="/user/logout">Logout</a>
                     </li>

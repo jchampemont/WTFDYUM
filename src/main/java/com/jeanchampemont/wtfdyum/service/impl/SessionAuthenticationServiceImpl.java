@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015, 2016 WTFDYUM
+ * Copyright (C) 2015, 2016, 2018 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -22,9 +22,11 @@ import com.jeanchampemont.wtfdyum.dto.Principal;
 import com.jeanchampemont.wtfdyum.service.AuthenticationService;
 import com.jeanchampemont.wtfdyum.utils.SessionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+import java.util.Objects;
 
 @Service
 public class SessionAuthenticationServiceImpl implements AuthenticationService {
@@ -32,11 +34,13 @@ public class SessionAuthenticationServiceImpl implements AuthenticationService {
     private static final String CURRENT_USER_ID = "CURRENT_USER_ID";
 
     @Autowired
-    public SessionAuthenticationServiceImpl(final SessionProvider sessionProvider) {
+    public SessionAuthenticationServiceImpl(SessionProvider sessionProvider, @Value("${wtfdyum.admin.twitterId}") Long adminTwitterId) {
         this.sessionProvider = sessionProvider;
+        this.adminTwitterId = adminTwitterId;
     }
 
     private final SessionProvider sessionProvider;
+    private final Long adminTwitterId;
 
     @Override
     public Long authenticate(final Principal user) {
@@ -55,6 +59,11 @@ public class SessionAuthenticationServiceImpl implements AuthenticationService {
     @Override
     public Boolean isAuthenticated() {
         return getCurrentUserId() != null;
+    }
+
+    @Override
+    public Boolean isAdmin() {
+        return Objects.equals(getCurrentUserId(), adminTwitterId);
     }
 
     @Override

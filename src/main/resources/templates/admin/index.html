@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head
+    th:replace="common/template :: head (title='Why the fuck did you unfollow me?')"></head>
+<body th:inline="text">
+    <div class="container">
+        <div th:replace="common/template :: header"></div>
+
+        <div class="jumbotron">
+            <h1>Why The Fuck Did You Unfollow Me?</h1>
+            Connected as [[${user.name}]] (@[[${user.screenName}]])!
+            <h3>Admin statistics:</h3>
+            Total members: [[${membersCount}]].<br />
+            Feature adoption: <br />
+            <p th:each="feature : ${availableFeatures}">[[${feature.name()}]]: [[${featureEnabledCount[__${feature.name()}__]}]]</p>
+        </div>
+    </div>
+    <!-- /container -->
+</body>
+</html>

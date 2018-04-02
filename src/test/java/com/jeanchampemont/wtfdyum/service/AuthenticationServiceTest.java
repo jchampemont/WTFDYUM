@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015, 2016 WTFDYUM
+ * Copyright (C) 2015, 2016, 2018 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -52,7 +52,7 @@ public class AuthenticationServiceTest {
     public void ainit() {
         initMocks(this);
         when(sessionProvider.getSession()).thenReturn(session);
-        sut = new SessionAuthenticationServiceImpl(sessionProvider);
+        sut = new SessionAuthenticationServiceImpl(sessionProvider, 42L);
     }
 
     @Test(expected = NullPointerException.class)
@@ -87,6 +87,24 @@ public class AuthenticationServiceTest {
         final Long currentUserId = sut.getCurrentUserId();
 
         assertThat(currentUserId).isNull();
+    }
+
+    @Test
+    public void isAdminNominalTest() {
+        when(session.getAttribute(anyString())).thenReturn(42L);
+        Boolean isAdmin = sut.isAdmin();
+
+        assertThat(isAdmin).isNotNull();
+        assertThat(isAdmin).isTrue();
+    }
+
+    @Test
+    public void isAdminNotAdminTest() {
+        when(session.getAttribute(anyString())).thenReturn(43L);
+        Boolean isAdmin = sut.isAdmin();
+
+        assertThat(isAdmin).isNotNull();
+        assertThat(isAdmin).isFalse();
     }
 
     @Test

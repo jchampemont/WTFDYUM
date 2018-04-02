@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015, 2016 WTFDYUM
+ * Copyright (C) 2015, 2016, 2018 WTFDYUM
  *
  * This file is part of the WTFDYUM project.
  *
@@ -48,6 +48,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
             final ModelAndView modelAndView) throws Exception {
         if (modelAndView != null) {
             modelAndView.getModel().put("authenticated", authenticationService.isAuthenticated());
+            modelAndView.getModel().put("admin", authenticationService.isAdmin());
         }
         SessionManager.setPrincipal(null);
         super.postHandle(request, response, handler, modelAndView);
